@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finclator Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        
+        .nav-bar {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .nav-links-top {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .nav-link-top {
+            text-decoration: none;
+            color: #667eea;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+        
+        .nav-link-top:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .nav-link-top.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .nav-logo {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+        }
+        
+        .nav-tabs {
+            background: white;
+            border-bottom: 2px solid #e5e7eb;
+            padding: 0 30px;
+            display: flex;
+            gap: 5px;
+        }
+        
+        .nav-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: #666;
+        }
+        
+        .nav-tab:hover {
+            background: #f9fafb;
+            color: #667eea;
+        }
+        
+        .nav-tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+        }
+        
+        .stat-card h3 {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-card .subvalue {
+            font-size: 0.9em;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+        
+        .card h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .search-box {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 1em;
+            margin-bottom: 15px;
+            transition: border-color 0.3s;
+        }
+        
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #f9fafb;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 2px solid #e5e7eb;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        tr:hover {
+            background: #f9fafb;
+        }
+        
+        .badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-danger {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .badge-buy {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .badge-sell {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .badge-neutral {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .refresh-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background 0.2s;
+            float: right;
+        }
+        
+        .refresh-btn:hover {
+            background: #5568d3;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background: #10b981;
+        }
+        
+        .status-offline {
+            background: #ef4444;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .metric-label {
+            color: #666;
+        }
+        
+        .metric-value {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .timestamp {
+            color: #999;
+            font-size: 0.85em;
+        }
+        
+        .export-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+        
+        .export-btn:hover {
+            background: #059669;
+        }
+        
+        .filter-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-select {
+            padding: 8px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 0.9em;
+        }
+        
+        .pagination {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .page-btn {
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            background: white;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+        
+        .page-btn:hover {
+            background: #f9fafb;
+        }
+        
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="nav-bar">
+        <div class="nav-logo">🎯 Finclator</div>
+        <div class="nav-links-top">
+            <a href="/dashboard" class="nav-link-top">📊 Dashboard</a>
+            <a href="/admin" class="nav-link-top active">⚙️ Admin</a>
+            <a href="/docs" class="nav-link-top">📖 API Docs</a>
+            <a href="/health" class="nav-link-top" target="_blank">❤️ Health</a>
+        </div>
+    </nav>
+    
+    <div class="header">
+        <h1>🎛️ Finclator Admin Dashboard</h1>
+        <p>Database Management & Real-time Monitoring</p>
+    </div>
+    
+    <div class="nav-tabs">
+        <div class="nav-tab active" onclick="switchTab('overview')">📊 Overview</div>
+        <div class="nav-tab" onclick="switchTab('tweets')">💬 Tweets</div>
+        <div class="nav-tab" onclick="switchTab('predictions')">🎯 Predictions</div>
+        <div class="nav-tab" onclick="switchTab('prices')">💹 Prices</div>
+        <div class="nav-tab" onclick="switchTab('trust')">🏆 Trust Scores</div>
+        <div class="nav-tab" onclick="switchTab('outcomes')">✅ Outcomes</div>
+        <div class="nav-tab" onclick="switchTab('monitoring')">📈 Monitoring</div>
+    </div>
+    
+    <div class="container">
+        <!-- Overview Tab -->
+        <div id="overview" class="tab-content active">
+            <div class="stats-grid" id="statsGrid">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading statistics...</p>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h2>📊 Data Distribution</h2>
+                    <div class="chart-container">
+                        <canvas id="dataDistChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>🎯 Sentiment Distribution</h2>
+                    <div class="chart-container">
+                        <canvas id="sentimentChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📈 Tweets by Asset</h2>
+                <div class="chart-container">
+                    <canvas id="assetChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tweets Tab -->
+        <div id="tweets" class="tab-content">
+            <div class="card">
+                <h2>💬 Recent Tweets
+                    <button class="refresh-btn" onclick="loadTweets()">🔄 Refresh</button>
+                    <button class="export-btn" onclick="exportTable('tweets')">📥 Export CSV</button>
+                </h2>
+                <input type="text" class="search-box" id="tweetsSearch" placeholder="Search tweets by text, influencer, or asset..." onkeyup="filterTable('tweetsTable', 'tweetsSearch')">
+                <div class="filter-bar">
+                    <select class="filter-select" id="tweetsProcessedFilter" onchange="loadTweets()">
+                        <option value="">All Status</option>
+                        <option value="true">Processed</option>
+                        <option value="false">Pending</option>
+                    </select>
+                    <select class="filter-select" id="tweetsAssetFilter" onchange="loadTweets()">
+                        <option value="">All Assets</option>
+                        <option value="BTC">BTC</option>
+                        <option value="GOLD">GOLD</option>
+                        <option value="SPX">SPX</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table id="tweetsTable">
+                        <thead>
+                            <tr>
+                                <th>Influencer</th>
+                                <th>Text</th>
+                                <th>Assets</th>
+                                <th>Posted</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tweetsBody">
+                            <tr><td colspan="5" class="loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="tweetsPagination"></div>
+            </div>
+        </div>
+        
+        <!-- Predictions Tab -->
+        <div id="predictions" class="tab-content">
+            <div class="card">
+                <h2>🎯 Sentiment Predictions
+                    <button class="refresh-btn" onclick="loadPredictions()">🔄 Refresh</button>
+                    <button class="export-btn" onclick="exportTable('predictions')">📥 Export CSV</button>
+                </h2>
+                <input type="text" class="search-box" id="predictionsSearch" placeholder="Search predictions..." onkeyup="filterTable('predictionsTable', 'predictionsSearch')">
+                <div class="filter-bar">
+                    <select class="filter-select" id="predictionsAssetFilter" onchange="loadPredictions()">
+                        <option value="">All Assets</option>
+                        <option value="BTC">BTC</option>
+                        <option value="GOLD">GOLD</option>
+                        <option value="SPX">SPX</option>
+                    </select>
+                    <select class="filter-select" id="predictionsDirectionFilter" onchange="loadPredictions()">
+                        <option value="">All Directions</option>
+                        <option value="BUY">BUY</option>
+                        <option value="NEUTRAL">NEUTRAL</option>
+                        <option value="SELL">SELL</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table id="predictionsTable">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Direction</th>
+                                <th>Horizon</th>
+                                <th>Confidence</th>
+                                <th>Influencer</th>
+                                <th>Tweet</th>
+                                <th>Created</th>
+                            </tr>
+                        </thead>
+                        <tbody id="predictionsBody">
+                            <tr><td colspan="7" class="loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Prices Tab -->
+        <div id="prices" class="tab-content">
+            <div class="card">
+                <h2>💹 Price Candles
+                    <button class="refresh-btn" onclick="loadPrices()">🔄 Refresh</button>
+                </h2>
+                <div class="filter-bar">
+                    <select class="filter-select" id="pricesAssetSelect" onchange="loadPrices()">
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="GOLD">Gold (GOLD)</option>
+                        <option value="SPX">S&P 500 (SPX)</option>
+                    </select>
+                </div>
+                <div class="table-container">
+                    <table id="pricesTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pricesBody">
+                            <tr><td colspan="6" class="loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📊 Price Chart</h2>
+                <div class="chart-container" style="height: 400px;">
+                    <canvas id="priceChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Trust Scores Tab -->
+        <div id="trust" class="tab-content">
+            <div class="card">
+                <h2>🏆 Trust Scores
+                    <button class="refresh-btn" onclick="loadTrustScores()">🔄 Refresh</button>
+                </h2>
+                <input type="text" class="search-box" id="trustSearch" placeholder="Search by influencer..." onkeyup="filterTable('trustTable', 'trustSearch')">
+                <div class="table-container">
+                    <table id="trustTable">
+                        <thead>
+                            <tr>
+                                <th>Influencer</th>
+                                <th>Asset</th>
+                                <th>Horizon</th>
+                                <th>Score</th>
+                                <th>Computed</th>
+                            </tr>
+                        </thead>
+                        <tbody id="trustBody">
+                            <tr><td colspan="5" class="loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📊 Trust Score Distribution</h2>
+                <div class="chart-container">
+                    <canvas id="trustDistChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Outcomes Tab -->
+        <div id="outcomes" class="tab-content">
+            <div class="card">
+                <h2>✅ Prediction Outcomes
+                    <button class="refresh-btn" onclick="loadOutcomes()">🔄 Refresh</button>
+                </h2>
+                <input type="text" class="search-box" id="outcomesSearch" placeholder="Search outcomes..." onkeyup="filterTable('outcomesTable', 'outcomesSearch')">
+                <div class="table-container">
+                    <table id="outcomesTable">
+                        <thead>
+                            <tr>
+                                <th>Influencer</th>
+                                <th>Asset</th>
+                                <th>Horizon</th>
+                                <th>Predicted</th>
+                                <th>Outcome</th>
+                                <th>Return %</th>
+                                <th>Entry/Exit</th>
+                                <th>Evaluated</th>
+                            </tr>
+                        </thead>
+                        <tbody id="outcomesBody">
+                            <tr><td colspan="8" class="loading">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Monitoring Tab -->
+        <div id="monitoring" class="tab-content">
+            <div class="card">
+                <h2>📈 Pipeline Status
+                    <button class="refresh-btn" onclick="loadMonitoring()">🔄 Refresh</button>
+                </h2>
+                <div class="status-indicator status-online"></div>
+                <span>System Online</span>
+                <div id="pipelineStatus" style="margin-top: 20px;">
+                    <div class="loading">Loading...</div>
+                </div>
+            </div>
+            
+            <div class="grid-2">
+                <div class="card">
+                    <h2>📊 24-Hour Activity</h2>
+                    <div id="activity24h">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h2>⏰ Latest Activity</h2>
+                    <div id="latestActivity">
+                        <div class="loading">Loading...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📈 Activity Timeline</h2>
+                <div class="chart-container">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000';
+        let charts = {};
+        
+        // Tab switching
+        function switchTab(tabName) {
+            // Update nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(tabName).classList.add('active');
+            
+            // Load data for specific tabs
+            if (tabName === 'tweets') loadTweets();
+            if (tabName === 'predictions') loadPredictions();
+            if (tabName === 'prices') loadPrices();
+            if (tabName === 'trust') loadTrustScores();
+            if (tabName === 'outcomes') loadOutcomes();
+            if (tabName === 'monitoring') loadMonitoring();
+        }
+        
+        // Load overview statistics
+        async function loadOverview() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/stats`);
+                const stats = await response.json();
+                
+                const grid = document.getElementById('statsGrid');
+                grid.innerHTML = `
+                    <div class="stat-card">
+                        <h3>Total Tweets</h3>
+                        <div class="value">${stats.tweets || 0}</div>
+                        <div class="subvalue">${stats.tweets_processed || 0} processed, ${stats.tweets_pending || 0} pending</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Predictions</h3>
+                        <div class="value">${stats.sentiment_predictions || 0}</div>
+                        <div class="subvalue">Sentiment classifications</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Price Candles</h3>
+                        <div class="value">${stats.price_candles || 0}</div>
+                        <div class="subvalue">OHLCV data points</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Trust Scores</h3>
+                        <div class="value">${stats.trust_scores || 0}</div>
+                        <div class="subvalue">Performance metrics</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Outcomes</h3>
+                        <div class="value">${stats.prediction_outcomes || 0}</div>
+                        <div class="subvalue">Evaluated predictions</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Current Signals</h3>
+                        <div class="value">${stats.current_signals || 0}</div>
+                        <div class="subvalue">Active market signals</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Influencers</h3>
+                        <div class="value">${stats.influencers || 0}</div>
+                        <div class="subvalue">${stats.finance_schools || 0} finance schools</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>BTC Tweets</h3>
+                        <div class="value">${stats.tweets_by_asset?.BTC || 0}</div>
+                        <div class="subvalue">GOLD: ${stats.tweets_by_asset?.GOLD || 0}, SPX: ${stats.tweets_by_asset?.SPX || 0}</div>
+                    </div>
+                `;
+                
+                // Create charts
+                createDataDistChart(stats);
+                createAssetChart(stats);
+            } catch (error) {
+                console.error('Error loading overview:', error);
+                document.getElementById('statsGrid').innerHTML = '<div class="loading">Error loading statistics</div>';
+            }
+        }
+        
+        // Load tweets table
+        async function loadTweets(page = 1, limit = 20) {
+            try {
+                const response = await fetch(`${API_BASE}/admin/tweets?limit=${limit}&offset=${(page-1)*limit}`);
+                const tweets = await response.json();
+                
+                const tbody = document.getElementById('tweetsBody');
+                if (tweets.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="loading">No tweets found</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = tweets.map(tweet => `
+                    <tr>
+                        <td><strong>@${tweet.influencer_handle}</strong><br><small>${tweet.influencer_name}</small></td>
+                        <td style="max-width: 400px;">${tweet.text}</td>
+                        <td>${tweet.asset_symbols.map(a => `<span class="badge badge-info">${a}</span>`).join(' ')}</td>
+                        <td><span class="timestamp">${new Date(tweet.tweeted_at).toLocaleString()}</span></td>
+                        <td><span class="badge ${tweet.processed ? 'badge-success' : 'badge-warning'}">${tweet.processed ? '✓ Processed' : '⏳ Pending'}</span></td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading tweets:', error);
+                document.getElementById('tweetsBody').innerHTML = '<tr><td colspan="5" class="loading">Error loading tweets</td></tr>';
+            }
+        }
+        
+        // Load predictions table
+        async function loadPredictions() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/predictions?limit=50`);
+                const predictions = await response.json();
+                
+                const tbody = document.getElementById('predictionsBody');
+                if (predictions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="loading">No predictions found</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = predictions.map(pred => `
+                    <tr>
+                        <td><span class="badge badge-info">${pred.asset}</span></td>
+                        <td><span class="badge badge-${pred.direction.toLowerCase()}">${pred.direction}</span></td>
+                        <td>${pred.horizon}</td>
+                        <td><strong>${(pred.confidence * 100).toFixed(1)}%</strong></td>
+                        <td>@${pred.influencer}</td>
+                        <td style="max-width: 300px; font-size: 0.9em;">${pred.tweet_text}</td>
+                        <td><span class="timestamp">${new Date(pred.created_at).toLocaleString()}</span></td>
+                    </tr>
+                `).join('');
+                
+                // Create sentiment distribution chart
+                const sentimentCounts = { BUY: 0, NEUTRAL: 0, SELL: 0 };
+                predictions.forEach(p => sentimentCounts[p.direction]++);
+                createSentimentChart(sentimentCounts);
+            } catch (error) {
+                console.error('Error loading predictions:', error);
+                document.getElementById('predictionsBody').innerHTML = '<tr><td colspan="7" class="loading">Error loading predictions</td></tr>';
+            }
+        }
+        
+        // Load prices table
+        async function loadPrices() {
+            try {
+                const asset = document.getElementById('pricesAssetSelect').value || 'BTC';
+                const response = await fetch(`${API_BASE}/admin/price-candles?asset=${asset}&limit=30`);
+                const candles = await response.json();
+                
+                const tbody = document.getElementById('pricesBody');
+                if (candles.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="loading">No price data found</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = candles.map(candle => `
+                    <tr>
+                        <td>${new Date(candle.timestamp).toLocaleDateString()}</td>
+                        <td>$${candle.open.toFixed(2)}</td>
+                        <td style="color: #10b981;">$${candle.high.toFixed(2)}</td>
+                        <td style="color: #ef4444;">$${candle.low.toFixed(2)}</td>
+                        <td><strong>$${candle.close.toFixed(2)}</strong></td>
+                        <td>${candle.volume.toLocaleString()}</td>
+                    </tr>
+                `).join('');
+                
+                // Create price chart
+                createPriceChart(candles, asset);
+            } catch (error) {
+                console.error('Error loading prices:', error);
+                document.getElementById('pricesBody').innerHTML = '<tr><td colspan="6" class="loading">Error loading prices</td></tr>';
+            }
+        }
+        
+        // Load trust scores
+        async function loadTrustScores() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/trust-scores`);
+                const scores = await response.json();
+                
+                const tbody = document.getElementById('trustBody');
+                if (scores.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="loading">No trust scores found</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = scores.map(score => `
+                    <tr>
+                        <td><strong>@${score.influencer_handle}</strong><br><small>${score.influencer_name}</small></td>
+                        <td>${score.asset || 'OVERALL'}</td>
+                        <td>${score.horizon}</td>
+                        <td><strong style="color: ${score.score >= 0.7 ? '#10b981' : score.score >= 0.5 ? '#f59e0b' : '#ef4444'};">${(score.score * 100).toFixed(1)}%</strong></td>
+                        <td><span class="timestamp">${new Date(score.computed_at).toLocaleString()}</span></td>
+                    </tr>
+                `).join('');
+                
+                // Create trust distribution chart
+                createTrustDistChart(scores);
+            } catch (error) {
+                console.error('Error loading trust scores:', error);
+                document.getElementById('trustBody').innerHTML = '<tr><td colspan="5" class="loading">Error loading trust scores</td></tr>';
+            }
+        }
+        
+        // Load outcomes
+        async function loadOutcomes() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/outcomes?limit=30`);
+                const outcomes = await response.json();
+                
+                const tbody = document.getElementById('outcomesBody');
+                if (outcomes.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="loading">No outcomes found</td></tr>';
+                    return;
+                }
+                
+                tbody.innerHTML = outcomes.map(outcome => `
+                    <tr>
+                        <td>@${outcome.influencer}</td>
+                        <td><span class="badge badge-info">${outcome.asset}</span></td>
+                        <td>${outcome.horizon}</td>
+                        <td><span class="badge badge-${outcome.predicted_direction.toLowerCase()}">${outcome.predicted_direction}</span></td>
+                        <td><span class="badge ${outcome.outcome === 'CORRECT' ? 'badge-success' : outcome.outcome === 'WRONG' ? 'badge-danger' : 'badge-warning'}">${outcome.outcome}</span></td>
+                        <td style="color: ${outcome.return_pct >= 0 ? '#10b981' : '#ef4444'};">${outcome.return_pct.toFixed(2)}%</td>
+                        <td>$${outcome.entry_price.toFixed(2)} → $${outcome.exit_price.toFixed(2)}</td>
+                        <td><span class="timestamp">${new Date(outcome.evaluated_at).toLocaleString()}</span></td>
+                    </tr>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading outcomes:', error);
+                document.getElementById('outcomesBody').innerHTML = '<tr><td colspan="8" class="loading">Error loading outcomes</td></tr>';
+            }
+        }
+        
+        // Load monitoring data
+        async function loadMonitoring() {
+            try {
+                const response = await fetch(`${API_BASE}/admin/pipeline-status`);
+                const status = await response.json();
+                
+                // 24-hour activity
+                document.getElementById('activity24h').innerHTML = `
+                    <div class="metric-row">
+                        <span class="metric-label">Tweets Ingested</span>
+                        <span class="metric-value">${status.last_24_hours.tweets_ingested}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Predictions Created</span>
+                        <span class="metric-value">${status.last_24_hours.predictions_created}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Price Updates</span>
+                        <span class="metric-value">${status.last_24_hours.price_candles_updated}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Signals Updated</span>
+                        <span class="metric-value">${status.last_24_hours.signals_updated}</span>
+                    </div>
+                `;
+                
+                // Latest activity
+                document.getElementById('latestActivity').innerHTML = `
+                    <div class="metric-row">
+                        <span class="metric-label">Last Tweet</span>
+                        <span class="metric-value timestamp">${status.latest_activity.last_tweet_ingested ? new Date(status.latest_activity.last_tweet_ingested).toLocaleString() : 'N/A'}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Last Prediction</span>
+                        <span class="metric-value timestamp">${status.latest_activity.last_prediction ? new Date(status.latest_activity.last_prediction).toLocaleString() : 'N/A'}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Last Signal Update</span>
+                        <span class="metric-value timestamp">${status.latest_activity.last_signal_update ? new Date(status.latest_activity.last_signal_update).toLocaleString() : 'N/A'}</span>
+                    </div>
+                `;
+                
+                // Pipeline status
+                document.getElementById('pipelineStatus').innerHTML = `
+                    <h3 style="margin-top: 20px;">Pipeline Health</h3>
+                    <div class="metric-row">
+                        <span class="metric-label">Tweet Ingestion</span>
+                        <span class="metric-value">${status.last_24_hours.tweets_ingested > 0 ? '✅ Active' : '⚠️ No Activity'}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Sentiment Classification</span>
+                        <span class="metric-value">${status.last_24_hours.predictions_created > 0 ? '✅ Active' : '⚠️ No Activity'}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Signal Generation</span>
+                        <span class="metric-value">${status.last_24_hours.signals_updated > 0 ? '✅ Active' : '⚠️ No Activity'}</span>
+                    </div>
+                `;
+                
+                // Create activity chart
+                createActivityChart(status.last_24_hours);
+            } catch (error) {
+                console.error('Error loading monitoring:', error);
+                document.getElementById('pipelineStatus').innerHTML = '<div class="loading">Error loading monitoring data</div>';
+            }
+        }
+        
+        // Chart creators
+        function createDataDistChart(stats) {
+            const ctx = document.getElementById('dataDistChart');
+            if (charts.dataDist) charts.dataDist.destroy();
+            
+            charts.dataDist = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tweets', 'Predictions', 'Price Candles', 'Trust Scores', 'Outcomes'],
+                    datasets: [{
+                        data: [
+                            stats.tweets || 0,
+                            stats.sentiment_predictions || 0,
+                            stats.price_candles || 0,
+                            stats.trust_scores || 0,
+                            stats.prediction_outcomes || 0
+                        ],
+                        backgroundColor: [
+                            '#667eea',
+                            '#10b981',
+                            '#f59e0b',
+                            '#8b5cf6',
+                            '#ef4444'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createSentimentChart(counts) {
+            const ctx = document.getElementById('sentimentChart');
+            if (charts.sentiment) charts.sentiment.destroy();
+            
+            charts.sentiment = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['BUY', 'NEUTRAL', 'SELL'],
+                    datasets: [{
+                        data: [counts.BUY, counts.NEUTRAL, counts.SELL],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createAssetChart(stats) {
+            const ctx = document.getElementById('assetChart');
+            if (charts.asset) charts.asset.destroy();
+            
+            const assetData = stats.tweets_by_asset || {};
+            charts.asset = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Bitcoin (BTC)', 'Gold (GOLD)', 'S&P 500 (SPX)'],
+                    datasets: [{
+                        label: 'Tweets',
+                        data: [assetData.BTC || 0, assetData.GOLD || 0, assetData.SPX || 0],
+                        backgroundColor: ['#667eea', '#f59e0b', '#10b981']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createPriceChart(candles, asset) {
+            const ctx = document.getElementById('priceChart');
+            if (charts.price) charts.price.destroy();
+            
+            charts.price = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: candles.map(c => new Date(c.timestamp).toLocaleDateString()).reverse(),
+                    datasets: [{
+                        label: `${asset} Price`,
+                        data: candles.map(c => c.close).reverse(),
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createTrustDistChart(scores) {
+            const ctx = document.getElementById('trustDistChart');
+            if (charts.trustDist) charts.trustDist.destroy();
+            
+            const ranges = { 'High (>=70%)': 0, 'Average (50-70%)': 0, 'Below (30-50%)': 0, 'Low (<30%)': 0 };
+            scores.forEach(s => {
+                const score = s.score * 100;
+                if (score >= 70) ranges['High (>=70%)']++;
+                else if (score >= 50) ranges['Average (50-70%)']++;
+                else if (score >= 30) ranges['Below (30-50%)']++;
+                else ranges['Low (<30%)']++;
+            });
+            
+            charts.trustDist = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(ranges),
+                    datasets: [{
+                        label: 'Trust Scores',
+                        data: Object.values(ranges),
+                        backgroundColor: ['#10b981', '#667eea', '#f59e0b', '#ef4444']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function createActivityChart(activity) {
+            const ctx = document.getElementById('activityChart');
+            if (charts.activity) charts.activity.destroy();
+            
+            charts.activity = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Tweets', 'Predictions', 'Price Updates', 'Signals'],
+                    datasets: [{
+                        label: 'Last 24 Hours',
+                        data: [
+                            activity.tweets_ingested,
+                            activity.predictions_created,
+                            activity.price_candles_updated,
+                            activity.signals_updated
+                        ],
+                        backgroundColor: ['#667eea', '#10b981', '#f59e0b', '#8b5cf6']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Table filtering
+        function filterTable(tableId, searchId) {
+            const input = document.getElementById(searchId);
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById(tableId);
+            const tr = table.getElementsByTagName('tr');
+            
+            for (let i = 1; i < tr.length; i++) {
+                const td = tr[i].getElementsByTagName('td');
+                let found = false;
+                
+                for (let j = 0; j < td.length; j++) {
+                    if (td[j]) {
+                        const txtValue = td[j].textContent || td[j].innerText;
+                        if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                
+                tr[i].style.display = found ? '' : 'none';
+            }
+        }
+        
+        // Export to CSV
+        function exportTable(tableName) {
+            let table, filename;
+            
+            if (tableName === 'tweets') {
+                table = document.getElementById('tweetsTable');
+                filename = 'tweets_export.csv';
+            } else if (tableName === 'predictions') {
+                table = document.getElementById('predictionsTable');
+                filename = 'predictions_export.csv';
+            }
+            
+            if (!table) return;
+            
+            let csv = [];
+            const rows = table.querySelectorAll('tr');
+            
+            for (let row of rows) {
+                const cols = row.querySelectorAll('td, th');
+                const csvrow = [];
+                for (let col of cols) {
+                    csvrow.push('"' + col.innerText.replace(/"/g, '""') + '"');
+                }
+                csv.push(csvrow.join(','));
+            }
+            
+            const csvString = csv.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Initial load
+        loadOverview();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            const activeTab = document.querySelector('.tab-content.active').id;
+            if (activeTab === 'overview') loadOverview();
+            if (activeTab === 'monitoring') loadMonitoring();
+        }, 30000);
+    </script>
+</body>
+</html>
+

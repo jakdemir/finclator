@@ -24,7 +24,7 @@ The MVP MUST be as light as possible, focusing only on the core prediction logic
 
 ### II. Data-Driven Trust
 
-The core value proposition is the formulated trust score. The methodology for calculating this score MUST be transparent, auditable, and directly linked to influencer sentiment and historical market performance.
+The core value proposition is the formulated trust score. The methodology for calculating this score MUST be transparent, auditable, and directly linked to influencer sentiment and historical market performance. but don't over document!
 
 **Rationale**: Trust in the prediction system depends on users understanding how scores are derived. The methodology must be verifiable and grounded in measurable data sources (influencer sentiment, historical market performance) to establish credibility.
 
