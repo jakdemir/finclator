@@ -1,0 +1,166 @@
+openapi: 3.0.3
+info:
+  title: Finclator API
+  version: 0.1.0
+  description: >
+    Read-only API exposing trust-weighted Buy / Neutral / Sell indicators,
+    school-level breakdowns, and influencer details for BTC, GOLD, and SPX.
+servers:
+  - url: https://api.finclator.example.com
+paths:
+  /signals:
+    get:
+      summary: Get current indicators for an asset and horizon
+      parameters:
+        - in: query
+          name: asset
+          required: true
+          schema:
+            type: string
+            enum: [BTC, GOLD, SPX]
+        - in: query
+          name: horizon
+          required: true
+          schema:
+            type: string
+            enum: [SHORT, MEDIUM, LONG]
+      responses:
+        '200':
+          description: Current aggregated signal
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalResponse'
+  /school-signals:
+    get:
+      summary: Get current school-level indicators for an asset and horizon
+      parameters:
+        - in: query
+          name: asset
+          required: true
+          schema:
+            type: string
+            enum: [BTC, GOLD, SPX]
+        - in: query
+          name: horizon
+          required: true
+          schema:
+            type: string
+            enum: [SHORT, MEDIUM, LONG]
+      responses:
+        '200':
+          description: Current signals broken down by finance school
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SchoolSignal'
+  /influencers/{id}:
+    get:
+      summary: Get influencer details and trust scores
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Influencer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Influencer'
+
+components:
+  schemas:
+    SignalResponse:
+      type: object
+      properties:
+        asset:
+          type: string
+          enum: [BTC, GOLD, SPX]
+        horizon:
+          type: string
+          enum: [SHORT, MEDIUM, LONG]
+        final_label:
+          type: string
+          enum: [BUY, NEUTRAL, SELL]
+        weighted_score_buy:
+          type: number
+        weighted_score_neutral:
+          type: number
+        weighted_score_sell:
+          type: number
+        generated_at:
+          type: string
+          format: date-time
+    SchoolSignal:
+      type: object
+      properties:
+        finance_school:
+          type: string
+        asset:
+          type: string
+          enum: [BTC, GOLD, SPX]
+        horizon:
+          type: string
+          enum: [SHORT, MEDIUM, LONG]
+        final_label:
+          type: string
+          enum: [BUY, NEUTRAL, SELL]
+        weighted_score_buy:
+          type: number
+        weighted_score_neutral:
+          type: number
+        weighted_score_sell:
+          type: number
+        generated_at:
+          type: string
+          format: date-time
+    Influencer:
+      type: object
+      properties:
+        id:
+          type: string
+        handle:
+          type: string
+        display_name:
+          type: string
+        finance_school:
+          type: string
+        current_trust_scores:
+          type: array
+          items:
+            type: object
+            properties:
+              asset_symbol:
+                type: string
+                nullable: true
+              horizon:
+                type: string
+                enum: [SHORT, MEDIUM, LONG, OVERALL]
+              score:
+                type: number
+        recent_predictions:
+          type: array
+          items:
+            type: object
+            properties:
+              asset_symbol:
+                type: string
+              horizon:
+                type: string
+                enum: [SHORT, MEDIUM, LONG]
+              direction:
+                type: string
+                enum: [BUY, NEUTRAL, SELL]
+              tweeted_at:
+                type: string
+                format: date-time
+              outcome:
+                type: string
+                enum: [CORRECT, WRONG, UNCLEAR]
+
+

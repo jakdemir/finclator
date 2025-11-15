@@ -1,0 +1,29 @@
+# finclator Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-11-15
+
+## Active Technologies
+
+- Python 3.11 + FastAPI, SQLAlchemy + asyncpg (or equivalent async DB client), HTTPX/requests, OpenAI-compatible client for grok-3-fast and grok-3-mini, Pydantic (001-influencer-trust-scores)
+
+## Project Structure
+
+```text
+src/
+tests/
+```
+
+## Commands
+
+cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] pytest [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLOGIES] ruff check .
+
+## Code Style
+
+Python 3.11: Follow standard conventions
+
+## Recent Changes
+
+- 001-influencer-trust-scores: Added Python 3.11 + FastAPI, SQLAlchemy + asyncpg (or equivalent async DB client), HTTPX/requests, OpenAI-compatible client for grok-3-fast and grok-3-mini, Pydantic
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Hand-Picked / Macro",
+    "description": "Hand-selected macroeconomic strategists and global market analysts"
+  },
+  {
+    "name": "Macro",
+    "description": "Focus on macroeconomic trends, monetary policy, and global markets"
+  },
+  {
+    "name": "Technical",
+    "description": "Technical analysis, chart patterns, and trading indicators"
+  },
+  {
+    "name": "Value",
+    "description": "Value investing, fundamental analysis, and long-term holdings"
+  },
+  {
+    "name": "Growth",
+    "description": "Growth investing, innovation, and momentum strategies"
+  }
+]
+

@@ -1,50 +1,48 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report:
+Version change: (none) → 1.0.0
+Modified principles: N/A (initial constitution)
+Added sections: Core Principles (2 principles), Governance
+Removed sections: N/A
+Templates requiring updates:
+  ✅ .specify/templates/plan-template.md - Constitution Check section already generic
+  ✅ .specify/templates/spec-template.md - No constitution-specific constraints
+  ✅ .specify/templates/tasks-template.md - No constitution-specific task types
+  ⚠ .cursor/commands/speckit.constitution.md - No updates needed (generic command)
+Follow-up TODOs: None
+-->
+
+# Finclator Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Simplicity & Focus
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+The MVP MUST be as light as possible, focusing only on the core prediction logic and data acquisition. Non-essential features (e.g., user accounts, complex UI/UX) are deferred.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+**Rationale**: Early delivery of core value requires eliminating all non-critical complexity. Features that do not directly contribute to prediction accuracy or data quality must be deferred until after MVP validation.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### II. Data-Driven Trust
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+The core value proposition is the formulated trust score. The methodology for calculating this score MUST be transparent, auditable, and directly linked to influencer sentiment and historical market performance.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+**Rationale**: Trust in the prediction system depends on users understanding how scores are derived. The methodology must be verifiable and grounded in measurable data sources (influencer sentiment, historical market performance) to establish credibility.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes all other development practices and decisions. All feature specifications, implementation plans, and code reviews MUST verify compliance with these principles.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Amendment Procedure**: Changes to this constitution require:
+1. Documentation of the rationale for the change
+2. Update to version number following semantic versioning (MAJOR.MINOR.PATCH)
+3. Propagation of changes to dependent templates and documentation
+4. Update of the Sync Impact Report at the top of this file
+
+**Versioning Policy**:
+- **MAJOR**: Backward incompatible governance/principle removals or redefinitions
+- **MINOR**: New principle/section added or materially expanded guidance
+- **PATCH**: Clarifications, wording, typo fixes, non-semantic refinements
+
+**Compliance Review**: All PRs and feature specifications must include a Constitution Check that verifies alignment with these principles. Violations must be justified in the Complexity Tracking section of implementation plans.
+
+**Version**: 1.0.0 | **Ratified**: 2025-11-15 | **Last Amended**: 2025-11-15

@@ -1,0 +1,89 @@
+# Render deployment configuration for Finclator
+# https://render.com/docs/blueprint-spec
+
+services:
+  # FastAPI Web Service
+  - type: web
+    name: finclator-api
+    env: python
+    region: oregon
+    plan: free  # or: starter, standard, pro
+    buildCommand: pip install -e .
+    startCommand: uvicorn src.api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: finclator-db
+          property: connectionString
+      - key: X_API_BEARER_TOKEN
+        sync: false  # Set manually in Render dashboard
+      - key: ALPHAVANTAGE_API_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: HUGGINGFACE_API_KEY
+        sync: false  # Set manually in Render dashboard
+      - key: LOG_LEVEL
+        value: INFO
+    
+  # Background Worker (for ad-hoc jobs, not scheduled)
+  - type: worker
+    name: finclator-worker
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -e .
+    startCommand: echo "Worker ready for manual jobs"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: DATABASE_URL
+        fromDatabase:
+          name: finclator-db
+          property: connectionString
+      - key: X_API_BEARER_TOKEN
+        sync: false
+      - key: ALPHAVANTAGE_API_KEY
+        sync: false
+      - key: HUGGINGFACE_API_KEY
+        sync: false
+      - key: LOG_LEVEL
+        value: INFO
+
+# Cron Jobs (Scheduled Workers)
+# Note: Render Cron Jobs are separate and configured via the dashboard or API
+# Below are the recommended schedules:
+
+# 1. Tweet Ingestion - Every hour
+#    Command: python -m src.workers.tweet_ingestion
+#    Schedule: 0 * * * * (hourly)
+#    Plan: free
+
+# 2. Sentiment Classification - Every hour (5 min after ingestion)
+#    Command: python -m src.workers.sentiment
+#    Schedule: 5 * * * * (hourly at :05)
+#    Plan: free
+
+# 3. Price Ingestion - Every 6 hours
+#    Command: python -m src.workers.price_ingestion
+#    Schedule: 0 */6 * * * (every 6 hours)
+#    Plan: free
+
+# 4. Prediction Evaluation - Every 12 hours
+#    Command: python -m src.workers.evaluation
+#    Schedule: 0 */12 * * * (every 12 hours)
+#    Plan: free
+
+# 5. Signal Aggregation - Every hour (10 min after sentiment)
+#    Command: python -m src.workers.aggregation
+#    Schedule: 10 * * * * (hourly at :10)
+#    Plan: free
+
+databases:
+  - name: finclator-db
+    databaseName: finclator
+    user: finclator
+    region: oregon
+    plan: free  # or: starter, standard, pro
+    ipAllowList: []  # Empty = allow all
+
