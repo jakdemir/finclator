@@ -7,6 +7,7 @@ from sqlalchemy import select, update
 from src.db.session import AsyncSessionLocal
 from src.db.models import Tweet, SentimentPrediction, Influencer, Direction, Horizon
 from src.services.sentiment_classifier import sentiment_classifier
+from src.services.config import settings
 from src.services.logging import setup_logging, logger, log_classification
 
 
@@ -74,12 +75,17 @@ async def process_tweets():
                     
                     if classification:
                         # Create sentiment prediction
+                        # Use model name - agent or HuggingFace model
+                        if settings.use_agent_sentiment:
+                            model_version = "openai-agent"
+                        else:
+                            model_version = settings.sentiment_model.split('/')[-1]  # Extract model name
                         prediction = SentimentPrediction(
                             tweet_id=tweet.id,
                             asset_symbol=asset_symbol,
                             direction=Direction[classification["direction"]],
                             horizon=Horizon[classification["horizon"]],
-                            model_version="grok-beta",
+                            model_version=model_version,
                             confidence=float(classification["confidence"]),
                             created_at=datetime.utcnow(),
                             matures_at=calculate_maturity_date(

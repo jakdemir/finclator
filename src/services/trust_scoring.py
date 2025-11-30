@@ -57,7 +57,7 @@ def calculate_trust_score_from_outcomes(outcomes: List[PredictionOutcome]) -> fl
 async def compute_trust_scores_for_influencer(
     session: AsyncSession,
     influencer_id: UUID,
-    window_days: int = 180,
+    window_days: Optional[int] = 180,
 ) -> List[TrustScore]:
     """
     Compute trust scores for an influencer across all assets and horizons.
@@ -65,31 +65,28 @@ async def compute_trust_scores_for_influencer(
     Args:
         session: Database session
         influencer_id: Influencer UUID
-        window_days: Days of history to consider for scoring
+        window_days: Days of history to consider for scoring (None = all historical data)
         
     Returns:
         List of TrustScore objects (not yet persisted)
     """
-    window_start = datetime.utcnow() - timedelta(days=window_days)
+    if window_days is None:
+        # All historical data - use a very old date as start
+        window_start = datetime(2000, 1, 1)
+    else:
+        window_start = datetime.utcnow() - timedelta(days=window_days)
     window_end = datetime.utcnow()
+    
+    from src.db.models import Tweet
     
     trust_scores = []
     
-    # Compute overall score (all assets, all horizons)
+    # Compute overall score (all assets, all horizons) for this specific influencer
     result = await session.execute(
         select(PredictionOutcome)
         .join(SentimentPrediction, PredictionOutcome.sentiment_prediction_id == SentimentPrediction.id)
-        .join(Influencer, SentimentPrediction.tweet_id.in_(
-            select(SentimentPrediction.tweet_id)
-            .where(SentimentPrediction.tweet_id.in_(
-                select(SentimentPrediction.tweet_id).join(
-                    Influencer.__table__,
-                    SentimentPrediction.tweet_id.in_(
-                        select(SentimentPrediction.id)  # This is simplified for the example
-                    )
-                )
-            ))
-        ))
+        .join(Tweet, SentimentPrediction.tweet_id == Tweet.id)
+        .where(Tweet.influencer_id == influencer_id)
         .where(PredictionOutcome.evaluated_at >= window_start)
         .where(PredictionOutcome.evaluated_at <= window_end)
     )
@@ -108,13 +105,15 @@ async def compute_trust_scores_for_influencer(
         )
     )
     
-    # Compute per-asset, per-horizon scores
+    # Compute per-asset, per-horizon scores for this specific influencer
     for asset in ["BTC", "GOLD", "SPX"]:
         for horizon in [Horizon.SHORT, Horizon.MEDIUM, Horizon.LONG]:
-            # Fetch outcomes for this asset and horizon
-            # (Simplified query - in production would join through tweets properly)
+            # Fetch outcomes for this asset, horizon, and influencer
             result = await session.execute(
                 select(PredictionOutcome)
+                .join(SentimentPrediction, PredictionOutcome.sentiment_prediction_id == SentimentPrediction.id)
+                .join(Tweet, SentimentPrediction.tweet_id == Tweet.id)
+                .where(Tweet.influencer_id == influencer_id)
                 .where(PredictionOutcome.asset_symbol == asset)
                 .where(PredictionOutcome.horizon == horizon)
                 .where(PredictionOutcome.evaluated_at >= window_start)
@@ -284,11 +283,12 @@ async def get_recent_predictions_with_outcomes(
         List of tuples (SentimentPrediction, PredictionOutcome or None)
     """
     # Query predictions with left join on outcomes
+    from src.db.models import Tweet
     result = await session.execute(
         select(SentimentPrediction, PredictionOutcome)
         .outerjoin(PredictionOutcome, PredictionOutcome.sentiment_prediction_id == SentimentPrediction.id)
-        .join(SentimentPrediction.tweet)
-        .where(SentimentPrediction.tweet.has(influencer_id=influencer_id))
+        .join(Tweet, SentimentPrediction.tweet_id == Tweet.id)
+        .where(Tweet.influencer_id == influencer_id)
         .order_by(SentimentPrediction.created_at.desc())
         .limit(limit)
     )

@@ -1,136 +1,79 @@
-"""Backfill/recompute trust scores from existing prediction outcomes."""
+"""Weekly batch job to recompute trust scores for all influencers."""
 import asyncio
-from datetime import datetime
-from typing import Optional
+import sys
+from pathlib import Path
 
-from sqlalchemy import select, delete
+sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
+from sqlalchemy import select
 from src.db.session import AsyncSessionLocal
 from src.db.models import Influencer, TrustScore
-from src.services.logging import setup_logging, logger
 from src.services.trust_scoring import compute_trust_scores_for_influencer
+from src.services.logging import setup_logging, logger
 
 
-async def recompute_all_trust_scores(
-    window_days: int = 180,
-    clear_existing: bool = False
-):
+async def recompute_all_trust_scores():
     """
-    Recompute trust scores for all influencers from scratch.
+    Recompute trust scores for all influencers using all historical data.
     
-    Useful for:
-    - Initial backfill after adding historical data
-    - Experimenting with different scoring algorithms
-    - Fixing incorrect scores
-    
-    Args:
-        window_days: Days of history to consider for scoring
-        clear_existing: If True, delete all existing trust scores first
+    This is designed to run as a weekly batch job.
     """
     setup_logging()
-    logger.info(f"Starting trust score recomputation (window={window_days} days)")
+    logger.info("Starting trust score recalculation for all influencers...")
     
     async with AsyncSessionLocal() as session:
-        # Optionally clear existing scores
-        if clear_existing:
-            logger.warning("Clearing all existing trust scores")
-            await session.execute(delete(TrustScore))
-            await session.commit()
-            logger.info("✓ Existing scores cleared")
-        
         # Get all influencers
         result = await session.execute(select(Influencer))
         influencers = result.scalars().all()
         
-        if not influencers:
-            logger.warning("No influencers found")
-            return
+        logger.info(f"Found {len(influencers)} influencers to process")
         
-        logger.info(f"Recomputing trust scores for {len(influencers)} influencers")
+        processed = 0
+        errors = 0
         
-        total_scores = 0
         for influencer in influencers:
-            logger.info(f"Computing scores for {influencer.handle}")
-            
-            # Compute new trust scores
-            new_scores = await compute_trust_scores_for_influencer(
-                session,
-                influencer.id,
-                window_days=window_days
-            )
-            
-            # Save to database
-            for score in new_scores:
-                session.add(score)
-            
-            await session.commit()
-            
-            total_scores += len(new_scores)
-            logger.info(f"  ✓ Computed {len(new_scores)} scores for {influencer.handle}")
+            try:
+                logger.info(f"Processing influencer: {influencer.handle} ({influencer.id})")
+                
+                # Compute trust scores using all historical data (window_days=None)
+                new_scores = await compute_trust_scores_for_influencer(
+                    session,
+                    influencer.id,
+                    window_days=None,  # All historical data per spec clarification
+                )
+                
+                # Delete old scores for this influencer
+                await session.execute(
+                    select(TrustScore).where(TrustScore.influencer_id == influencer.id)
+                )
+                old_scores_result = await session.execute(
+                    select(TrustScore).where(TrustScore.influencer_id == influencer.id)
+                )
+                old_scores = old_scores_result.scalars().all()
+                for old_score in old_scores:
+                    await session.delete(old_score)
+                
+                # Persist new scores
+                for score in new_scores:
+                    session.add(score)
+                
+                await session.commit()
+                
+                logger.info(
+                    f"✓ Updated {len(new_scores)} trust scores for {influencer.handle}"
+                )
+                processed += 1
+                
+            except Exception as e:
+                logger.error(f"✗ Failed to recompute scores for {influencer.handle}: {e}")
+                await session.rollback()
+                errors += 1
         
-        logger.info(f"✅ Recomputation complete - {total_scores} trust scores computed")
-        logger.info(f"Influencers processed: {len(influencers)}")
-
-
-async def recompute_influencer_trust_score(
-    influencer_handle: str,
-    window_days: int = 180
-):
-    """
-    Recompute trust scores for a single influencer.
-    
-    Args:
-        influencer_handle: X handle of the influencer
-        window_days: Days of history to consider
-    """
-    setup_logging()
-    logger.info(f"Recomputing trust scores for @{influencer_handle}")
-    
-    async with AsyncSessionLocal() as session:
-        # Find influencer
-        result = await session.execute(
-            select(Influencer).where(Influencer.handle == influencer_handle)
+        logger.info(
+            f"Trust score recalculation complete: {processed} processed, {errors} errors"
         )
-        influencer = result.scalar_one_or_none()
-        
-        if not influencer:
-            logger.error(f"Influencer @{influencer_handle} not found")
-            return
-        
-        # Delete existing scores for this influencer
-        await session.execute(
-            delete(TrustScore).where(TrustScore.influencer_id == influencer.id)
-        )
-        
-        # Compute new scores
-        new_scores = await compute_trust_scores_for_influencer(
-            session,
-            influencer.id,
-            window_days=window_days
-        )
-        
-        # Save to database
-        for score in new_scores:
-            session.add(score)
-        
-        await session.commit()
-        
-        logger.info(f"✅ Computed {len(new_scores)} trust scores for @{influencer_handle}")
-        
-        # Display summary
-        for score in new_scores:
-            asset_str = score.asset_symbol if score.asset_symbol else "OVERALL"
-            logger.info(f"  {asset_str}/{score.horizon.value}: {score.score:.2f}")
 
 
 if __name__ == "__main__":
-    import sys
-    
-    if len(sys.argv) > 1:
-        # Recompute for specific influencer
-        handle = sys.argv[1]
-        asyncio.run(recompute_influencer_trust_score(handle))
-    else:
-        # Recompute for all
-        asyncio.run(recompute_all_trust_scores())
+    asyncio.run(recompute_all_trust_scores())
 

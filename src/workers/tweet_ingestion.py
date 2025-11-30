@@ -46,6 +46,8 @@ def detect_asset_symbols(tweet_text: str) -> List[str]:
     """
     Detect which assets (BTC, GOLD, SPX) are referenced in tweet text.
     
+    Supports both English and Turkish terms.
+    
     Args:
         tweet_text: Tweet text to analyze
         
@@ -55,12 +57,22 @@ def detect_asset_symbols(tweet_text: str) -> List[str]:
     assets = []
     text_upper = tweet_text.upper()
     
-    # BTC patterns
-    if re.search(r'\bBTC\b|\bBITCOIN\b', text_upper):
+    # BTC patterns (English and Turkish)
+    # Handle Turkish characters: İ, ı, Ğ, ğ, Ş, ş, Ü, ü, Ö, ö, Ç, ç
+    if (re.search(r'\bBTC\b', text_upper) or 
+        'BITCOIN' in text_upper or 
+        'BİTCOİN' in text_upper or
+        'BİTCOIN' in text_upper):
         assets.append("BTC")
     
-    # Gold patterns
-    if re.search(r'\bGOLD\b|\bGLD\b|\bXAU\b', text_upper):
+    # Gold patterns (English and Turkish: Altın, Gümüş)
+    # Turkish: Altın (gold), Gümüş (silver - also precious metal)
+    if (re.search(r'\bGOLD\b|\bGLD\b|\bXAU\b', text_upper) or
+        'ALTIN' in text_upper or
+        'ALTıN' in text_upper or
+        'GÜMÜŞ' in text_upper or
+        'GÜMÜş' in text_upper or
+        'GUMUS' in text_upper):  # Fallback for ASCII versions
         assets.append("GOLD")
     
     # S&P 500 patterns

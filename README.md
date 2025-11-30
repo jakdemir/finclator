@@ -1,14 +1,12 @@
 # Finclator
 
-Trust-scoring system that generates Buy / Neutral / Sell market indicators for BTC, Gold, and the S&P 500 by analyzing influencer sentiment and calibrating it against historical market performance.
+Trust-scoring system that generates Buy / Neutral / Sell market indicators for BTC, Gold, and the S&P 500 on short medium and and long term by analyzing influencer sentiment and calibrating it against historical market performance.
 
-## Features
+## Project Status
 
-- **Trust-Scored Indicators**: Calibrated Buy/Neutral/Sell signals per asset and time horizon
-- **Influencer Sentiment Analysis**: Automated extraction and classification of market predictions from tweets
-- **Performance-Based Calibration**: Trust scores that increase with prediction accuracy
-- **Finance School Grouping**: Insights organized by conceptual worldview (macro, technical, value, etc.)
-- **Transparent Methodology**: Auditable trail from tweets → sentiment → outcomes → trust scores → signals
+**⚠️ PROJECT ABANDONED**
+
+This project is being aborted because **sentiments of users are not clear**. The sentiment classification from tweets does not reliably extract actionable market signals, making the trust-scoring system ineffective. On the other hand, grok may help more reasonable data. https://grok.com/c/e4a937b4-ae53-4786-91e7-95324f30d75d
 
 ## Architecture
 
@@ -20,176 +18,124 @@ Trust-scoring system that generates Buy / Neutral / Sell market indicators for B
 - **External Integrations**:
   - **X API v2** for influencer tweets
   - **Alpha Vantage** for OHLCV price data (BTC, Gold via GLD, S&P 500 via SPY)
-  - **Hugging Face** for sentiment classification (FinBERT model)
+  - **Hugging Face / OpenAI** for sentiment classification
+
+## End-to-End Process Flow
+
+### 1. Tweet Ingestion
+- Export tweets from influencers using **TwExportly** (Chrome extension)
+- CSV files saved to `data/TwExportly_username_tweets_YYYY_MM_DD.csv`
+- Load tweets into database: `python scripts/load_tweets_from_csv.py data/file.csv username`
+
+### 2. Sentiment Analysis
+- Process unprocessed tweets: `python -m src.workers.sentiment`
+- Classify sentiment (BUY/NEUTRAL/SELL) and detect time horizon (SHORT/MEDIUM/LONG)
+- Uses HuggingFace models or OpenAI agent-based classification
+- Creates `SentimentPrediction` records
+
+### 3. Price Data Ingestion
+- Fetch historical price data: `python -m src.workers.price_ingestion`
+- Updates `PriceCandle` table with OHLCV data for BTC, GOLD, SPX
+
+### 4. Prediction Evaluation
+- Evaluate matured predictions: `python -m src.workers.evaluation`
+- Compares predicted direction with actual market movements
+- Creates `PredictionOutcome` records (CORRECT/WRONG/UNCLEAR)
+
+### 5. Trust Score Calculation
+- Recalculate trust scores: `python -m src.workers.recompute_trust_scores`
+- Computes performance-based scores per influencer, asset, and horizon
+- Updates `TrustScore` table
+
+### 6. Signal Aggregation
+- Aggregate trust-weighted signals: `python -m src.workers.signal_aggregation`
+- Combines influencer predictions weighted by trust scores
+- Generates final Buy/Neutral/Sell indicators in `CurrentSignal` table
+
+### 7. Dashboard & API
+- View dashboard: `http://localhost:8000/dashboard`
+- API endpoints: `/signals`, `/influencers`, `/api/dashboard/*`
+
+## My Routine
+
+1. **Export tweets** using TwExportly → `data/TwExportly_username_tweets_YYYY_MM_DD.csv`
+
+2. **Load tweets**: 
+   ```bash
+   python scripts/load_tweets_from_csv.py data/TwExportly_username_tweets_YYYY_MM_DD.csv username
+   ```
+
+3. **Run full pipeline**:
+   ```bash
+   python -m src.workers.sentiment \
+   && python -m src.workers.price_ingestion \
+   && python -m src.workers.evaluation \
+   && python -m src.workers.recompute_trust_scores \
+   && python -m src.workers.signal_aggregation
+   ```
+
+4. **Check database view**:
+   ```sql
+   SELECT * FROM debug_pipeline WHERE handle = 'username' LIMIT 100;
+   ```
 
 ## Quick Start
 
 ### Prerequisites
 
 - Python 3.11+
-- PostgreSQL database (local or Render-managed)
-- API keys:
-  - **X API** (Twitter Bearer Token) - [Setup Guide](docs/X_API_SETUP.md)
-  - **Alpha Vantage API Key** - [Get Free Key](https://www.alphavantage.co/support/#api-key)
-  - **Hugging Face API Token** (optional, free tier available) - [Get Token](https://huggingface.co/settings/tokens)
+- PostgreSQL database
+- API keys in `.env`:
+  - `X_API_BEARER_TOKEN` (optional - using TwExportly instead)
+  - `ALPHAVANTAGE_API_KEY`
+  - `HUGGINGFACE_API_KEY` or `OPENAI_API_KEY` (for sentiment)
 
-### Installation
+### Setup
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd finclator
-```
-
-2. Install dependencies:
 ```bash
 pip install -e ".[dev]"
-```
-
-3. Configure environment:
-```bash
-cp .env.example .env
-# Edit .env with your API keys and database URL
-```
-
-4. Run database migrations:
-```bash
 alembic upgrade head
+python scripts/seed_data.py
 ```
 
-5. Seed influencers and finance schools (see `specs/001-influencer-trust-scores/quickstart.md`)
+### Run Pipeline
 
-### Running Workers
+See "My Routine" section above.
 
-Execute workers manually or via Render Cron Jobs:
-
-```bash
-# Fetch tweets
-python -m src.workers.tweet_ingestion
-
-# Classify sentiment
-python -m src.workers.sentiment
-
-# Fetch price data
-python -m src.workers.price_ingestion
-
-# Evaluate predictions
-python -m src.workers.evaluation
-
-# Aggregate signals
-python -m src.workers.aggregation
-```
-
-### Running the API
+### Start API
 
 ```bash
 uvicorn src.api.main:app --reload
 ```
 
-Visit `http://localhost:8000/docs` for interactive API documentation.
+Dashboard: http://localhost:8000/dashboard
 
-### Example API Calls
+## Current Influencers
 
-Get signal for BTC short-term:
-```bash
-curl "http://localhost:8000/signals?asset=BTC&horizon=SHORT"
+- `@SantManukyan` - Sant Manukyan (1002 tweets)
+- `@laplace2011` - Devrim Akyil (989 tweets)
+- `@APompliano` - Anthony Pompliano (309 tweets)
+
+## Database Debug View
+
+```sql
+CREATE OR REPLACE VIEW debug_pipeline AS
+SELECT
+    i.handle,
+    t.tweet_id,
+    t.text,
+    sp.asset_symbol,
+    sp.direction,
+    sp.horizon,
+    po.outcome,
+    ts.score as trust_score,
+    cs.final_label as signal_label
+FROM influencers i
+LEFT JOIN tweets t ON i.id = t.influencer_id
+LEFT JOIN sentiment_predictions sp ON t.id = sp.tweet_id
+LEFT JOIN prediction_outcomes po ON sp.id = po.sentiment_prediction_id
+LEFT JOIN trust_scores ts ON i.id = ts.influencer_id
+LEFT JOIN current_signals cs ON sp.asset_symbol = cs.asset_symbol AND sp.horizon = cs.horizon
+ORDER BY i.handle, t.tweeted_at DESC;
 ```
-
-Response:
-```json
-{
-  "asset": "BTC",
-  "horizon": "SHORT",
-  "final_label": "BUY",
-  "weighted_score_buy": 0.65,
-  "weighted_score_neutral": 0.20,
-  "weighted_score_sell": 0.15,
-  "generated_at": "2025-11-15T12:34:56"
-}
-```
-
-## Project Structure
-
-```
-src/
-├── api/              # FastAPI application
-│   ├── main.py       # App entry point
-│   ├── dependencies.py
-│   └── routers/
-│       └── signals.py
-├── workers/          # Background jobs
-│   ├── tweet_ingestion.py
-│   ├── sentiment.py
-│   ├── price_ingestion.py
-│   ├── evaluation.py
-│   └── aggregation.py
-├── db/              # Database layer
-│   ├── models.py    # SQLAlchemy models
-│   ├── schema.py    # Pydantic schemas
-│   └── session.py   # DB session management
-└── services/        # Business logic
-    ├── config.py
-    ├── http_client.py
-    ├── sentiment_classifier.py
-    ├── price_provider.py
-    ├── trust_scoring.py
-    ├── signal_aggregator.py
-    └── logging.py
-
-tests/
-├── contract/        # API contract tests
-├── integration/     # End-to-end tests
-└── unit/           # Unit tests
-```
-
-## Development
-
-### Code Quality
-
-```bash
-# Format code
-ruff format src/ tests/
-
-# Lint
-ruff check src/ tests/
-
-# Type checking
-mypy src/
-```
-
-### Testing
-
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=src
-```
-
-## Deployment
-
-See `specs/001-influencer-trust-scores/quickstart.md` for detailed deployment instructions on Render.
-
-### Key Configuration
-
-- **Database**: Render PostgreSQL (single primary database)
-- **API Service**: Render Web Service running `uvicorn src.api.main:app`
-- **Workers**: Render Cron Jobs executing workers on schedule
-- **Environment Variables**: Configure via Render dashboard
-
-## Constitution Alignment
-
-This MVP strictly adheres to the Finclator Constitution:
-
-1. **Simplicity & Focus**: No user accounts, no complex UI—only core prediction logic and data acquisition
-2. **Data-Driven Trust**: Transparent, auditable methodology directly linking sentiment to performance
-
-## License
-
-[Add license information]
-
-## Support
-
-For questions or issues, refer to `specs/001-influencer-trust-scores/` documentation.
 

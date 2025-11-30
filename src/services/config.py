@@ -15,6 +15,11 @@ class Settings(BaseSettings):
     x_api_bearer_token: Optional[str] = None
     alphavantage_api_key: Optional[str] = None
     huggingface_api_key: Optional[str] = None
+    openai_api_key: Optional[str] = None
+    
+    # Sentiment model configuration
+    sentiment_model: str = "cardiffnlp/twitter-roberta-base-sentiment-latest"  # Twitter-specific sentiment model
+    use_agent_sentiment: bool = True  # Use agent-based (OpenAI) instead of HuggingFace
     
     # API Configuration
     api_host: str = "0.0.0.0"

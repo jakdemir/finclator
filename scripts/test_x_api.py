@@ -23,7 +23,7 @@ async def test_x_api():
         print("❌ X_API_BEARER_TOKEN not configured!")
         print("\nPlease set X_API_BEARER_TOKEN in your .env file:")
         print("  X_API_BEARER_TOKEN=your_bearer_token_here")
-        print("\nSee docs/X_API_SETUP.md for instructions on getting an API key.")
+        print("\nGet an API key from https://developer.twitter.com/en/portal")
         return False
     
     print(f"✓ X_API_BEARER_TOKEN configured: {settings.x_api_bearer_token[:20]}...")

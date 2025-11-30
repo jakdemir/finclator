@@ -1,68 +1,71 @@
 # Implementation Plan: Finclator Influencer Trust-Scoring MVP
 
-**Branch**: `001-influencer-trust-scores` | **Date**: 2025-11-15 | **Spec**: `specs/001-influencer-trust-scores/spec.md`  
-**Input**: Feature specification from `specs/001-influencer-trust-scores/spec.md` and user technical plan description
+**Branch**: `001-influencer-trust-scores` | **Date**: 2025-11-30 | **Spec**: [spec.md](./spec.md)
+**Input**: Feature specification from `/specs/001-influencer-trust-scores/spec.md`
 
 **Note**: This template is filled in by the `/speckit.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-Finclator ingests influencer tweets and market price data to generate calibrated Buy / Neutral / Sell indicators for BTC, Gold, and the S&P 500 across short-, medium-, and long-term horizons.  
-The MVP will be implemented as a small Python backend consisting of a FastAPI read-only API and a worker service, both running on Render against a single PostgreSQL database, plus scheduled jobs for tweet ingestion, sentiment classification, price ingestion, outcome evaluation, and signal aggregation.
+Finclator generates Buy / Neutral / Sell market indicators for BTC, Gold, and S&P 500 by analyzing influencer tweets, extracting sentiment signals (direction and time horizon), comparing predictions against actual market movements, and computing performance-based trust scores. The system groups influencers by finance theory schools and aggregates trust-weighted sentiment to produce calibrated indicators. Technical approach: Python 3.11 with FastAPI for the read-only API, SQLAlchemy + asyncpg for PostgreSQL, worker scripts for async ingestion/processing, and external integrations (X API, Alpha Vantage, Hugging Face) with local caching to handle rate limits.
 
 ## Technical Context
 
 **Language/Version**: Python 3.11  
-**Primary Dependencies**: FastAPI, SQLAlchemy + asyncpg (or equivalent async DB client), HTTPX/requests, OpenAI-compatible client for grok-3-fast and grok-3-mini, Pydantic  
-**Storage**: Render-managed PostgreSQL (single primary database for all entities)  
-**Testing**: pytest, HTTPX-based API tests, factory-style fixtures for DB entities  
-**Target Platform**: Render web service (FastAPI), Render background worker, Render Cron Jobs (Linux containers)  
-**Project Type**: Single backend project (API + worker processes from shared codebase, no frontend)  
-**Performance Goals**:  
-- P95 latency \< 500ms for read-only indicator endpoints under expected early usage  
-- Ingestion, evaluation, and aggregation jobs keep indicators no more than 5–10 minutes behind live data  
-**Constraints**:  
-- No user accounts, dashboards, or complex UI in MVP (JSON/CLI-style outputs only)  
-- Respect X and Alpha Vantage rate limits and terms of service  
-- Minimize external dependencies beyond X API, Alpha Vantage, and grok models  
-**Scale/Scope**:  
-- Initial scope limited to a fixed list of influencers (dozens, not thousands) and three assets (BTC, GOLD, SPX)  
-- Pipeline optimized for daily tweet volumes in the hundreds, with room to scale later
+**Primary Dependencies**: FastAPI 0.104+, SQLAlchemy 2.0+, asyncpg 0.29+, uvicorn, httpx, pydantic, alembic  
+**Storage**: PostgreSQL (async via asyncpg)  
+**Testing**: pytest 7.4+, pytest-asyncio  
+**Target Platform**: Linux server (Render.com deployment)  
+**Project Type**: Single project (web API + background workers)  
+**Performance Goals**: Handle 50+ influencers, 10,000+ tweets/month ingestion; API response <500ms p95; weekly batch trust score recalculation  
+**Constraints**: Rate-limited external APIs (X API: 50 req/15min free tier; Alpha Vantage: 5 req/min free tier); must use cached data when APIs unavailable; minimal UI (read-only API endpoints)  
+**Scale/Scope**: MVP focused on single influencer (Sant Manukyan) for initial validation; designed to scale to 50+ influencers, 10,000+ tweets/month
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-From the Finclator Constitution:
+### I. Simplicity & Focus
 
-1. **Simplicity & Focus**  
-   - **Rule**: The MVP MUST focus only on core prediction logic and data acquisition. Non-essential features (e.g., user accounts, complex UI/UX) are deferred.  
-   - **Plan Alignment**:  
-     - Only a FastAPI read API, worker scripts, and scheduled jobs are implemented—no authentication, dashboards, or multi-screen UX.  
-     - All code is oriented around ingestion, sentiment extraction, trust scoring, and signal aggregation; no secondary product features are included.
+✅ **PASS**: MVP is minimal and focused:
+- Core prediction logic: sentiment extraction → evaluation → trust scoring → aggregation
+- Data acquisition: tweet ingestion, price data fetching, sentiment classification
+- No user accounts, authentication, or complex UI/UX
+- Single influencer (Sant Manukyan) for initial validation
+- Read-only API with minimal endpoints
+- Background workers for async processing
 
-2. **Data-Driven Trust**  
-   - **Rule**: The trust score methodology MUST be transparent, auditable, and directly linked to influencer sentiment and historical market performance.  
-   - **Plan Alignment**:  
-     - Database schema includes explicit tables for sentiments, price history, outcomes, and trust scores, allowing back-tracing from any indicator to underlying data.  
-     - Evaluation scripts compute CORRECT/WRONG/UNCLEAR outcomes based on price windows, feeding directly into trust-score calculations used for weighting signals.  
-     - API exposes school-level and influencer-level breakdowns so users can see how scores are derived.
+**Rationale Compliance**: All features directly contribute to prediction accuracy (sentiment analysis, trust scoring) or data quality (ingestion, price data). Non-essential features deferred.
 
-**Gate Evaluation (pre-design)**: PASS  
-- The proposed architecture uses a minimal set of services and focuses exclusively on data ingestion, calibration, and read-only exposure of indicators and explanations.  
-- Trust is grounded in measurable outcomes (prediction vs. realized price moves) with persisted audit trails in PostgreSQL.
+### II. Data-Driven Trust
+
+✅ **PASS**: Trust score methodology is transparent and auditable:
+- Trust scores computed from historical prediction outcomes (CORRECT/WRONG/UNCLEAR)
+- Each indicator traceable back to underlying sentiments and performance evaluations
+- API endpoints expose influencer trust scores and school-level breakdowns
+- Database schema supports full audit trail (Tweet → SentimentPrediction → PredictionOutcome → TrustScore)
+
+**Rationale Compliance**: Methodology is verifiable and grounded in measurable data sources (influencer sentiment, historical market performance). No over-documentation; implementation is self-documenting through code structure.
+
+### Post-Design Re-evaluation
+
+✅ **PASS**: Design maintains simplicity:
+- Single project structure (no separate frontend/backend projects)
+- Direct database access via SQLAlchemy (no repository pattern abstraction)
+- Simple worker scripts (no complex orchestration framework)
+- Minimal API surface (3 endpoints: signals, school-signals, influencers/{id})
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-specs/001-influencer-trust-scores/
+specs/[###-feature]/
 ├── plan.md              # This file (/speckit.plan command output)
-├── research.md          # Phase 0 output (tech decisions and tradeoffs)
-├── data-model.md        # Phase 1 output (entities and relationships)
-├── quickstart.md        # Phase 1 output (end-to-end test flows)
-├── contracts/           # Phase 1 output (API contracts, e.g., OpenAPI)
+├── research.md          # Phase 0 output (/speckit.plan command)
+├── data-model.md        # Phase 1 output (/speckit.plan command)
+├── quickstart.md        # Phase 1 output (/speckit.plan command)
+├── contracts/           # Phase 1 output (/speckit.plan command)
 └── tasks.md             # Phase 2 output (/speckit.tasks command - NOT created by /speckit.plan)
 ```
 
@@ -70,48 +73,56 @@ specs/001-influencer-trust-scores/
 
 ```text
 src/
-├── api/
-│   ├── main.py                  # FastAPI app entrypoint
-│   ├── routers/
-│   │   ├── signals.py           # /signals, /school-signals endpoints
-│   │   └── influencers.py       # /influencers/{id} endpoint(s)
-│   └── dependencies.py          # DB sessions, common deps
-├── workers/
-│   ├── tweet_ingestion.py       # Scheduled: fetch influencer tweets and insert unprocessed rows
-│   ├── sentiment.py             # Scheduled: classify unprocessed tweets via grok models
-│   ├── price_ingestion.py       # Scheduled: fetch OHLCV from Alpha Vantage
-│   ├── evaluation.py            # Scheduled: compute CORRECT/WRONG/UNCLEAR outcomes
-│   └── aggregation.py           # Scheduled: compute current trust scores and signals
-├── db/
-│   ├── models.py                # SQLAlchemy models aligned with data-model.md
-│   ├── schema.py                # Pydantic schemas for API I/O
-│   └── session.py               # Engine, session/connection management
-└── services/
-    ├── sentiment_classifier.py  # Thin wrapper around grok-3-fast/grok-3-mini
-    ├── price_provider.py        # Alpha Vantage integration
-    ├── trust_scoring.py         # Trust score update logic from outcomes
-    └── signal_aggregator.py     # Aggregation into school-level and final signals
+├── api/                    # FastAPI application
+│   ├── main.py            # FastAPI app entry point
+│   ├── routers/           # API route handlers
+│   │   └── influencers.py
+│   ├── dependencies.py    # Dependency injection
+│   ├── errors.py          # Error handlers
+│   └── static/            # Static files (if any)
+├── db/                    # Database layer
+│   ├── models.py          # SQLAlchemy ORM models
+│   ├── schema.py          # Pydantic schemas
+│   └── session.py         # Database session management
+├── services/              # Business logic services
+│   ├── config.py          # Configuration management
+│   ├── logging.py         # Logging setup
+│   ├── x_api_client.py    # X API integration
+│   ├── price_provider.py  # Alpha Vantage integration
+│   ├── sentiment_classifier.py  # Hugging Face integration
+│   ├── trust_scoring.py   # Trust score calculation
+│   ├── api_cache.py       # Local filesystem caching
+│   └── http_client.py     # HTTP client utilities
+└── workers/               # Background job scripts
+    ├── tweet_ingestion.py    # Fetch tweets from X API
+    ├── sentiment.py         # Classify tweet sentiment
+    ├── price_ingestion.py    # Fetch price data
+    └── evaluation.py        # Evaluate predictions
 
 tests/
-├── contract/
-│   └── test_api_contracts.py    # Shape and semantics of public endpoints
-├── integration/
-│   ├── test_end_to_end_pipeline.py  # Ingestion → sentiment → evaluation → aggregation
-│   └── test_signals_api.py          # API over real-ish DB state
-└── unit/
-    ├── test_trust_scoring.py
-    ├── test_signal_aggregator.py
-    └── test_sentiment_classifier.py
+├── unit/                  # Unit tests
+├── integration/           # Integration tests
+└── contract/             # Contract tests (if any)
+
+scripts/                   # Utility scripts
+├── mvp_sant_manukyan.py  # MVP pipeline script
+├── get_recent_tweets.py  # Tweet fetching utility
+└── load_tweets_from_file.py  # CSV import utility
+
+alembic/                   # Database migrations
+.env                       # Environment variables
+pyproject.toml            # Python project configuration
 ```
 
-**Structure Decision**:  
-- Single backend project (`src/`) with shared domain and service logic used by both the FastAPI web service and background workers.  
-- No separate frontend application; any future UI can be layered on top of the stable HTTP API without changing core prediction logic.
+**Structure Decision**: Single project structure (Option 1) selected. This is a web API with background workers, all in one codebase. No separate frontend or mobile apps. The structure separates concerns: `api/` for HTTP endpoints, `db/` for data access, `services/` for business logic, and `workers/` for async background jobs. This aligns with the "Simplicity & Focus" principle by avoiding unnecessary project splits.
 
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|-----------|------------|--------------------------------------|
-| _None_    | N/A        | Current design satisfies constitution gates without exceptions. |
+No violations. All design decisions align with Constitution principles:
+- Single project structure (no multi-project complexity)
+- Direct SQLAlchemy access (no repository pattern abstraction)
+- Simple worker scripts (no complex orchestration)
+- Minimal API surface (3 endpoints)
+- Local filesystem caching (no Redis/complex cache layer)

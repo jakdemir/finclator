@@ -36,6 +36,8 @@ env/
 # IDEs
 .vscode/
 .idea/
+.cursor/
+.specify/
 *.swp
 *.swo
 *~

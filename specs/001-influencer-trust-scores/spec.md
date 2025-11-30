@@ -63,7 +63,7 @@ As a product owner or quantitative analyst, I want the system to automatically r
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
-
+- **FR-101**: Use offline data data/TwExportly_santmanukyan_tweets_2025_11_30.csv for SantManukyan. Write it to database. make a sentiment analysis. check with market data. Assign a trust score.
 - **FR-001**: System MUST ingest influencer tweets and extract explicit sentiment signals that include direction (buy, neutral, sell) and intended time horizon (short-, medium-, or long-term).
 - **FR-002**: System MUST associate each extracted sentiment with the relevant asset (BTC, Gold, S&P 500) and timestamp it for subsequent performance evaluation.
 - **FR-003**: System MUST compare each extracted sentiment with actual market price movements over the corresponding time horizon to determine whether the sentiment aligned with observed reality.
@@ -93,5 +93,31 @@ As a product owner or quantitative analyst, I want the system to automatically r
 - **SC-002**: At least 80% of indicators displayed include a traceable explanation that links the final label to underlying influencer trust scores, sentiment counts, and finance school contributions.
 - **SC-003**: In a backtest over a representative historical period, indicators based on high-trust influencers demonstrate a statistically meaningful improvement in directional accuracy over unweighted sentiment (e.g., higher proportion of correct Buy/Sell outcomes compared to a naive baseline).
 - **SC-004**: At least 90% of users in early tests report that they understand, at a high level, why a given indicator is Buy, Neutral, or Sell after viewing the explanation, indicating sufficient transparency and data-driven trust.
+
+## Clarifications
+
+### Session 2025-11-30
+
+- Q: What is the expected scale of data ingestion? → A: Large: 50+ influencers, 10,000+ tweets/month
+- Q: What time window should be used for trust score calculation? → A: All historical data
+- Q: When there's insufficient data for an indicator, what should the system display? → A: Show "N/A" or "No data available"
+- Q: When external APIs (X API, price data) fail or are rate-limited, how should the system behave? → A: Use cached data and show "last updated" timestamp
+- Q: How frequently should trust scores be recalculated? → A: Weekly batch job
+
+### Non-Functional Requirements
+
+- **NFR-001**: System MUST handle large-scale data ingestion (50+ influencers, 10,000+ tweets/month).
+- **NFR-002**: Trust scores MUST be calculated using all historical data available for each influencer.
+- **NFR-003**: When insufficient data exists for an indicator, system MUST display "N/A" or "No data available" message.
+- **NFR-004**: When external APIs fail or are rate-limited, system MUST use cached data and display "last updated" timestamp to users.
+- **NFR-005**: Trust scores MUST be recalculated via weekly batch job.
+
+### Edge Cases (Updated)
+
+- **EC-001**: When there is insufficient tweet or price data for a given asset, horizon, or influencer, system displays "N/A" or "No data available" message.
+- **EC-002**: When external APIs (X API, price data) fail or are rate-limited, system uses cached data and shows "last updated" timestamp.
+- **EC-003**: How does the system handle conflicting sentiment signals (e.g., highly trusted influencers disagree on direction within the same horizon)?
+- **EC-004**: What happens when a tweet's time horizon cannot be reliably extracted or is ambiguous?
+- **EC-005**: How does the system handle influencers who change their handle or become inactive for long periods?
 
 

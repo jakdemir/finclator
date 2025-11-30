@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.models import Influencer, FinanceSchool, Tweet
 from src.db.schema import InfluencerResponse, TrustScoreDetail, RecentPrediction
-from src.api.dependencies import get_db_session
+from src.db.session import get_db
 from src.services.trust_scoring import get_all_trust_scores, get_recent_predictions_with_outcomes
 
 
@@ -17,7 +17,7 @@ router = APIRouter(prefix="/influencers", tags=["influencers"])
 @router.get("/{influencer_id}", response_model=InfluencerResponse)
 async def get_influencer(
     influencer_id: UUID,
-    session: AsyncSession = Depends(get_db_session),
+    session: AsyncSession = Depends(get_db),
 ):
     """
     Get detailed information about an influencer.
@@ -90,7 +90,7 @@ async def get_influencer(
 
 @router.get("", response_model=list[dict])
 async def list_influencers(
-    session: AsyncSession = Depends(get_db_session),
+    session: AsyncSession = Depends(get_db),
 ):
     """
     List all influencers with basic information.

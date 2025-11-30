@@ -18,7 +18,7 @@ Follow-up TODOs: None
 
 ### I. Simplicity & Focus
 
-The MVP MUST be as light as possible, focusing only on the core prediction logic and data acquisition. Non-essential features (e.g., user accounts, complex UI/UX) are deferred.
+The MVP MUST be as light as possible, focusing only on the core prediction logic and data acquisition. Non-essential features (e.g., user accounts, complex UI/UX) are deferred. Do NOT over DOCUMENT! 
 
 **Rationale**: Early delivery of core value requires eliminating all non-critical complexity. Features that do not directly contribute to prediction accuracy or data quality must be deferred until after MVP validation.
 
@@ -31,6 +31,7 @@ The core value proposition is the formulated trust score. The methodology for ca
 ## Governance
 
 This constitution supersedes all other development practices and decisions. All feature specifications, implementation plans, and code reviews MUST verify compliance with these principles.
+
 
 **Amendment Procedure**: Changes to this constitution require:
 1. Documentation of the rationale for the change
@@ -45,4 +46,4 @@ This constitution supersedes all other development practices and decisions. All 
 
 **Compliance Review**: All PRs and feature specifications must include a Constitution Check that verifies alignment with these principles. Violations must be justified in the Complexity Tracking section of implementation plans.
 
-**Version**: 1.0.0 | **Ratified**: 2025-11-15 | **Last Amended**: 2025-11-15
+**Version**: 1.1.0 | **Ratified**: 2025-11-30 | **Last Amended**: 2025-11-30

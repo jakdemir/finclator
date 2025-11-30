@@ -1,4 +1,4 @@
-"""Sentiment classification service using Hugging Face models."""
+"""Sentiment classification service using Hugging Face models or agent-based (OpenAI)."""
 import json
 import re
 from typing import Dict, Any, Optional
@@ -9,15 +9,29 @@ from src.services.config import settings
 from src.services.logging import logger
 from src.services.api_cache import api_cache
 
+# Try to import OpenAI for agent-based sentiment
+try:
+    from openai import AsyncOpenAI
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
+
 
 class SentimentClassifier:
-    """Wrapper for sentiment classification using Hugging Face models."""
+    """Wrapper for sentiment classification using Hugging Face models or agent-based (OpenAI)."""
     
     def __init__(self):
-        """Initialize sentiment classifier with Hugging Face client."""
-        self.client = InferenceClient(token=settings.huggingface_api_key)
-        # Financial sentiment model (bullish/bearish/neutral)
-        self.sentiment_model = "ProsusAI/finbert"
+        """Initialize sentiment classifier."""
+        self.use_agent = settings.use_agent_sentiment and OPENAI_AVAILABLE and settings.openai_api_key
+        
+        if self.use_agent:
+            self.agent_client = AsyncOpenAI(api_key=settings.openai_api_key)
+            logger.info("Using agent-based sentiment classification (OpenAI)")
+        else:
+            self.client = InferenceClient(token=settings.huggingface_api_key)
+            # Financial sentiment model - configurable via SENTIMENT_MODEL env var
+            self.sentiment_model = settings.sentiment_model
+            logger.info(f"Using HuggingFace model: {self.sentiment_model}")
         
     async def is_market_relevant(self, tweet_text: str) -> bool:
         """
@@ -59,7 +73,7 @@ class SentimentClassifier:
         asset_symbol: str
     ) -> Optional[Dict[str, Any]]:
         """
-        Classify sentiment into BUY/NEUTRAL/SELL using FinBERT.
+        Classify sentiment into BUY/NEUTRAL/SELL using agent-based or model-based approach.
         
         Args:
             tweet_text: Tweet text to classify
@@ -71,6 +85,89 @@ class SentimentClassifier:
         """
         logger.info(f"Classifying sentiment for {asset_symbol}: {tweet_text[:50]}...")
         
+        if self.use_agent:
+            return await self._classify_with_agent(tweet_text, asset_symbol)
+        else:
+            return await self._classify_with_model(tweet_text, asset_symbol)
+    
+    async def _classify_with_agent(
+        self,
+        tweet_text: str,
+        asset_symbol: str
+    ) -> Optional[Dict[str, Any]]:
+        """Use agent-based (OpenAI) classification for more nuanced analysis."""
+        try:
+            # Check cache first
+            cache_key = {
+                'text': tweet_text,
+                'asset': asset_symbol,
+                'model': 'openai-agent'
+            }
+            cached_result = await api_cache.get('openai', cache_key)
+            
+            if cached_result:
+                result = cached_result
+            else:
+                # Use OpenAI with structured output for agent-based analysis
+                prompt = f"""Analyze this financial tweet about {asset_symbol} and determine:
+1. Sentiment direction: BUY (bullish/positive), SELL (bearish/negative), or NEUTRAL
+2. Time horizon: SHORT (0-3 months), MEDIUM (3-12 months), or LONG (1+ years)
+3. Confidence: 0.0 to 1.0
+
+Tweet: "{tweet_text}"
+
+Respond in JSON format:
+{{
+    "direction": "BUY|NEUTRAL|SELL",
+    "horizon": "SHORT|MEDIUM|LONG",
+    "confidence": 0.0-1.0,
+    "reasoning": "brief explanation"
+}}"""
+
+                response = await self.agent_client.chat.completions.create(
+                    model="gpt-4o-mini",  # Fast and cost-effective
+                    messages=[
+                        {"role": "system", "content": "You are a financial sentiment analyst. Analyze tweets for market sentiment and time horizons. Always respond with valid JSON."},
+                        {"role": "user", "content": prompt}
+                    ],
+                    response_format={"type": "json_object"},
+                    temperature=0.3
+                )
+                
+                result_text = response.choices[0].message.content
+                result = json.loads(result_text)
+                
+                # Cache the result
+                await api_cache.set('openai', cache_key, result)
+            
+            direction = result.get('direction', 'NEUTRAL').upper()
+            horizon = result.get('horizon', 'MEDIUM').upper()
+            confidence = float(result.get('confidence', 0.5))
+            
+            # Validate direction and horizon
+            if direction not in ['BUY', 'SELL', 'NEUTRAL']:
+                direction = 'NEUTRAL'
+            if horizon not in ['SHORT', 'MEDIUM', 'LONG']:
+                horizon = self._detect_horizon(tweet_text)
+            
+            logger.info(f"Agent classified as {direction} ({horizon}) with confidence {confidence:.2f}")
+            
+            return {
+                "direction": direction,
+                "horizon": horizon,
+                "confidence": confidence
+            }
+            
+        except Exception as e:
+            logger.error(f"Error in agent classification: {e}")
+            return None
+    
+    async def _classify_with_model(
+        self,
+        tweet_text: str,
+        asset_symbol: str
+    ) -> Optional[Dict[str, Any]]:
+        """Use HuggingFace model for classification."""
         try:
             # Check cache first
             cache_key = {
@@ -82,7 +179,7 @@ class SentimentClassifier:
             if cached_result:
                 result = cached_result
             else:
-                # Use FinBERT for financial sentiment
+                # Use configured model for financial sentiment
                 result = self.client.text_classification(
                     tweet_text,
                     model=self.sentiment_model
@@ -90,18 +187,28 @@ class SentimentClassifier:
                 # Cache the result
                 await api_cache.set('huggingface', cache_key, result)
             
-            # FinBERT returns: positive/negative/neutral with scores
-            # Map financial sentiment to actionable signals
+            # Model returns: positive/negative/neutral (or similar) with scores
+            # Map sentiment labels to actionable signals
             label = result[0]['label'].lower()
             confidence = result[0]['score']
             
-            # Map FinBERT labels to our direction
+            # Map model labels to our direction (handles various model outputs)
+            # Twitter RoBERTa uses: LABEL_0 (negative), LABEL_1 (neutral), LABEL_2 (positive)
+            # FinBERT uses: positive, negative, neutral
             direction_map = {
                 'positive': 'BUY',
+                'label_2': 'BUY',  # Twitter RoBERTa positive
                 'bullish': 'BUY',
+                'buy': 'BUY',
                 'negative': 'SELL',
+                'label_0': 'SELL',  # Twitter RoBERTa negative
                 'bearish': 'SELL',
-                'neutral': 'NEUTRAL'
+                'sell': 'SELL',
+                'neutral': 'NEUTRAL',
+                'label_1': 'NEUTRAL',  # Twitter RoBERTa neutral
+                'lab_0': 'NEUTRAL',  # Alternative numeric labels
+                'lab_1': 'BUY',
+                'lab_2': 'SELL',
             }
             direction = direction_map.get(label, 'NEUTRAL')
             
