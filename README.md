@@ -22,6 +22,81 @@ This project is being aborted because **sentiments of users are not clear**. The
 
 ## End-to-End Process Flow
 
+### Pipeline Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         FINCLATOR PIPELINE                              │
+└─────────────────────────────────────────────────────────────────────────┘
+
+    [TwExportly]                    [External APIs]
+         │                                │
+         │ CSV Export                    │
+         ▼                                │
+    ┌─────────┐                          │
+    │  CSV    │                          │
+    │  Files  │                          │
+    └────┬────┘                          │
+         │                                │
+         │ load_tweets_from_csv.py        │
+         ▼                                │
+    ┌─────────────────────────────────────┴──────────┐
+    │         PostgreSQL Database                     │
+    │  ┌──────────┐  ┌──────────────────┐           │
+    │  │ Tweets   │  │ SentimentPreds   │           │
+    │  └────┬─────┘  └────────┬─────────┘           │
+    │       │                 │                      │
+    │       │ sentiment.py    │                      │
+    │       │ (HuggingFace/   │                      │
+    │       │  OpenAI Agent)  │                      │
+    │       ▼                 ▼                      │
+    │  ┌──────────────────────────────────┐         │
+    │  │   SentimentPredictions            │         │
+    │  └───────┬──────────────────────────┘         │
+    │          │                                      │
+    │          │ price_ingestion.py                  │
+    │          │ (Alpha Vantage API)                 │
+    │          ▼                                      │
+    │  ┌──────────────────────────────────┐         │
+    │  │      PriceCandles                 │         │
+    │  └───────┬──────────────────────────┘         │
+    │          │                                      │
+    │          │ evaluation.py                       │
+    │          │ (Compare predictions vs reality)     │
+    │          ▼                                      │
+    │  ┌──────────────────────────────────┐         │
+    │  │   PredictionOutcomes             │         │
+    │  │   (CORRECT/WRONG/UNCLEAR)        │         │
+    │  └───────┬──────────────────────────┘         │
+    │          │                                      │
+    │          │ recompute_trust_scores.py           │
+    │          │ (Calculate performance scores)      │
+    │          ▼                                      │
+    │  ┌──────────────────────────────────┐         │
+    │  │      TrustScores                 │         │
+    │  │  (per influencer/asset/horizon)   │         │
+    │  └───────┬──────────────────────────┘         │
+    │          │                                      │
+    │          │ signal_aggregation.py               │
+    │          │ (Weighted aggregation)               │
+    │          ▼                                      │
+    │  ┌──────────────────────────────────┐         │
+    │  │    CurrentSignals                 │         │
+    │  │  (Buy/Neutral/Sell indicators)    │         │
+    │  └───────┬──────────────────────────┘         │
+    │          │                                      │
+    └──────────┼──────────────────────────────────────┘
+               │
+               │ FastAPI
+               ▼
+    ┌──────────────────────┐
+    │   Dashboard & API   │
+    │  /dashboard          │
+    │  /signals            │
+    │  /influencers        │
+    └──────────────────────┘
+```
+
 ### 1. Tweet Ingestion
 - Export tweets from influencers using **TwExportly** (Chrome extension)
 - CSV files saved to `data/TwExportly_username_tweets_YYYY_MM_DD.csv`
