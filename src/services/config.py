@@ -16,10 +16,16 @@ class Settings(BaseSettings):
     alphavantage_api_key: Optional[str] = None
     huggingface_api_key: Optional[str] = None
     openai_api_key: Optional[str] = None
+    xai_api_key: Optional[str] = None
+    gemini_api_key: Optional[str] = None
     
     # Sentiment model configuration
     sentiment_model: str = "cardiffnlp/twitter-roberta-base-sentiment-latest"  # Twitter-specific sentiment model
     use_agent_sentiment: bool = True  # Use agent-based (OpenAI) instead of HuggingFace
+    
+    # Content ingestion pipeline
+    youtube_video_limit: int = 5
+    stance_extraction_model: str = "gemini-2.0-flash"
     
     # API Configuration
     api_host: str = "0.0.0.0"
@@ -29,7 +35,7 @@ class Settings(BaseSettings):
     log_level: str = "INFO"
     
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", ".env.keys"),
         env_file_encoding="utf-8",
         case_sensitive=False,
         extra='ignore',  # Allow extra fields in .env without errors

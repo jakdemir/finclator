@@ -1,0 +1,35 @@
+[
+  {
+    "handle": "SantManukyan",
+    "display_name": "Sant Manukyan",
+    "finance_school": "Macro",
+    "sources": {
+      "youtube": "@santmanukyan",
+      "twitter": "SantManukyan"
+    },
+    "assets": ["BTC", "GOLD", "SPX"],
+    "language": "tr"
+  },
+  {
+    "handle": "APompliano",
+    "display_name": "Anthony Pompliano",
+    "finance_school": "Crypto Bull",
+    "sources": {
+      "youtube": "@AnthonyPompliano",
+      "twitter": "APompliano"
+    },
+    "assets": ["BTC", "SPX"],
+    "language": "en"
+  },
+  {
+    "handle": "laplace2011",
+    "display_name": "Devrim Akyil",
+    "finance_school": "Technical Analysis",
+    "sources": {
+      "youtube": null,
+      "twitter": "laplace2011"
+    },
+    "assets": ["BTC", "GOLD", "SPX"],
+    "language": "tr"
+  }
+]
