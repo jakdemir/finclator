@@ -82,6 +82,8 @@ def _fmt(x, nd=2):
 def _flags(r) -> list[str]:
     """Automatic review hints — where a human should look first."""
     f = []
+    if r["horizon"] not in MATURITY_DAYS:
+        f.append("bad-horizon")
     if r["quote"] and r["quote"] not in r["text"]:
         f.append("quote-mismatch")
     if r["confidence"] < 0.5:
@@ -157,9 +159,12 @@ def body(conn, model: str | None = None) -> str:
             verify = (f"<a href='{_yahoo(r['asset'], r['entry_date'])}'>entry</a> · <a href='{_yahoo(r['asset'], r['exit_date'])}'>exit</a>"
                       f" · <a href='{_tv(r['asset'])}'>TV</a>")
         else:
-            mat = date.fromisoformat(d) + timedelta(days=MATURITY_DAYS[r["horizon"]])
+            days = MATURITY_DAYS.get(r["horizon"])
             entry = exit_ = ret = actual = ""
-            result = f"<small>matures {mat}</small>"
+            if days is None:  # malformed label (e.g. horizon="NEUTRAL") — never evaluated; flagged, not fatal
+                result = "<small>invalid horizon</small>"
+            else:
+                result = f"<small>matures {date.fromisoformat(d) + timedelta(days=days)}</small>"
             verify = f"<a href='{_tv(r['asset'])}'>TV</a>"
         if r["price_target"]:
             tgt = _fmt(r["price_target"], 0)
@@ -174,7 +179,7 @@ def body(conn, model: str | None = None) -> str:
 <td>@{e(r['handle'])}<br><small>{d}</small><br><a href='https://x.com/{r['handle']}/status/{r['tweet_id']}'>tweet ↗</a></td>
 <td class=tweet>{_hl(r['text'], r['quote'])}{'<br>' if fl else ''}{''.join(f'<span class=flag>{x}</span>' for x in fl)}</td>
 <td>{r['asset']}<br><small>{e(r['assets_hint'] or '')}</small></td>
-<td class='dir {r['direction']}'>{r['direction']}</td><td>{r['horizon']}<br><small>{HZ[r['horizon']]}</small></td><td class=num>{r['confidence']:.2f}</td>
+<td class='dir {r['direction']}'>{r['direction']}</td><td>{r['horizon']}<br><small>{HZ.get(r['horizon'], '?')}</small></td><td class=num>{r['confidence']:.2f}</td>
 <td class=num>{tgt}</td><td class=num>{entry}</td><td class=num>{exit_}</td><td class=num data-v='{r['return_pct'] or 0}'>{ret}</td>
 <td>{actual}</td><td>{result}</td><td>{verify}</td></tr>
 <tr id=raw-{r['id']} class="raw hidden"><td colspan=14><span class=x onclick="copyRow({r['id']})">copy JSON</span>

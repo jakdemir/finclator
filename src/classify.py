@@ -18,6 +18,8 @@ from .db import connect, log
 
 ROOT = Path(__file__).resolve().parent.parent
 MODEL = os.environ.get("FINCLATOR_MODEL", "claude-sonnet-4-5")
+DIRECTIONS = ("BUY", "SELL", "NEUTRAL")
+HORIZONS = ("SHORT", "MEDIUM", "LONG")  # same three keys as evaluate.MATURITY_DAYS
 
 SYSTEM = """You extract explicit, falsifiable market calls from finance-influencer tweets.
 
@@ -128,6 +130,11 @@ def store_result(conn: sqlite3.Connection, tweet: sqlite3.Row | dict, result: di
     if result.get("is_call"):
         for c in result.get("calls", []):
             if c.get("asset") not in ("BTC", "GOLD", "SPX"):
+                continue
+            if c.get("direction") not in DIRECTIONS or c.get("horizon") not in HORIZONS:
+                # DB gate: a model that emits horizon="NEUTRAL" or direction="HOLD" must not poison
+                # evaluate/audit (both index MATURITY_DAYS[horizon]). Logged, tweet still marked classified.
+                log(f"classify: dropped malformed call on {tid} ({model}): {json.dumps(c)[:200]}")
                 continue
             pt = c.get("price_target")
             try:

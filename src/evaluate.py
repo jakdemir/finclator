@@ -43,7 +43,7 @@ def evaluate(conn: sqlite3.Connection, today: date | None = None) -> int:
     rows = conn.execute("""
         SELECT c.id, c.asset, c.direction, c.horizon, c.called_at, c.price_target
         FROM calls c LEFT JOIN outcomes o ON o.call_id = c.id
-        WHERE o.call_id IS NULL""").fetchall()
+        WHERE o.call_id IS NULL AND c.horizon IN ('SHORT','MEDIUM','LONG')""").fetchall()
     n = 0
     for c in rows:
         entry_d = c["called_at"][:10]

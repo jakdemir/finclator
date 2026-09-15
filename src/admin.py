@@ -9,13 +9,14 @@ import argparse
 import html
 import json
 import subprocess
+import traceback
 from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from . import audit
 from .db import LOG_PATH as LOG
-from .db import connect
+from .db import connect, log
 from .models import active_model
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -522,6 +523,16 @@ class Handler(BaseHTTPRequestHandler):
         path, _, qs = self.path.partition("?")
         conn = connect()
         try:
+            self._route(path, qs, conn)
+        except Exception:  # noqa: BLE001 — a page bug must render, not drop the connection ("page not loading")
+            tb = traceback.format_exc()
+            log(f"admin: {path} failed: {tb.strip().splitlines()[-1]}")
+            self._send(_page("error", f"<h2>{html.escape(path)} failed</h2><pre>{html.escape(tb)}</pre>", path), code=500)
+        finally:
+            conn.close()
+
+    def _route(self, path, qs, conn):
+        if True:
             if path == "/":
                 self._send(page_progress(conn))
             elif path == "/matrix":
@@ -552,8 +563,6 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(p.read_text() if p.exists() else "{}", "application/json")
             else:
                 self._send("not found", code=404)
-        finally:
-            conn.close()
 
 
 def main():
