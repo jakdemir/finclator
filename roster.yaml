@@ -1,43 +1,589 @@
-# Fixed roster. Accounts are added/removed here, never discovered at runtime.
-# schools: Macro | Crypto | Technical | Goldbug | Quant
 accounts:
-  - handle: SantManukyan
-    display_name: Sant Manukyan
-    school: Macro
-    language: tr
-  - handle: laplace2011
-    display_name: Devrim Akyil
-    school: Technical
-    language: tr
-  - handle: APompliano
-    display_name: Anthony Pompliano
-    school: Crypto
-    language: en
-  - handle: PeterSchiff
-    display_name: Peter Schiff
-    school: Goldbug
-    language: en
-  - handle: LynAldenContact
-    display_name: Lyn Alden
-    school: Macro
-    language: en
-  - handle: RaoulGMI
-    display_name: Raoul Pal
-    school: Crypto
-    language: en
-  - handle: PeterLBrandt
-    display_name: Peter Brandt
-    school: Technical
-    language: en
-  - handle: KobeissiLetter
-    display_name: The Kobeissi Letter
-    school: Quant
-    language: en
-  - handle: MacroAlf
-    display_name: Alfonso Peccatiello
-    school: Macro
-    language: en
-  - handle: 100trillionUSD
-    display_name: PlanB
-    school: Quant
-    language: en
+- handle: 100trillionUSD
+  display_name: PlanB
+  school: Quant
+  language: en
+  tier: A
+  source: seed+following
+- handle: burak_tamac
+  display_name: Burak Tamaç, Ph.D.
+  school: Crypto
+  language: en
+  tier: A
+  source: following
+- handle: caprioleio
+  display_name: Charles Edwards
+  school: Crypto
+  language: en
+  tier: A
+  source: seed
+- handle: CryptoHayes
+  display_name: Arthur Hayes
+  school: Crypto
+  language: en
+  tier: A
+  source: seed
+- handle: GarethSoloway
+  display_name: Gareth Soloway
+  school: Technical
+  language: en
+  tier: A
+  source: seed
+- handle: jsblokland
+  display_name: jeroen blokland
+  school: Macro
+  language: en
+  tier: A
+  source: seed
+- handle: ki_young_ju
+  display_name: Ki Young Ju
+  school: Crypto
+  language: en
+  tier: A
+  source: seed
+- handle: KobeissiLetter
+  display_name: The Kobeissi Letter
+  school: Quant
+  language: en
+  tier: A
+  source: seed
+- handle: laplace2011
+  display_name: Devrim Akyıl Laplace’s Demon
+  school: Technical
+  language: tr
+  tier: A
+  source: seed
+- handle: LynAldenContact
+  display_name: Lyn Alden
+  school: Macro
+  language: en
+  tier: A
+  source: seed
+- handle: MacroAlf
+  display_name: Alf
+  school: Macro
+  language: en
+  tier: A
+  source: seed
+- handle: markminervini
+  display_name: Mark Minervini
+  school: Technical
+  language: en
+  tier: A
+  source: seed
+- handle: PeterLBrandt
+  display_name: The Factor Report
+  school: Technical
+  language: en
+  tier: A
+  source: seed+following
+- handle: PeterSchiff
+  display_name: Peter Schiff
+  school: Goldbug
+  language: en
+  tier: A
+  source: seed+following
+- handle: RaoulGMI
+  display_name: Raoul Pal
+  school: Macro
+  language: en
+  tier: A
+  source: seed
+- handle: rektcapital
+  display_name: Rekt Capital
+  school: Technical
+  language: en
+  tier: A
+  source: seed
+- handle: SantManukyan
+  display_name: Şant Manukyan
+  school: Macro
+  language: tr
+  tier: A
+  source: seed+following
+- handle: TaviCosta
+  display_name: Otavio (Tavi) Costa
+  school: Macro
+  language: en
+  tier: A
+  source: seed
+- handle: TuncSatiroglu
+  display_name: Tunç Şatıroğlu
+  school: Macro
+  language: tr
+  tier: A
+  source: following
+- handle: zerohedge
+  display_name: zerohedge
+  school: Quant
+  language: en
+  tier: A
+  source: seed+following
+- handle: amitisinvesting
+  display_name: amit
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: APompliano
+  display_name: Anthony Pompliano 🌪
+  school: Crypto
+  language: en
+  tier: B
+  source: seed
+- handle: arishahdadi
+  display_name: Ari Shahdadi
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: arkham
+  display_name: Arkham
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: AswathDamodaran
+  display_name: Aswath Damodaran
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: AtillaYesilada1
+  display_name: Atilla Yesilada
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: Barchart
+  display_name: Barchart
+  school: Technical
+  language: en
+  tier: B
+  source: following
+- handle: biancoresearch
+  display_name: Jim Bianco
+  school: Macro
+  language: en
+  tier: B
+  source: seed
+- handle: BillAckman
+  display_name: Bill Ackman
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: BitcoinFear
+  display_name: Bitcoin Fear and Greed Index
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: Brad_Setser
+  display_name: Brad Setser
+  school: Quant
+  language: en
+  tier: B
+  source: following
+- handle: burrytracker
+  display_name: Michael Burry Stock Tracker ♟
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: cdixon
+  display_name: Chris Dixon
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: charliebilello
+  display_name: Charlie Bilello
+  school: Quant
+  language: en
+  tier: B
+  source: seed
+- handle: chickengenius
+  display_name: Chicken Genius
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: citrea_xyz
+  display_name: Citrea | Mainnet Live 🍊🍋
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: citrini
+  display_name: Citrini
+  school: Quant
+  language: en
+  tier: B
+  source: following
+- handle: CryptoCapo_
+  display_name: il Capo
+  school: Technical
+  language: en
+  tier: B
+  source: seed
+- handle: CryptoCred
+  display_name: Cred
+  school: Technical
+  language: en
+  tier: B
+  source: seed
+- handle: davthewave
+  display_name: dave the wave🌊🌓
+  school: Crypto
+  language: en
+  tier: B
+  source: seed
+- handle: DiMartinoBooth
+  display_name: Danielle DiMartino Booth
+  school: Macro
+  language: en
+  tier: B
+  source: seed
+- handle: durdn
+  display_name: Nicola Paolucci
+  school: Quant
+  language: en
+  tier: B
+  source: following
+- handle: ergun_unutmaz
+  display_name: Ergun Unutmaz
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: forinvestapp
+  display_name: ForInvest
+  school: Macro
+  language: tr
+  tier: B
+  source: following
+- handle: fundstrat
+  display_name: Thomas (Tom) Lee (not drummer) FundstratDirect.com
+  school: Quant
+  language: en
+  tier: B
+  source: following
+- handle: GavinSBaker
+  display_name: Gavin Baker
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: GlobalMktObserv
+  display_name: Global Markets Investor
+  school: Quant
+  language: en
+  tier: B
+  source: seed
+- handle: GokhanGark
+  display_name: Gokhan Gark
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: goldtelegraph_
+  display_name: goldtelegraph_
+  school: Goldbug
+  language: en
+  tier: B
+  source: seed
+- handle: hamptonism
+  display_name: ₕₐₘₚₜₒₙ
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: hendry_hugh
+  display_name: Hugh Hendry Acid Capitalist TV
+  school: Macro
+  language: en
+  tier: B
+  source: seed
+- handle: iriscibre
+  display_name: İris Cibre Lostar 🐦
+  school: Macro
+  language: tr
+  tier: B
+  source: seed
+- handle: isyatirim
+  display_name: İş Yatırım
+  school: Macro
+  language: tr
+  tier: B
+  source: following
+- handle: jam_croissant
+  display_name: Cem Karsan 🥐
+  school: Quant
+  language: en
+  tier: B
+  source: following
+- handle: JosephEStiglitz
+  display_name: Joseph E. Stiglitz
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: kaanarven
+  display_name: Kaan Arven
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: KingKong9888
+  display_name: Eric Yeung 👍🚀🌕
+  school: Goldbug
+  language: en
+  tier: B
+  source: seed
+- handle: kivancozbilgic
+  display_name: Kıvanç Özbilgiç
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: LawrenceLepard
+  display_name: Lawrence Lepard, "fix the money, fix the world"
+  school: Goldbug
+  language: en
+  tier: B
+  source: seed
+- handle: litcapital
+  display_name: litquidity
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: LukeGromen
+  display_name: Luke Gromen
+  school: Macro
+  language: en
+  tier: B
+  source: seed+following
+- handle: MacroCharts
+  display_name: Macro Charts
+  school: Quant
+  language: en
+  tier: B
+  source: seed
+- handle: mahfiegilmez
+  display_name: Mahfi Eğilmez
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: MarioNawfal
+  display_name: Mario Nawfal
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: matt_levine
+  display_name: Matt Levine
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: michaeljburry
+  display_name: Cassandra Unchained
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: MichaelMOTTCM
+  display_name: Michael J. Kramer
+  school: Quant
+  language: en
+  tier: B
+  source: seed
+- handle: milesdeutscher
+  display_name: Miles Deutscher
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: MMCrypto
+  display_name: MMCrypto
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: MrCollaborative
+  display_name: Matthew Richardson
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: nntaleb
+  display_name: Nassim Nicholas Taleb
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: nsquaredvalue
+  display_name: Timothy Peterson
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: onderozbek
+  display_name: Onder Ozbek
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: Pentosh1
+  display_name: 🐧
+  school: Crypto
+  language: en
+  tier: B
+  source: seed
+- handle: perihantantug
+  display_name: Perihan Tantuğ
+  school: Macro
+  language: tr
+  tier: B
+  source: following
+- handle: peteskomoroch
+  display_name: Pete Skomoroch
+  school: Quant
+  language: en
+  tier: B
+  source: following
+- handle: ProfDemirtas
+  display_name: Özgür Demirtaş
+  school: Macro
+  language: tr
+  tier: B
+  source: following
+- handle: ProfKayaFinance
+  display_name: Kaya Finance
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: RayDalio
+  display_name: Ray Dalio
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: RefetGurkaynak
+  display_name: Refet Gürkaynak
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: RyanDetrick
+  display_name: Ryan Detrick, CMT
+  school: Quant
+  language: en
+  tier: B
+  source: seed
+- handle: saylor
+  display_name: Michael Saylor
+  school: Crypto
+  language: en
+  tier: B
+  source: seed
+- handle: Schuldensuehner
+  display_name: Holger Zschaepitz
+  school: Goldbug
+  language: en
+  tier: B
+  source: seed
+- handle: SinaAfra
+  display_name: Sina Afra
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: SoberLook
+  display_name: (((The Daily Shot)))
+  school: Quant
+  language: en
+  tier: B
+  source: seed
+- handle: standwithcrypto
+  display_name: Stand With Crypto🛡️
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: TechCharts
+  display_name: Aksel Kibar, CMT
+  school: Technical
+  language: en
+  tier: B
+  source: following
+- handle: TedPillows
+  display_name: Ted
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: thebc12
+  display_name: evan (thebc12.base.eth)
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: TradeOrNotTrade
+  display_name: Crypto Yoda
+  school: Technical
+  language: en
+  tier: B
+  source: following
+- handle: Trader_XO
+  display_name: XO
+  school: Technical
+  language: en
+  tier: B
+  source: seed
+- handle: tradingview
+  display_name: TradingView
+  school: Technical
+  language: en
+  tier: B
+  source: seed
+- handle: uttam_singhk
+  display_name: Uttam
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: WinC300
+  display_name: WinningCircle
+  school: Macro
+  language: tr
+  tier: B
+  source: following
+- handle: wolfcapitalist
+  display_name: Luis
+  school: Crypto
+  language: en
+  tier: B
+  source: following
+- handle: yanisvaroufakis
+  display_name: Yanis Varoufakis
+  school: Macro
+  language: en
+  tier: B
+  source: following
+- handle: ZeroHedge_
+  display_name: Wick 🔥
+  school: Technical
+  language: en
+  tier: B
+  source: following
+- handle: zulalmtn
+  display_name: Zülal Metin Hacıpaşaoğlu
+  school: Quant
+  language: en
+  tier: B
+  source: following

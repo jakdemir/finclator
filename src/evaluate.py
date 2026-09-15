@@ -1,8 +1,8 @@
 """Evaluate matured calls against price history.
 
 Horizon maturity (spec): SHORT 3 months, MEDIUM 12 months, LONG 24 months (evaluation point inside the 1-5y band).
-Threshold for "NEUTRAL" band is volatility-scaled: k * sigma_daily * sqrt(days), per asset, using trailing
-1y daily returns at entry. This makes 'range-bound' mean the same thing for BTC and SPX.
+Direction threshold ("flat" band) is volatility-scaled: K_SIGMA * sigma_daily * sqrt(days) at entry, per asset.
+Price targets: hit if any close within the horizon reaches the target (>= for BUY, <= for SELL).
 """
 from __future__ import annotations
 
@@ -32,10 +32,16 @@ def _trading_days(asset: str, days: int) -> int:
     return days if asset == "BTC" else round(days * 252 / 365)
 
 
+def _extreme(conn: sqlite3.Connection, asset: str, start: str, end: str, direction: str) -> float | None:
+    fn = "max" if direction == "BUY" else "min"
+    return conn.execute(f"SELECT {fn}(close) FROM prices WHERE asset=? AND date>? AND date<=?",
+                        (asset, start, end)).fetchone()[0]
+
+
 def evaluate(conn: sqlite3.Connection, today: date | None = None) -> int:
     today = today or datetime.now(timezone.utc).date()
     rows = conn.execute("""
-        SELECT c.id, c.asset, c.direction, c.horizon, c.called_at
+        SELECT c.id, c.asset, c.direction, c.horizon, c.called_at, c.price_target
         FROM calls c LEFT JOIN outcomes o ON o.call_id = c.id
         WHERE o.call_id IS NULL""").fetchall()
     n = 0
@@ -59,9 +65,17 @@ def evaluate(conn: sqlite3.Connection, today: date | None = None) -> int:
             result = "PARTIAL"   # off by one step
         else:
             result = "WRONG"     # opposite direction
+
+        target_hit, extreme = None, None
+        if c["price_target"] and pred in ("BUY", "SELL"):
+            extreme = _extreme(conn, c["asset"], entry[0], exit_[0], pred)
+            if extreme is not None:
+                target_hit = int(extreme >= c["price_target"]) if pred == "BUY" else int(extreme <= c["price_target"])
+
         conn.execute("""INSERT INTO outcomes(call_id, entry_date, exit_date, entry_close, exit_close, return_pct,
-                        threshold_pct, actual, result, evaluated_at) VALUES(?,?,?,?,?,?,?,?,?,?)""",
-                     (c["id"], entry[0], exit_[0], entry[1], exit_[1], ret, thr, actual, result,
+                        threshold_pct, actual, result, target_hit, extreme, evaluated_at)
+                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?)""",
+                     (c["id"], entry[0], exit_[0], entry[1], exit_[1], ret, thr, actual, result, target_hit, extreme,
                       datetime.now(timezone.utc).isoformat()))
         n += 1
     conn.commit()

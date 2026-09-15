@@ -15,6 +15,9 @@ CREATE TABLE IF NOT EXISTS accounts (
     active        INTEGER NOT NULL DEFAULT 1,
     last_tweet_id TEXT,                       -- watermark for incremental fetch
     followers     INTEGER,
+    rate_per_year INTEGER,                    -- measured originals/yr at backfill
+    sampling      TEXT,                       -- NULL = full timeline; e.g. 'days1-3/month'
+    tier          TEXT NOT NULL DEFAULT 'B',
     updated_at    TEXT
 );
 
@@ -42,6 +45,7 @@ CREATE TABLE IF NOT EXISTS calls (
     direction   TEXT NOT NULL,                -- BUY | NEUTRAL | SELL
     horizon     TEXT NOT NULL,                -- SHORT | MEDIUM | LONG
     confidence  REAL NOT NULL,
+    price_target REAL,                        -- explicit level if stated (same units as prices table)
     quote       TEXT,                         -- exact span justifying the label (audit trail)
     called_at   TEXT NOT NULL,                -- = tweet created_at
     model       TEXT NOT NULL,
@@ -66,7 +70,9 @@ CREATE TABLE IF NOT EXISTS outcomes (
     return_pct   REAL NOT NULL,
     threshold_pct REAL NOT NULL,              -- vol-scaled band used for NEUTRAL
     actual       TEXT NOT NULL,               -- BUY | NEUTRAL | SELL (what the market did)
-    result       TEXT NOT NULL,               -- CORRECT | WRONG | PARTIAL
+    result       TEXT NOT NULL,               -- CORRECT | WRONG | PARTIAL  (direction)
+    target_hit   INTEGER,                     -- 1 if price_target was touched within the horizon, 0 if not, NULL n/a
+    extreme      REAL,                        -- max close (BUY) / min close (SELL) within horizon
     evaluated_at TEXT NOT NULL
 );
 
@@ -90,4 +96,14 @@ def connect(path: Path = DB_PATH) -> sqlite3.Connection:
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
     conn.executescript(SCHEMA)
+    # additive migrations for existing DBs
+    cols = {r["name"] for r in conn.execute("PRAGMA table_info(accounts)")}
+    for col, typ in (("rate_per_year", "INTEGER"), ("sampling", "TEXT"), ("tier", "TEXT NOT NULL DEFAULT 'B'")):
+        if col not in cols:
+            conn.execute(f"ALTER TABLE accounts ADD COLUMN {col} {typ}")
+    for table, col, typ in (("calls", "price_target", "REAL"), ("outcomes", "target_hit", "INTEGER"),
+                            ("outcomes", "extreme", "REAL")):
+        if col not in {r["name"] for r in conn.execute(f"PRAGMA table_info({table})")}:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {typ}")
+    conn.commit()
     return conn

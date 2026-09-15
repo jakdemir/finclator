@@ -36,10 +36,14 @@ Horizon (per the author's stated or clearly implied timeframe):
 If no timeframe is given, infer from context (technical/level talk → SHORT; macro/structural thesis → LONG;
 otherwise MEDIUM).
 
+price_target: a numeric level the author expects the asset to reach, in USD (BTC per coin, gold per troy oz,
+SPX index points). Convert "100k" → 100000, "$4,500" → 4500. null if no explicit level. A target implies the
+direction (target above current price → BUY, below → SELL) unless the author says otherwise.
+
 Respond with JSON only:
 {"is_call": bool, "calls": [{"asset": "BTC|GOLD|SPX", "direction": "BUY|SELL|NEUTRAL",
- "horizon": "SHORT|MEDIUM|LONG", "confidence": 0.0-1.0, "quote": "<exact span from the tweet in its
- original language that justifies the label>"}]}
+ "horizon": "SHORT|MEDIUM|LONG", "confidence": 0.0-1.0, "price_target": number|null,
+ "quote": "<exact span from the tweet in its original language that justifies the label>"}]}
 Only include assets the tweet actually takes a stance on. calls=[] when is_call=false."""
 
 
@@ -57,10 +61,15 @@ def store_result(conn: sqlite3.Connection, tweet: sqlite3.Row | dict, result: di
         for c in result.get("calls", []):
             if c.get("asset") not in ("BTC", "GOLD", "SPX"):
                 continue
+            pt = c.get("price_target")
+            try:
+                pt = float(pt) if pt not in (None, "", "null") else None
+            except (TypeError, ValueError):
+                pt = None
             conn.execute(
-                """INSERT OR REPLACE INTO calls(tweet_id, handle, asset, direction, horizon, confidence, quote, called_at, model)
-                   VALUES(?,?,?,?,?,?,?,?,?)""",
-                (tid, handle, c["asset"], c["direction"], c["horizon"], float(c.get("confidence", 0.5)),
+                """INSERT OR REPLACE INTO calls(tweet_id, handle, asset, direction, horizon, confidence, price_target,
+                   quote, called_at, model) VALUES(?,?,?,?,?,?,?,?,?,?)""",
+                (tid, handle, c["asset"], c["direction"], c["horizon"], float(c.get("confidence", 0.5)), pt,
                  c.get("quote"), created, model),
             )
             n += 1

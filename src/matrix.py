@@ -14,7 +14,7 @@ from pathlib import Path
 
 from .db import connect
 from .evaluate import MATURITY_DAYS
-from .score import trust_for
+from .score import TrustLookup
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "matrix.json"
@@ -34,8 +34,9 @@ def _label(net: float, total: float) -> str:
     return "NEUTRAL"
 
 
-def build(conn: sqlite3.Connection, today: date | None = None) -> dict:
+def build(conn: sqlite3.Connection, today: date | None = None, write: bool = True) -> dict:
     today = today or datetime.now(timezone.utc).date()
+    trust = TrustLookup(conn, as_of=today)
     schools = {r["handle"]: r["school"] for r in conn.execute("SELECT handle, school FROM accounts")}
     matrix: dict = {"generated_at": datetime.now(timezone.utc).isoformat(), "cells": {}}
 
@@ -53,7 +54,7 @@ def build(conn: sqlite3.Connection, today: date | None = None) -> dict:
             buy = sell = neutral = 0.0
             for r in rows:
                 age = (today - date.fromisoformat(r["called_at"][:10])).days
-                w = trust_for(conn, r["handle"], asset, horizon) * r["confidence"] * math.exp(-math.log(2) * age / half_life)
+                w = trust.get(r["handle"], asset, horizon) * r["confidence"] * math.exp(-math.log(2) * age / half_life)
                 d = r["direction"]
                 if d == "BUY":
                     buy += w
@@ -76,7 +77,8 @@ def build(conn: sqlite3.Connection, today: date | None = None) -> dict:
                             for k, v in per_school.items()},
                 "contributors": contributors[:15],
             }
-    OUT.write_text(json.dumps(matrix, indent=1, ensure_ascii=False))
+    if write:
+        OUT.write_text(json.dumps(matrix, indent=1, ensure_ascii=False))
     return matrix
 
 

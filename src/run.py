@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import sys
 
-from . import classify, evaluate, fetch, matrix, prices, score
+from . import audit, classify, evaluate, fetch, matrix, pine, prices, score
 from .db import connect
 
 
@@ -18,6 +18,8 @@ def main(skip_fetch: bool = False, skip_classify: bool = False) -> None:
     print("evaluate:", evaluate.evaluate(conn))
     print("score:", score.recompute(conn))
     matrix.print_grid(matrix.build(conn))
+    print("audit:", audit.build())
+    print("pine:", pine.generate(conn))
 
 
 if __name__ == "__main__":

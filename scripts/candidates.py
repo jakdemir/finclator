@@ -17,7 +17,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from src.fetch import _client, _get, _rate_per_year
+from src.fetch import _client, _get, _keep, _rate_per_year
 from src.prefilter import detect_assets
 
 OUT = Path("data/candidates.csv")
@@ -62,7 +62,7 @@ def score_bio(bio: str) -> int:
 
 
 def user_info(c, handle: str) -> dict | None:
-    time.sleep(5.2)  # free-tier QPS
+    time.sleep(1.0)
     try:
         d = _get(c, "/twitter/user/info", userName=handle).get("data")
     except Exception as e:
@@ -89,9 +89,9 @@ def user_info(c, handle: str) -> dict | None:
 def probe(c, handle: str) -> dict:
     tweets, cursor = [], ""
     for _ in range(2):
-        time.sleep(5.2)
+        time.sleep(1.0)
         r = _get(c, "/twitter/user/last_tweets", userName=handle, cursor=cursor, includeReplies="false")
-        page = [t for t in (r.get("data") or {}).get("tweets") or [] if not t.get("isReply")]
+        page = [t for t in (r.get("data") or {}).get("tweets") or [] if _keep(t)]
         tweets += page
         if not r.get("has_next_page") or not page:
             break
@@ -106,7 +106,7 @@ def probe(c, handle: str) -> dict:
 def followings(c, user: str) -> list[dict]:
     out, cursor = [], ""
     while True:
-        time.sleep(5.2)
+        time.sleep(1.0)
         r = _get(c, "/twitter/user/followings", userName=user, cursor=cursor, pageSize=200)
         out += r.get("followings") or []
         if not r.get("has_next_page") or not r.get("next_cursor"):
@@ -135,8 +135,9 @@ def main():
                 r = rows.setdefault(key, {"handle": h, "source": "following", "school": "", "lang": ""})
                 if r["source"] == "seed":
                     r["source"] = "seed+following"
-                r.update({"name": f.get("name"), "followers": f.get("followers", 0),
-                          "statuses": f.get("statusesCount", 0), "bio": (f.get("description") or "").replace("\n", " "),
+                r.update({"name": f.get("name"), "followers": f.get("followers_count", f.get("followers", 0)),
+                          "statuses": f.get("statuses_count", f.get("statusesCount", 0)),
+                          "bio": (f.get("description") or "").replace("\n", " "),
                           "bio_score": score_bio(f.get("description") or "")})
             print(f"  {sum(1 for r in rows.values() if 'following' in r['source'])} followings", flush=True)
 
