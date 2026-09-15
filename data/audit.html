@@ -24,29 +24,29 @@ rows.forEach(r=>tb.appendChild(r));tbl.dataset.sc=col+(asc?'a':'d');}
 document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('table.sortable th').forEach((th,i)=>th.onclick=()=>sortTable(th.closest('table'),i));
 ['f-acc','f-asset','f-hz','f-res','f-dir'].forEach(id=>document.getElementById(id).onchange=filt);document.getElementById('f-q').oninput=filt;filt();});
 </script>
-<h1>Finclator verification &amp; debug</h1><small>generated 2026-09-15 17:57 UTC · prices: BTC=Yahoo BTC-USD (UTC close), GOLD=COMEX GC=F front month, SPX=^GSPC · flat band = 0.5σ·√days (trailing-1y daily vol at entry)</small>
+<h1>Finclator verification &amp; debug</h1><small>generated 2026-09-15 19:02 UTC · <b>model: claude-fable-5.1/interactive</b> · prices: BTC=Yahoo BTC-USD (UTC close), GOLD=COMEX GC=F front month, SPX=^GSPC · flat band = 0.5σ·√days (trailing-1y daily vol at entry)</small>
 <h2>Matrix</h2><table class=grid><tr><th></th><th>SHORT<br><small>0–3 mo</small></th><th>MEDIUM<br><small>3–12 mo</small></th><th>LONG<br><small>1–5 y</small></th></tr>
 <tr><th>BTC</th><td class=NA>N/A<br><small>n=0 net=+0.00</small></td><td class=NA>N/A<br><small>n=5 net=+0.08</small></td><td class=BUY>BUY<br><small>n=4 net=+0.52</small></td></tr>
 <tr><th>GOLD</th><td class=NA>N/A<br><small>n=0 net=+0.00</small></td><td class=NA>N/A<br><small>n=1 net=+1.00</small></td><td class=BUY>BUY<br><small>n=9 net=+1.00</small></td></tr>
 <tr><th>SPX</th><td class=NA>N/A<br><small>n=0 net=+0.00</small></td><td class=NA>N/A<br><small>n=3 net=-1.00</small></td><td class=SELL>SELL<br><small>n=4 net=-1.00</small></td></tr>
 </table>
 <h2>Pipeline funnel</h2><div class=bar>
-<span class=pill>tweets stored: <b>74,204</b></span> →
-<span class=pill>asset-mentioning (prefilter): <b>21,362</b></span> →
+<span class=pill>tweets stored: <b>117,910</b></span> →
+<span class=pill>asset-mentioning (prefilter): <b>31,546</b></span> →
 <span class=pill>classified: <b>297</b></span> →
 <span class=pill>tweets with calls: <b>65</b> (74 calls)</span> →
 <span class=pill>matured &amp; evaluated: <b>48</b></span></div>
-<p><b>21,065</b> tweets await classification.</p>
+<p><b>31,249</b> tweets await classification.</p>
 <h2>Accounts</h2><table class=sortable><thead><tr><th>account</th><th>school</th><th>lang</th><th>followers</th><th>orig/yr</th><th>sampling</th><th>tweets</th><th>relevant</th><th>calls</th><th>evaluated</th><th>hits</th><th>trust</th><th>BTC</th><th>GOLD</th><th>SPX</th><th>first</th><th>last</th></tr></thead><tbody>
 <tr><td><a href='https://x.com/100trillionusd'>@100trillionusd</a></td><td>Quant</td><td>en</td><td class=num>2,163,716</td><td class=num>63</td><td>full</td><td class=num>451</td><td class=num>289</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-18</small></td><td><small>2026-09-14</small></td></tr>
-<tr><td><a href='https://x.com/amitisinvesting'>@amitisinvesting</a></td><td>Macro</td><td>en</td><td class=num>656,048</td><td class=num>1,157</td><td>days1-3/month</td><td class=num>1103</td><td class=num>384</td><td class=num>0</td>
+<tr><td><a href='https://x.com/amitisinvesting'>@amitisinvesting</a></td><td>Macro</td><td>en</td><td class=num>656,048</td><td class=num>1,157</td><td>full</td><td class=num>1103</td><td class=num>384</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
-<tr><td><a href='https://x.com/apompliano'>@apompliano</a></td><td>Crypto</td><td>en</td><td class=num>2,400,817</td><td class=num>1,869</td><td>days1-3/month</td><td class=num>966</td><td class=num>189</td><td class=num>4</td>
+<tr><td><a href='https://x.com/apompliano'>@apompliano</a></td><td>Crypto</td><td>en</td><td class=num>2,400,921</td><td class=num>1,869</td><td>full</td><td class=num>1173</td><td class=num>241</td><td class=num>4</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2026-08-18</small></td><td><small>2026-09-13</small></td></tr>
-<tr><td><a href='https://x.com/arkham'>@arkham</a></td><td>Macro</td><td>en</td><td class=num>1,502,231</td><td class=num>1,556</td><td>days1-3/month</td><td class=num>257</td><td class=num>103</td><td class=num>0</td>
+<tr><td><a href='https://x.com/arkham'>@arkham</a></td><td>Macro</td><td>en</td><td class=num>1,502,231</td><td class=num>1,556</td><td>full</td><td class=num>257</td><td class=num>103</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
@@ -62,11 +62,11 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-19</small></td><td><small>2026-09-10</small></td></tr>
-<tr><td><a href='https://x.com/atillayesilada1'>@atillayesilada1</a></td><td>Macro</td><td>en</td><td class=num>502,828</td><td class=num>12,516</td><td>days1-3/month</td><td class=num>1058</td><td class=num>97</td><td class=num>0</td>
+<tr><td><a href='https://x.com/atillayesilada1'>@atillayesilada1</a></td><td>Macro</td><td>en</td><td class=num>502,828</td><td class=num>12,516</td><td>full</td><td class=num>1058</td><td class=num>97</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-11-01</small></td><td><small>2026-09-03</small></td></tr>
-<tr><td><a href='https://x.com/barchart'>@barchart</a></td><td>Technical</td><td>en</td><td class=num>564,158</td><td class=num>6,459</td><td>days1-3/month</td><td class=num>1670</td><td class=num>448</td><td class=num>0</td>
+<tr><td><a href='https://x.com/barchart'>@barchart</a></td><td>Technical</td><td>en</td><td class=num>564,158</td><td class=num>6,459</td><td>full</td><td class=num>1670</td><td class=num>448</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-16</small></td><td><small>2026-09-10</small></td></tr>
-<tr><td><a href='https://x.com/brad_setser'>@brad_setser</a></td><td>Quant</td><td>en</td><td class=num>157,817</td><td class=num>1,477</td><td>days1-3/month</td><td class=num>486</td><td class=num>27</td><td class=num>0</td>
+<tr><td><a href='https://x.com/brad_setser'>@brad_setser</a></td><td>Quant</td><td>en</td><td class=num>157,817</td><td class=num>1,477</td><td>full</td><td class=num>486</td><td class=num>27</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-16</small></td><td><small>2026-09-15</small></td></tr>
-<tr><td><a href='https://x.com/burrytracker'>@burrytracker</a></td><td>Macro</td><td>en</td><td class=num>560,556</td><td class=num>1,016</td><td>days1-3/month</td><td class=num>128</td><td class=num>21</td><td class=num>0</td>
+<tr><td><a href='https://x.com/burrytracker'>@burrytracker</a></td><td>Macro</td><td>en</td><td class=num>560,556</td><td class=num>1,016</td><td>full</td><td class=num>128</td><td class=num>21</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-21</small></td><td><small>2026-09-14</small></td></tr>
-<tr><td><a href='https://x.com/charliebilello'>@charliebilello</a></td><td>Quant</td><td>en</td><td class=num>866,248</td><td class=num>2,341</td><td>days1-3/month</td><td class=num>625</td><td class=num>275</td><td class=num>0</td>
+<tr><td><a href='https://x.com/charliebilello'>@charliebilello</a></td><td>Quant</td><td>en</td><td class=num>866,248</td><td class=num>2,341</td><td>full</td><td class=num>625</td><td class=num>275</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-01</small></td></tr>
@@ -130,11 +130,11 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-17</small></td><td><small>2026-09-15</small></td></tr>
-<tr><td><a href='https://x.com/davthewave'>@davthewave</a></td><td>Crypto</td><td>en</td><td class=num>232,851</td><td class=num>2,216</td><td>days1-3/month</td><td class=num>576</td><td class=num>117</td><td class=num>0</td>
+<tr><td><a href='https://x.com/davthewave'>@davthewave</a></td><td>Crypto</td><td>en</td><td class=num>232,851</td><td class=num>2,216</td><td>full</td><td class=num>576</td><td class=num>117</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
-<tr><td><a href='https://x.com/dimartinobooth'>@dimartinobooth</a></td><td>Macro</td><td>en</td><td class=num>338,143</td><td class=num>1,534</td><td>days1-3/month</td><td class=num>911</td><td class=num>46</td><td class=num>0</td>
+<tr><td><a href='https://x.com/dimartinobooth'>@dimartinobooth</a></td><td>Macro</td><td>en</td><td class=num>338,143</td><td class=num>1,534</td><td>full</td><td class=num>911</td><td class=num>46</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-18</small></td><td><small>2026-09-15</small></td></tr>
-<tr><td><a href='https://x.com/fundstrat'>@fundstrat</a></td><td>Quant</td><td>en</td><td class=num>674,073</td><td class=num>1,053</td><td>days1-3/month</td><td class=num>41</td><td class=num>7</td><td class=num>0</td>
+<tr><td><a href='https://x.com/fundstrat'>@fundstrat</a></td><td>Quant</td><td>en</td><td class=num>674,073</td><td class=num>1,053</td><td>full</td><td class=num>41</td><td class=num>7</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2026-05-01</small></td><td><small>2026-09-03</small></td></tr>
@@ -162,34 +162,34 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-17</small></td><td><small>2026-09-14</small></td></tr>
-<tr><td><a href='https://x.com/globalmktobserv'>@globalmktobserv</a></td><td>Quant</td><td>en</td><td class=num>94,449</td><td class=num>4,551</td><td>full</td><td class=num>1933</td><td class=num>879</td><td class=num>0</td>
+<tr><td><a href='https://x.com/globalmktobserv'>@globalmktobserv</a></td><td>Quant</td><td>en</td><td class=num>94,449</td><td class=num>4,551</td><td>full</td><td class=num>2100</td><td class=num>956</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small>2023-09-01</small></td><td><small>2026-04-03</small></td></tr>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
 <tr><td><a href='https://x.com/gokhangark'>@gokhangark</a></td><td>Macro</td><td>en</td><td class=num>165,551</td><td class=num>137</td><td>full</td><td class=num>86</td><td class=num>27</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2025-11-03</small></td><td><small>2026-09-14</small></td></tr>
-<tr><td><a href='https://x.com/goldtelegraph_'>@goldtelegraph_</a></td><td>Goldbug</td><td>en</td><td class=num></td><td class=num>1,056</td><td>days1-3/month</td><td class=num>489</td><td class=num>180</td><td class=num>0</td>
+<tr><td><a href='https://x.com/goldtelegraph_'>@goldtelegraph_</a></td><td>Goldbug</td><td>en</td><td class=num></td><td class=num>1,056</td><td>full</td><td class=num>489</td><td class=num>180</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-01</small></td></tr>
-<tr><td><a href='https://x.com/hamptonism'>@hamptonism</a></td><td>Macro</td><td>en</td><td class=num>226,561</td><td class=num>8,080</td><td>full</td><td class=num>1979</td><td class=num>53</td><td class=num>0</td>
+<tr><td><a href='https://x.com/hamptonism'>@hamptonism</a></td><td>Macro</td><td>en</td><td class=num>226,561</td><td class=num>8,080</td><td>full</td><td class=num>2510</td><td class=num>61</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small>2024-01-02</small></td><td><small>2025-12-03</small></td></tr>
-<tr><td><a href='https://x.com/hendry_hugh'>@hendry_hugh</a></td><td>Macro</td><td>en</td><td class=num>98,032</td><td class=num>5,387</td><td>days1-3/month</td><td class=num>262</td><td class=num>15</td><td class=num>0</td>
+<td><small>2024-01-02</small></td><td><small>2026-09-03</small></td></tr>
+<tr><td><a href='https://x.com/hendry_hugh'>@hendry_hugh</a></td><td>Macro</td><td>en</td><td class=num>98,032</td><td class=num>5,387</td><td>full</td><td class=num>262</td><td class=num>15</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2024-03-02</small></td><td><small>2026-09-02</small></td></tr>
-<tr><td><a href='https://x.com/iriscibre'>@iriscibre</a></td><td>Macro</td><td>tr</td><td class=num>310,941</td><td class=num>2,469</td><td>days1-3/month</td><td class=num>760</td><td class=num>150</td><td class=num>0</td>
+<tr><td><a href='https://x.com/iriscibre'>@iriscibre</a></td><td>Macro</td><td>tr</td><td class=num>310,941</td><td class=num>2,469</td><td>full</td><td class=num>760</td><td class=num>150</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
-<tr><td><a href='https://x.com/isyatirim'>@isyatirim</a></td><td>Macro</td><td>tr</td><td class=num>348,067</td><td class=num>1,867</td><td>full</td><td class=num>543</td><td class=num>12</td><td class=num>0</td>
+<tr><td><a href='https://x.com/isyatirim'>@isyatirim</a></td><td>Macro</td><td>tr</td><td class=num>348,067</td><td class=num>1,867</td><td>full</td><td class=num>655</td><td class=num>13</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small>2023-09-01</small></td><td><small>2026-02-03</small></td></tr>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
 <tr><td><a href='https://x.com/jam_croissant'>@jam_croissant</a></td><td>Quant</td><td>en</td><td class=num>277,197</td><td class=num>854</td><td>full</td><td class=num>931</td><td class=num>65</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
@@ -210,15 +210,15 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-20</small></td><td><small>2026-09-14</small></td></tr>
-<tr><td><a href='https://x.com/kingkong9888'>@kingkong9888</a></td><td>Goldbug</td><td>en</td><td class=num>89,577</td><td class=num>1,467</td><td>full</td><td class=num>153</td><td class=num>71</td><td class=num>0</td>
+<tr><td><a href='https://x.com/kingkong9888'>@kingkong9888</a></td><td>Goldbug</td><td>en</td><td class=num>89,577</td><td class=num>1,467</td><td>full</td><td class=num>1170</td><td class=num>559</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small>2023-09-01</small></td><td><small>2024-04-03</small></td></tr>
-<tr><td><a href='https://x.com/kivancozbilgic'>@kivancozbilgic</a></td><td>Macro</td><td>en</td><td class=num>286,400</td><td class=num>117</td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
+<tr><td><a href='https://x.com/kivancozbilgic'>@kivancozbilgic</a></td><td>Macro</td><td>en</td><td class=num>286,400</td><td class=num>117</td><td>full</td><td class=num>935</td><td class=num>181</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/kobeissiletter'>@kobeissiletter</a></td><td>Quant</td><td>en</td><td class=num>2,627,178</td><td class=num>5,250</td><td>days1-3/month</td><td class=num>1328</td><td class=num>510</td><td class=num>0</td>
+<td><small>2023-09-16</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/kobeissiletter'>@kobeissiletter</a></td><td>Quant</td><td>en</td><td class=num>2,627,448</td><td class=num>5,250</td><td>full</td><td class=num>1408</td><td class=num>590</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
@@ -226,206 +226,206 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>23</td><td class=num>14.0</td><td class=num data-v='0.5757575757575758'><b>0.576</b></td>
 <td class=num data-v='0.6875'>0.69<br><small>n=6</small></td><td class=num data-v='0.6428571428571429'>0.64<br><small>n=4</small></td><td class=num data-v='0.391304347826087'>0.39<br><small>n=13</small></td>
 <td><small>2022-06-02</small></td><td><small>2026-09-14</small></td></tr>
-<tr><td><a href='https://x.com/lawrencelepard'>@lawrencelepard</a></td><td>Goldbug</td><td>en</td><td class=num>257,614</td><td class=num>1,045</td><td>full</td><td class=num>70</td><td class=num>8</td><td class=num>0</td>
+<tr><td><a href='https://x.com/lawrencelepard'>@lawrencelepard</a></td><td>Goldbug</td><td>en</td><td class=num>257,614</td><td class=num>1,045</td><td>full</td><td class=num>367</td><td class=num>54</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small>2023-09-01</small></td><td><small>2023-12-03</small></td></tr>
-<tr><td><a href='https://x.com/litcapital'>@litcapital</a></td><td>Crypto</td><td>en</td><td class=num>1,689,566</td><td class=num>981</td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
+<tr><td><a href='https://x.com/litcapital'>@litcapital</a></td><td>Crypto</td><td>en</td><td class=num>1,689,566</td><td class=num>981</td><td>full</td><td class=num>3255</td><td class=num>232</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/lukegromen'>@lukegromen</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-21</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/lukegromen'>@lukegromen</a></td><td>Macro</td><td>en</td><td class=num>627,066</td><td class=num>1,313</td><td>full</td><td class=num>265</td><td class=num>74</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
 <tr><td><a href='https://x.com/lynaldencontact'>@lynaldencontact</a></td><td>Macro</td><td>en</td><td class=num>1,136,170</td><td class=num>295</td><td>full</td><td class=num>1714</td><td class=num>136</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-16</small></td><td><small>2026-09-15</small></td></tr>
-<tr><td><a href='https://x.com/macroalf'>@macroalf</a></td><td>Macro</td><td>en</td><td class=num>466,639</td><td class=num>66</td><td>full</td><td class=num>338</td><td class=num>42</td><td class=num>0</td>
+<tr><td><a href='https://x.com/macroalf'>@macroalf</a></td><td>Macro</td><td>en</td><td class=num>466,635</td><td class=num>66</td><td>full</td><td class=num>338</td><td class=num>42</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-17</small></td><td><small>2026-01-14</small></td></tr>
-<tr><td><a href='https://x.com/macrocharts'>@macrocharts</a></td><td>Quant</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<tr><td><a href='https://x.com/macrocharts'>@macrocharts</a></td><td>Quant</td><td>en</td><td class=num>197,427</td><td class=num>124</td><td>full</td><td class=num>211</td><td class=num>47</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/mahfiegilmez'>@mahfiegilmez</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-10-02</small></td><td><small>2026-09-12</small></td></tr>
+<tr><td><a href='https://x.com/mahfiegilmez'>@mahfiegilmez</a></td><td>Macro</td><td>en</td><td class=num>1,974,347</td><td class=num>1,797</td><td>full</td><td class=num>420</td><td class=num>18</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/marionawfal'>@marionawfal</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
+<tr><td><a href='https://x.com/marionawfal'>@marionawfal</a></td><td>Macro</td><td>en</td><td class=num>3,902,699</td><td class=num>21,170</td><td>full</td><td class=num>5462</td><td class=num>396</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
+<td><small>2023-09-01</small></td><td><small>2024-11-03</small></td></tr>
 <tr><td><a href='https://x.com/markminervini'>@markminervini</a></td><td>Technical</td><td>en</td><td class=num>764,751</td><td class=num>820</td><td>full</td><td class=num>1725</td><td class=num>314</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-16</small></td><td><small>2026-09-15</small></td></tr>
-<tr><td><a href='https://x.com/matt_levine'>@matt_levine</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<tr><td><a href='https://x.com/matt_levine'>@matt_levine</a></td><td>Macro</td><td>en</td><td class=num>326,889</td><td class=num>187</td><td>full</td><td class=num>478</td><td class=num>13</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/michaeljburry'>@michaeljburry</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-18</small></td><td><small>2026-09-14</small></td></tr>
+<tr><td><a href='https://x.com/michaeljburry'>@michaeljburry</a></td><td>Macro</td><td>en</td><td class=num>2,112,195</td><td class=num>345</td><td>full</td><td class=num>304</td><td class=num>49</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/michaelmottcm'>@michaelmottcm</a></td><td>Quant</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/milesdeutscher'>@milesdeutscher</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/mmcrypto'>@mmcrypto</a></td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/mrcollaborative'>@mrcollaborative</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/nntaleb'>@nntaleb</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/nsquaredvalue'>@nsquaredvalue</a></td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/onderozbek'>@onderozbek</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/pentosh1'>@pentosh1</a></td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/perihantantug'>@perihantantug</a></td><td>Macro</td><td>tr</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/peterlbrandt'>@peterlbrandt</a></td><td>Technical</td><td>en</td><td class=num>1,313,261</td><td class=num>1,116</td><td>days1-3/month</td><td class=num>491</td><td class=num>101</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small>2023-09-01</small></td><td><small>2026-09-02</small></td></tr>
-<tr><td><a href='https://x.com/peterschiff'>@peterschiff</a></td><td>Goldbug</td><td>en</td><td class=num>1,741,890</td><td class=num>1,717</td><td>days1-3/month</td><td class=num>543</td><td class=num>190</td><td class=num>0</td>
+<td><small>2025-10-31</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/michaelmottcm'>@michaelmottcm</a></td><td>Quant</td><td>en</td><td class=num>176,946</td><td class=num>4,854</td><td>full</td><td class=num>540</td><td class=num>137</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
-<tr><td><a href='https://x.com/peteskomoroch'>@peteskomoroch</a></td><td>Quant</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<tr><td><a href='https://x.com/milesdeutscher'>@milesdeutscher</a></td><td>Macro</td><td>en</td><td class=num>679,308</td><td class=num>2,254</td><td>full</td><td class=num>437</td><td class=num>117</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
+<tr><td><a href='https://x.com/mmcrypto'>@mmcrypto</a></td><td>Crypto</td><td>en</td><td class=num>1,769,702</td><td class=num>222</td><td>full</td><td class=num>3371</td><td class=num>1698</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-17</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/mrcollaborative'>@mrcollaborative</a></td><td>Macro</td><td>en</td><td class=num>11,445</td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/profdemirtas'>@profdemirtas</a></td><td>Macro</td><td>tr</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<tr><td><a href='https://x.com/nntaleb'>@nntaleb</a></td><td>Macro</td><td>en</td><td class=num>1,156,552</td><td class=num>827</td><td>full</td><td class=num>3175</td><td class=num>76</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/profkayafinance'>@profkayafinance</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-16</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/nsquaredvalue'>@nsquaredvalue</a></td><td>Crypto</td><td>en</td><td class=num>32,586</td><td class=num>591</td><td>full</td><td class=num>2786</td><td class=num>1838</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/raoulgmi'>@raoulgmi</a></td><td>Macro</td><td>en</td><td class=num>1,497,029</td><td class=num>861</td><td>full</td><td class=num>1910</td><td class=num>224</td><td class=num>0</td>
+<td><small>2023-09-16</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/onderozbek'>@onderozbek</a></td><td>Macro</td><td>en</td><td class=num>188</td><td class=num></td><td>full</td><td class=num>3</td><td class=num>3</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small>2023-09-17</small></td><td><small>2026-09-14</small></td></tr>
-<tr><td><a href='https://x.com/raydalio'>@raydalio</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2024-12-05</small></td><td><small>2024-12-16</small></td></tr>
+<tr><td><a href='https://x.com/pentosh1'>@pentosh1</a></td><td>Crypto</td><td>en</td><td class=num>949,247</td><td class=num>860</td><td>full</td><td class=num>506</td><td class=num>129</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/refetgurkaynak'>@refetgurkaynak</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2024-10-20</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/perihantantug'>@perihantantug</a></td><td>Macro</td><td>tr</td><td class=num>202,917</td><td class=num>63</td><td>full</td><td class=num>865</td><td class=num>80</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/rektcapital'>@rektcapital</a></td><td>Technical</td><td>en</td><td class=num>562,861</td><td class=num>1,219</td><td>days1-3/month</td><td class=num>722</td><td class=num>660</td><td class=num>0</td>
+<td><small>2023-09-18</small></td><td><small>2026-03-01</small></td></tr>
+<tr><td><a href='https://x.com/peterlbrandt'>@peterlbrandt</a></td><td>Technical</td><td>en</td><td class=num>1,313,326</td><td class=num>1,116</td><td>full</td><td class=num>641</td><td class=num>137</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-01</small></td><td><small>2026-09-02</small></td></tr>
-<tr><td><a href='https://x.com/ryandetrick'>@ryandetrick</a></td><td>Quant</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<tr><td><a href='https://x.com/peterschiff'>@peterschiff</a></td><td>Goldbug</td><td>en</td><td class=num>1,741,968</td><td class=num>1,717</td><td>full</td><td class=num>706</td><td class=num>244</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/santmanukyan'>@santmanukyan</a></td><td>Macro</td><td>tr</td><td class=num>589,413</td><td class=num>48</td><td>full</td><td class=num>630</td><td class=num>218</td><td class=num>29</td>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
+<tr><td><a href='https://x.com/peteskomoroch'>@peteskomoroch</a></td><td>Quant</td><td>en</td><td class=num>50,651</td><td class=num>1,825</td><td>full</td><td class=num>91</td><td class=num>2</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-02</small></td><td><small>2026-09-01</small></td></tr>
+<tr><td><a href='https://x.com/profdemirtas'>@profdemirtas</a></td><td>Macro</td><td>tr</td><td class=num>5,934,853</td><td class=num>575</td><td>full</td><td class=num>3112</td><td class=num>209</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-16</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/profkayafinance'>@profkayafinance</a></td><td>Macro</td><td>en</td><td class=num>37,913</td><td class=num>2,965</td><td>full</td><td class=num>346</td><td class=num>76</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2025-03-01</small></td><td><small>2026-09-03</small></td></tr>
+<tr><td><a href='https://x.com/raoulgmi'>@raoulgmi</a></td><td>Macro</td><td>en</td><td class=num>1,497,037</td><td class=num>861</td><td>full</td><td class=num>1910</td><td class=num>224</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-17</small></td><td><small>2026-09-14</small></td></tr>
+<tr><td><a href='https://x.com/raydalio'>@raydalio</a></td><td>Macro</td><td>en</td><td class=num>2,516,000</td><td class=num>560</td><td>full</td><td class=num>1469</td><td class=num>197</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-16</small></td><td><small>2026-09-14</small></td></tr>
+<tr><td><a href='https://x.com/refetgurkaynak'>@refetgurkaynak</a></td><td>Macro</td><td>en</td><td class=num>271,726</td><td class=num>50</td><td>full</td><td class=num>133</td><td class=num>0</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-16</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/rektcapital'>@rektcapital</a></td><td>Technical</td><td>en</td><td class=num>562,861</td><td class=num>1,219</td><td>full</td><td class=num>722</td><td class=num>660</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-01</small></td><td><small>2026-09-02</small></td></tr>
+<tr><td><a href='https://x.com/ryandetrick'>@ryandetrick</a></td><td>Quant</td><td>en</td><td class=num>223,265</td><td class=num>3,048</td><td>full</td><td class=num>910</td><td class=num>211</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
+<tr><td><a href='https://x.com/santmanukyan'>@santmanukyan</a></td><td>Macro</td><td>tr</td><td class=num>589,411</td><td class=num>48</td><td>full</td><td class=num>630</td><td class=num>218</td><td class=num>29</td>
 <td class=num>25</td><td class=num>23.0</td><td class=num data-v='0.8'><b>0.800</b></td>
 <td class=num data-v='0.7142857142857143'>0.71<br><small>n=11</small></td><td class=num data-v='0.6'>0.60<br><small>n=5</small></td><td class=num data-v='0.7368421052631579'>0.74<br><small>n=9</small></td>
 <td><small>2021-03-12</small></td><td><small>2026-08-18</small></td></tr>
-<tr><td><a href='https://x.com/saylor'>@saylor</a></td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<tr><td><a href='https://x.com/saylor'>@saylor</a></td><td>Crypto</td><td>en</td><td class=num>5,204,610</td><td class=num>649</td><td>full</td><td class=num>1931</td><td class=num>1328</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/schuldensuehner'>@schuldensuehner</a></td><td>Goldbug</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-16</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/schuldensuehner'>@schuldensuehner</a></td><td>Goldbug</td><td>en</td><td class=num>386,122</td><td class=num>508</td><td>full</td><td class=num>2500</td><td class=num>726</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/sinaafra'>@sinaafra</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-12-06</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/sinaafra'>@sinaafra</a></td><td>Macro</td><td>en</td><td class=num>359,037</td><td class=num>109</td><td>full</td><td class=num>118</td><td class=num>0</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/soberlook'>@soberlook</a></td><td>Quant</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-16</small></td><td><small>2026-09-11</small></td></tr>
+<tr><td><a href='https://x.com/soberlook'>@soberlook</a></td><td>Quant</td><td>en</td><td class=num>170,085</td><td class=num>400</td><td>full</td><td class=num>692</td><td class=num>133</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/standwithcrypto'>@standwithcrypto</a></td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-18</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/standwithcrypto'>@standwithcrypto</a></td><td>Crypto</td><td>en</td><td class=num>107,984</td><td class=num>1,208</td><td>full</td><td class=num>108</td><td class=num>11</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
+<td><small>2023-10-03</small></td><td><small>2026-09-03</small></td></tr>
 <tr><td><a href='https://x.com/tavicosta'>@tavicosta</a></td><td>Macro</td><td>en</td><td class=num>322,483</td><td class=num>332</td><td>full</td><td class=num>1496</td><td class=num>559</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2023-09-16</small></td><td><small>2026-09-14</small></td></tr>
-<tr><td><a href='https://x.com/techcharts'>@techcharts</a></td><td>Technical</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<tr><td><a href='https://x.com/techcharts'>@techcharts</a></td><td>Technical</td><td>en</td><td class=num>187,993</td><td class=num>4,987</td><td>full</td><td class=num>1181</td><td class=num>148</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/tedpillows'>@tedpillows</a></td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-01</small></td><td><small>2026-06-03</small></td></tr>
+<tr><td><a href='https://x.com/tedpillows'>@tedpillows</a></td><td>Crypto</td><td>en</td><td class=num>315,635</td><td class=num>8,980</td><td>full</td><td class=num>877</td><td class=num>286</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/thebc12'>@thebc12</a></td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-01</small></td><td><small>2026-01-03</small></td></tr>
+<tr><td><a href='https://x.com/thebc12'>@thebc12</a></td><td>Crypto</td><td>en</td><td class=num>2,149</td><td class=num>183</td><td>full</td><td class=num>967</td><td class=num>21</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/tradeornottrade'>@tradeornottrade</a></td><td>Technical</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-17</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/tradeornottrade'>@tradeornottrade</a></td><td>Technical</td><td>en</td><td class=num>784</td><td class=num></td><td>full</td><td class=num>5</td><td class=num>1</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/trader_xo'>@trader_xo</a></td><td>Technical</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-18</small></td><td><small>2024-06-03</small></td></tr>
+<tr><td><a href='https://x.com/trader_xo'>@trader_xo</a></td><td>Technical</td><td>en</td><td class=num>549,402</td><td class=num>267</td><td>full</td><td class=num>1015</td><td class=num>322</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/tradingview'>@tradingview</a></td><td>Technical</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2025-05-05</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/tradingview'>@tradingview</a></td><td>Technical</td><td>en</td><td class=num>904,185</td><td class=num>24</td><td>full</td><td class=num>188</td><td class=num>38</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/tuncsatiroglu'>@tuncsatiroglu</a></td><td>Macro</td><td>tr</td><td class=num>647,291</td><td class=num>2,342</td><td>days1-3/month</td><td class=num>744</td><td class=num>79</td><td class=num>0</td>
+<td><small>2023-09-18</small></td><td><small>2026-06-11</small></td></tr>
+<tr><td><a href='https://x.com/tuncsatiroglu'>@tuncsatiroglu</a></td><td>Macro</td><td>tr</td><td class=num>647,291</td><td class=num>2,342</td><td>full</td><td class=num>744</td><td class=num>79</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2024-03-02</small></td><td><small>2026-09-03</small></td></tr>
-<tr><td><a href='https://x.com/uttam_singhk'>@uttam_singhk</a></td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<tr><td><a href='https://x.com/uttam_singhk'>@uttam_singhk</a></td><td>Crypto</td><td>en</td><td class=num>24,070</td><td class=num>988</td><td>full</td><td class=num>517</td><td class=num>54</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2026-03-02</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/winc300'>@winc300</a></td><td>Macro</td><td>tr</td><td class=num>35,479</td><td class=num>313</td><td>full</td><td class=num>645</td><td class=num>330</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-09-18</small></td><td><small>2026-09-14</small></td></tr>
+<tr><td><a href='https://x.com/wolfcapitalist'>@wolfcapitalist</a></td><td>Crypto</td><td>en</td><td class=num>12,231</td><td class=num>15</td><td>full</td><td class=num>43</td><td class=num>23</td><td class=num>0</td>
+<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
+<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
+<td><small>2023-11-02</small></td><td><small>2026-09-15</small></td></tr>
+<tr><td><a href='https://x.com/yanisvaroufakis'>@yanisvaroufakis</a></td><td>Macro</td><td>en</td><td class=num>1,183,350</td><td class=num>376</td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/winc300'>@winc300</a></td><td>Macro</td><td>tr</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<tr><td><a href='https://x.com/zerohedge'>@zerohedge</a></td><td>Quant</td><td>en</td><td class=num>3,391,127</td><td class=num>17,885</td><td>full</td><td class=num>9959</td><td class=num>1099</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/wolfcapitalist'>@wolfcapitalist</a></td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
+<td><small>2023-09-01</small></td><td><small>2026-09-03</small></td></tr>
+<tr><td><a href='https://x.com/zerohedge_'>@zerohedge_</a></td><td>Technical</td><td>en</td><td class=num>157,475</td><td class=num>1,646</td><td>full</td><td class=num>5</td><td class=num>3</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/yanisvaroufakis'>@yanisvaroufakis</a></td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/zerohedge'>@zerohedge</a></td><td>Quant</td><td>en</td><td class=num>3,391,127</td><td class=num>17,885</td><td>full</td><td class=num>8843</td><td class=num>964</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small>2023-09-01</small></td><td><small>2026-05-03</small></td></tr>
-<tr><td><a href='https://x.com/zerohedge_'>@zerohedge_</a></td><td>Technical</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
-<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
-<td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
-<td><small></small></td><td><small></small></td></tr>
+<td><small>2023-09-01</small></td><td><small>2023-09-01</small></td></tr>
 <tr><td><a href='https://x.com/zulalmtn'>@zulalmtn</a></td><td>Quant</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
@@ -723,13 +723,6 @@ Bakalım bunlar çalışacak mı?
 #altın #para #ekonomi #dolar #euro  #gümüş #borsa #devrimakyıl #eurusd #buğday #brent #petrol #platin #paladyum #natgas #Wheat #weat #bakır  #coffee #usdjpy $Xauusd $Xagusd $Xptusd $Xpdusd #staglasyon</td><td>GOLD</td><td class=BUY>BUY</td>
 <td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.50</td><td class=num><small>–</small></td>
 <td class=num>2025-07-21<br>3,406.40</td><td class=num>2026-07-20<br>4,015.90</td><td class=num data-v='17.89279055523216'>+17.9%<br><small>flat ±9.2%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1752624000&period2=1753488000'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1784073600&period2=1784937600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
-<tr class="WRONG" data-acc="laplace2011" data-asset="SPX" data-hz="MEDIUM" data-res="WRONG" data-dir="SELL">
-<td data-v=41>41</td><td>@laplace2011<br><small>2025-07-20</small><br><a href='https://x.com/laplace2011/status/1946854564159725838'>tweet ↗</a></td>
-<td class=tweet><mark>Balona Balon denir!</mark> https://t.co/wkPILsGEdN @YouTube aracılığıyla
-
-#Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Bayer #EsteeLauder #Tesla #Coterra #Raytheon #Baba  #Occidental #Intel #ethereum #Ripple #Avax #solana $btc $eth $XRP $bayry $oxy $el $Baba $ctra $intc $RTX</td><td>SPX</td><td class=SELL>SELL</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.50</td><td class=num><small>–</small></td>
-<td class=num>2025-07-21<br>6,305.60</td><td class=num>2026-07-20<br>7,443.28</td><td class=num data-v='18.042369796379383'>+18.0%<br><small>flat ±9.9%</small></td><td><span class=BUY>BUY</span></td><td>WRONG</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1752624000&period2=1753488000'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1784073600&period2=1784937600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
 <tr class="CORRECT" data-acc="laplace2011" data-asset="BTC" data-hz="MEDIUM" data-res="CORRECT" data-dir="SELL">
 <td data-v=42>42</td><td>@laplace2011<br><small>2025-07-20</small><br><a href='https://x.com/laplace2011/status/1946854564159725838'>tweet ↗</a></td>
 <td class=tweet><mark>Balona Balon denir!</mark> https://t.co/wkPILsGEdN @YouTube aracılığıyla
@@ -737,6 +730,13 @@ Bakalım bunlar çalışacak mı?
 #Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Bayer #EsteeLauder #Tesla #Coterra #Raytheon #Baba  #Occidental #Intel #ethereum #Ripple #Avax #solana $btc $eth $XRP $bayry $oxy $el $Baba $ctra $intc $RTX</td><td>BTC</td><td class=SELL>SELL</td>
 <td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.50</td><td class=num><small>–</small></td>
 <td class=num>2025-07-20<br>117,300.79</td><td class=num>2026-07-20<br>65,230.03</td><td class=num data-v='-44.390802598101665'>-44.4%<br><small>flat ±24.1%</small></td><td><span class=SELL>SELL</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1752537600&period2=1753401600'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1784073600&period2=1784937600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
+<tr class="WRONG" data-acc="laplace2011" data-asset="SPX" data-hz="MEDIUM" data-res="WRONG" data-dir="SELL">
+<td data-v=41>41</td><td>@laplace2011<br><small>2025-07-20</small><br><a href='https://x.com/laplace2011/status/1946854564159725838'>tweet ↗</a></td>
+<td class=tweet><mark>Balona Balon denir!</mark> https://t.co/wkPILsGEdN @YouTube aracılığıyla
+
+#Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Bayer #EsteeLauder #Tesla #Coterra #Raytheon #Baba  #Occidental #Intel #ethereum #Ripple #Avax #solana $btc $eth $XRP $bayry $oxy $el $Baba $ctra $intc $RTX</td><td>SPX</td><td class=SELL>SELL</td>
+<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.50</td><td class=num><small>–</small></td>
+<td class=num>2025-07-21<br>6,305.60</td><td class=num>2026-07-20<br>7,443.28</td><td class=num data-v='18.042369796379383'>+18.0%<br><small>flat ±9.9%</small></td><td><span class=BUY>BUY</span></td><td>WRONG</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1752624000&period2=1753488000'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1784073600&period2=1784937600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
 <tr class="CORRECT" data-acc="laplace2011" data-asset="GOLD" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
 <td data-v=40>40</td><td>@laplace2011<br><small>2025-07-19</small><br><a href='https://x.com/laplace2011/status/1946612720977035589'>tweet ↗</a></td>
 <td class=tweet><mark>Dolar &amp;amp; Altın Pat-la-ya-cak!</mark> https://t.co/Y5vSnklW64 @YouTube aracılığıyla
@@ -798,36 +798,36 @@ https://t.co/V4roHLwnCj twitimde demek istediğim belki şimdi biraz daha anlaş
 <td class=tweet>Günaydın, S&amp;P 6000, Russell yeni zirve yapmak üzere, BTC 88600 dolar. Dün yaşanan hareketle beraber Bitcoin &#x27;in piyasa değeri gümüşün üstüne (altın ve gümüşte de stresslenmeyin)  çıkmış oldu. Buralarda biraz takılabilir ama S&amp;P&#x27;nin hareketine baktığımda <mark>henüz BTC&#x27;nin de ana zirvede olduğunu düşünmüyorum</mark>.</td><td>BTC</td><td class=BUY>BUY</td>
 <td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.65</td><td class=num><small>–</small></td>
 <td class=num>2024-11-12<br>87,955.81</td><td class=num>2025-11-12<br>101,663.19</td><td class=num data-v='15.584387899321605'>+15.6%<br><small>flat ±26.6%</small></td><td><span class=NEUTRAL>NEUTRAL</span></td><td>PARTIAL</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1730937600&period2=1731801600'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1762473600&period2=1763337600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=28>28</td><td>@santmanukyan<br><small>2024-10-28</small><br><a href='https://x.com/santmanukyan/status/1850742694605124005'>tweet ↗</a></td>
-<td class=tweet>Petrol 4.5% aşağıda. Altın ise 2. notta yazdığım gibi zaten İran saldırısını da ciddiye almamıştı, düşüş çok daha sınırlı. <mark>S&amp;amp;P,altın,gümüş, BTC vs hepsinde daha yüksek seviyeler görülecek</mark>.</td><td>SPX</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
-<td class=num>2024-10-28<br>5,823.52</td><td class=num>2025-10-28<br>6,890.89</td><td class=num data-v='18.32860733040659'>+18.3%<br><small>flat ±6.1%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1729641600&period2=1730505600'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1761177600&period2=1762041600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="GOLD" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=29>29</td><td>@santmanukyan<br><small>2024-10-28</small><br><a href='https://x.com/santmanukyan/status/1850742694605124005'>tweet ↗</a></td>
-<td class=tweet>Petrol 4.5% aşağıda. Altın ise 2. notta yazdığım gibi zaten İran saldırısını da ciddiye almamıştı, düşüş çok daha sınırlı. <mark>S&amp;amp;P,altın,gümüş, BTC vs hepsinde daha yüksek seviyeler görülecek</mark>.</td><td>GOLD</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
-<td class=num>2024-10-28<br>2,755.90</td><td class=num>2025-10-28<br>3,983.10</td><td class=num data-v='44.5299262962646'>+44.5%<br><small>flat ±7.2%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1729641600&period2=1730505600'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1761177600&period2=1762041600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
 <tr class="CORRECT" data-acc="santmanukyan" data-asset="BTC" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
 <td data-v=30>30</td><td>@santmanukyan<br><small>2024-10-28</small><br><a href='https://x.com/santmanukyan/status/1850742694605124005'>tweet ↗</a></td>
 <td class=tweet>Petrol 4.5% aşağıda. Altın ise 2. notta yazdığım gibi zaten İran saldırısını da ciddiye almamıştı, düşüş çok daha sınırlı. <mark>S&amp;amp;P,altın,gümüş, BTC vs hepsinde daha yüksek seviyeler görülecek</mark>.</td><td>BTC</td><td class=BUY>BUY</td>
 <td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
 <td class=num>2024-10-28<br>69,907.76</td><td class=num>2025-10-28<br>112,956.16</td><td class=num data-v='61.57886849333715'>+61.6%<br><small>flat ±25.7%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1729641600&period2=1730505600'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1761177600&period2=1762041600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=22>22</td><td>@santmanukyan<br><small>2024-10-15</small><br><a href='https://x.com/santmanukyan/status/1846035664107622715'>tweet ↗</a></td>
-<td class=tweet>İran İsrail&#x27;i vurduktan sonra ekteki yorumu yazmıştım. Şimdi bir iyi bir de kötü haberim var. İyi haber İsrail İran&#x27;da petrol veya nuke tesislerini değil sadece askeri tesisleri vuracağını açıkladı (veya mış)  https://t.co/m3rB3ZxrQ2 . Bu sadece ABD&#x27;nin secim öncesi bir petrol krizi istememesi kaynaklı değil. Bilin bakalım İran petrollerini, bazen 90%&#x27;a varan oranlarda, kim alıyor?... Kötü haber ise ABD&#x27;nin İsrail&#x27;e hem Thaad füzeleri hem de asker gönderiyor olması. Taraflar karşılıklı askeri tesisleri vururken Amerikalı askerlerin de hedef olması ABD&#x27;nin konuya bu kez doğrudan müdahil olmasına neden olacaktır, risk artıyor. Her neyse, yukarıdaki tezime Altın&#x27;ın hareketini şahit göstermiştim (2. ek). Altın ve BTC&#x27;de yavaş hareketin yatırımcı nezdinde tedirgin edici olduğunu gelen DM sayılarından anlıyorum. Merak etmeyin, <mark>S&amp;P dalgası her şeyi yükseltecek</mark>. Yükselişin temelini anlamak sonrasında yaşanacakları anlamak için de çok önemli.</td><td>SPX</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.70</td><td class=num><small>–</small></td>
-<td class=num>2024-10-15<br>5,815.26</td><td class=num>2025-10-15<br>6,671.06</td><td class=num data-v='14.716458549754435'>+14.7%<br><small>flat ±6.3%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1728518400&period2=1729382400'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1760054400&period2=1760918400'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
 <tr class="CORRECT" data-acc="santmanukyan" data-asset="GOLD" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=23>23</td><td>@santmanukyan<br><small>2024-10-15</small><br><a href='https://x.com/santmanukyan/status/1846035664107622715'>tweet ↗</a></td>
-<td class=tweet>İran İsrail&#x27;i vurduktan sonra ekteki yorumu yazmıştım. Şimdi bir iyi bir de kötü haberim var. İyi haber İsrail İran&#x27;da petrol veya nuke tesislerini değil sadece askeri tesisleri vuracağını açıkladı (veya mış)  https://t.co/m3rB3ZxrQ2 . Bu sadece ABD&#x27;nin secim öncesi bir petrol krizi istememesi kaynaklı değil. Bilin bakalım İran petrollerini, bazen 90%&#x27;a varan oranlarda, kim alıyor?... Kötü haber ise ABD&#x27;nin İsrail&#x27;e hem Thaad füzeleri hem de asker gönderiyor olması. Taraflar karşılıklı askeri tesisleri vururken Amerikalı askerlerin de hedef olması ABD&#x27;nin konuya bu kez doğrudan müdahil olmasına neden olacaktır, risk artıyor. Her neyse, yukarıdaki tezime Altın&#x27;ın hareketini şahit göstermiştim (2. ek). Altın ve BTC&#x27;de yavaş hareketin yatırımcı nezdinde tedirgin edici olduğunu gelen DM sayılarından anlıyorum. Merak etmeyin, <mark>S&amp;P dalgası her şeyi yükseltecek</mark>. Yükselişin temelini anlamak sonrasında yaşanacakları anlamak için de çok önemli.</td><td>GOLD</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.65</td><td class=num><small>–</small></td>
-<td class=num>2024-10-15<br>2,678.90</td><td class=num>2025-10-15<br>4,201.60</td><td class=num data-v='56.840503595535644'>+56.8%<br><small>flat ±7.2%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1728518400&period2=1729382400'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1760054400&period2=1760918400'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
+<td data-v=29>29</td><td>@santmanukyan<br><small>2024-10-28</small><br><a href='https://x.com/santmanukyan/status/1850742694605124005'>tweet ↗</a></td>
+<td class=tweet>Petrol 4.5% aşağıda. Altın ise 2. notta yazdığım gibi zaten İran saldırısını da ciddiye almamıştı, düşüş çok daha sınırlı. <mark>S&amp;amp;P,altın,gümüş, BTC vs hepsinde daha yüksek seviyeler görülecek</mark>.</td><td>GOLD</td><td class=BUY>BUY</td>
+<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
+<td class=num>2024-10-28<br>2,755.90</td><td class=num>2025-10-28<br>3,983.10</td><td class=num data-v='44.5299262962646'>+44.5%<br><small>flat ±7.2%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1729641600&period2=1730505600'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1761177600&period2=1762041600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
+<tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
+<td data-v=28>28</td><td>@santmanukyan<br><small>2024-10-28</small><br><a href='https://x.com/santmanukyan/status/1850742694605124005'>tweet ↗</a></td>
+<td class=tweet>Petrol 4.5% aşağıda. Altın ise 2. notta yazdığım gibi zaten İran saldırısını da ciddiye almamıştı, düşüş çok daha sınırlı. <mark>S&amp;amp;P,altın,gümüş, BTC vs hepsinde daha yüksek seviyeler görülecek</mark>.</td><td>SPX</td><td class=BUY>BUY</td>
+<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
+<td class=num>2024-10-28<br>5,823.52</td><td class=num>2025-10-28<br>6,890.89</td><td class=num data-v='18.32860733040659'>+18.3%<br><small>flat ±6.1%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1729641600&period2=1730505600'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1761177600&period2=1762041600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
 <tr class="CORRECT" data-acc="santmanukyan" data-asset="BTC" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
 <td data-v=24>24</td><td>@santmanukyan<br><small>2024-10-15</small><br><a href='https://x.com/santmanukyan/status/1846035664107622715'>tweet ↗</a></td>
 <td class=tweet>İran İsrail&#x27;i vurduktan sonra ekteki yorumu yazmıştım. Şimdi bir iyi bir de kötü haberim var. İyi haber İsrail İran&#x27;da petrol veya nuke tesislerini değil sadece askeri tesisleri vuracağını açıkladı (veya mış)  https://t.co/m3rB3ZxrQ2 . Bu sadece ABD&#x27;nin secim öncesi bir petrol krizi istememesi kaynaklı değil. Bilin bakalım İran petrollerini, bazen 90%&#x27;a varan oranlarda, kim alıyor?... Kötü haber ise ABD&#x27;nin İsrail&#x27;e hem Thaad füzeleri hem de asker gönderiyor olması. Taraflar karşılıklı askeri tesisleri vururken Amerikalı askerlerin de hedef olması ABD&#x27;nin konuya bu kez doğrudan müdahil olmasına neden olacaktır, risk artıyor. Her neyse, yukarıdaki tezime Altın&#x27;ın hareketini şahit göstermiştim (2. ek). Altın ve BTC&#x27;de yavaş hareketin yatırımcı nezdinde tedirgin edici olduğunu gelen DM sayılarından anlıyorum. Merak etmeyin, <mark>S&amp;P dalgası her şeyi yükseltecek</mark>. Yükselişin temelini anlamak sonrasında yaşanacakları anlamak için de çok önemli.</td><td>BTC</td><td class=BUY>BUY</td>
 <td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.65</td><td class=num><small>–</small></td>
 <td class=num>2024-10-15<br>67,041.11</td><td class=num>2025-10-15<br>110,783.16</td><td class=num data-v='65.24661524144118'>+65.2%<br><small>flat ±26.1%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1728518400&period2=1729382400'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1760054400&period2=1760918400'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
+<tr class="CORRECT" data-acc="santmanukyan" data-asset="GOLD" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
+<td data-v=23>23</td><td>@santmanukyan<br><small>2024-10-15</small><br><a href='https://x.com/santmanukyan/status/1846035664107622715'>tweet ↗</a></td>
+<td class=tweet>İran İsrail&#x27;i vurduktan sonra ekteki yorumu yazmıştım. Şimdi bir iyi bir de kötü haberim var. İyi haber İsrail İran&#x27;da petrol veya nuke tesislerini değil sadece askeri tesisleri vuracağını açıkladı (veya mış)  https://t.co/m3rB3ZxrQ2 . Bu sadece ABD&#x27;nin secim öncesi bir petrol krizi istememesi kaynaklı değil. Bilin bakalım İran petrollerini, bazen 90%&#x27;a varan oranlarda, kim alıyor?... Kötü haber ise ABD&#x27;nin İsrail&#x27;e hem Thaad füzeleri hem de asker gönderiyor olması. Taraflar karşılıklı askeri tesisleri vururken Amerikalı askerlerin de hedef olması ABD&#x27;nin konuya bu kez doğrudan müdahil olmasına neden olacaktır, risk artıyor. Her neyse, yukarıdaki tezime Altın&#x27;ın hareketini şahit göstermiştim (2. ek). Altın ve BTC&#x27;de yavaş hareketin yatırımcı nezdinde tedirgin edici olduğunu gelen DM sayılarından anlıyorum. Merak etmeyin, <mark>S&amp;P dalgası her şeyi yükseltecek</mark>. Yükselişin temelini anlamak sonrasında yaşanacakları anlamak için de çok önemli.</td><td>GOLD</td><td class=BUY>BUY</td>
+<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.65</td><td class=num><small>–</small></td>
+<td class=num>2024-10-15<br>2,678.90</td><td class=num>2025-10-15<br>4,201.60</td><td class=num data-v='56.840503595535644'>+56.8%<br><small>flat ±7.2%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1728518400&period2=1729382400'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1760054400&period2=1760918400'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
+<tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
+<td data-v=22>22</td><td>@santmanukyan<br><small>2024-10-15</small><br><a href='https://x.com/santmanukyan/status/1846035664107622715'>tweet ↗</a></td>
+<td class=tweet>İran İsrail&#x27;i vurduktan sonra ekteki yorumu yazmıştım. Şimdi bir iyi bir de kötü haberim var. İyi haber İsrail İran&#x27;da petrol veya nuke tesislerini değil sadece askeri tesisleri vuracağını açıkladı (veya mış)  https://t.co/m3rB3ZxrQ2 . Bu sadece ABD&#x27;nin secim öncesi bir petrol krizi istememesi kaynaklı değil. Bilin bakalım İran petrollerini, bazen 90%&#x27;a varan oranlarda, kim alıyor?... Kötü haber ise ABD&#x27;nin İsrail&#x27;e hem Thaad füzeleri hem de asker gönderiyor olması. Taraflar karşılıklı askeri tesisleri vururken Amerikalı askerlerin de hedef olması ABD&#x27;nin konuya bu kez doğrudan müdahil olmasına neden olacaktır, risk artıyor. Her neyse, yukarıdaki tezime Altın&#x27;ın hareketini şahit göstermiştim (2. ek). Altın ve BTC&#x27;de yavaş hareketin yatırımcı nezdinde tedirgin edici olduğunu gelen DM sayılarından anlıyorum. Merak etmeyin, <mark>S&amp;P dalgası her şeyi yükseltecek</mark>. Yükselişin temelini anlamak sonrasında yaşanacakları anlamak için de çok önemli.</td><td>SPX</td><td class=BUY>BUY</td>
+<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.70</td><td class=num><small>–</small></td>
+<td class=num>2024-10-15<br>5,815.26</td><td class=num>2025-10-15<br>6,671.06</td><td class=num data-v='14.716458549754435'>+14.7%<br><small>flat ±6.3%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1728518400&period2=1729382400'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1760054400&period2=1760918400'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
 <tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
 <td data-v=21>21</td><td>@santmanukyan<br><small>2024-09-17</small><br><a href='https://x.com/santmanukyan/status/1835869113182462358'>tweet ↗</a></td>
 <td class=tweet>Günaydın, 3 senatörün Fed&#x27;e 50 de yetmez 75 indirin https://t.co/v1vb6KYQJc
@@ -875,16 +875,16 @@ Gümüşte aynı grafiğe bakarsanız alternatif maliyet/getiri kavramlarının 
 <td class=tweet>Gunaydin, tekrarliyorum: <mark>maliniza (sadece BTC degil Eth de buna dahil) sahip cikin</mark>, X tavsiyelerinin hic birisine inanmayin,Giritli Epimenides&#x27;e de selam olsun.</td><td>BTC</td><td class=BUY>BUY</td>
 <td>LONG<br><small>1–5 y · eval 730d</small></td><td class=num>0.55</td><td class=num><small>–</small></td>
 <td class=num>2024-03-05<br>63,801.20</td><td class=num>2026-03-05<br>70,841.12</td><td class=num data-v='11.034159024366888'>+11.0%<br><small>flat ±32.0%</small></td><td><span class=NEUTRAL>NEUTRAL</span></td><td>PARTIAL</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1709164800&period2=1710028800'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1772236800&period2=1773100800'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="LONG" data-res="CORRECT" data-dir="BUY">
-<td data-v=11>11</td><td>@santmanukyan<br><small>2024-02-23</small><br><a href='https://x.com/santmanukyan/status/1760858168458899485'>tweet ↗</a></td>
-<td class=tweet>Günaydın, benim de meşhur bir son sözüm olsun istiyorum : Kendisine Leventte arazi alması teklif edilen dedenizi  nasıl buruk bir sevgi ile anıyorsanız <mark>şayet S&amp;P ve Bitcoin pozisyonunuza sahip çıkmazsanız torunlarınız da aynı burukluğu size karşı hissedecek</mark>.  Şaka bir yana Jesse Livermore&#x27;un şu sözünü unutmayın &quot;&quot;It was never my thinking that made the big money for me, it always was sitting. sitting tight.&quot;</td><td>SPX</td><td class=BUY>BUY</td>
-<td>LONG<br><small>1–5 y · eval 730d</small></td><td class=num>0.70</td><td class=num><small>–</small></td>
-<td class=num>2024-02-23<br>5,088.80</td><td class=num>2026-02-23<br>6,837.75</td><td class=num data-v='34.36861858274462'>+34.4%<br><small>flat ±8.7%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1708214400&period2=1709078400'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1771372800&period2=1772236800'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
 <tr class="CORRECT" data-acc="santmanukyan" data-asset="BTC" data-hz="LONG" data-res="CORRECT" data-dir="BUY">
 <td data-v=12>12</td><td>@santmanukyan<br><small>2024-02-23</small><br><a href='https://x.com/santmanukyan/status/1760858168458899485'>tweet ↗</a></td>
 <td class=tweet>Günaydın, benim de meşhur bir son sözüm olsun istiyorum : Kendisine Leventte arazi alması teklif edilen dedenizi  nasıl buruk bir sevgi ile anıyorsanız <mark>şayet S&amp;P ve Bitcoin pozisyonunuza sahip çıkmazsanız torunlarınız da aynı burukluğu size karşı hissedecek</mark>.  Şaka bir yana Jesse Livermore&#x27;un şu sözünü unutmayın &quot;&quot;It was never my thinking that made the big money for me, it always was sitting. sitting tight.&quot;</td><td>BTC</td><td class=BUY>BUY</td>
 <td>LONG<br><small>1–5 y · eval 730d</small></td><td class=num>0.70</td><td class=num><small>–</small></td>
 <td class=num>2024-02-23<br>50,731.95</td><td class=num>2026-02-22<br>67,659.39</td><td class=num data-v='33.36643213384317'>+33.4%<br><small>flat ±30.4%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1708214400&period2=1709078400'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1771286400&period2=1772150400'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
+<tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="LONG" data-res="CORRECT" data-dir="BUY">
+<td data-v=11>11</td><td>@santmanukyan<br><small>2024-02-23</small><br><a href='https://x.com/santmanukyan/status/1760858168458899485'>tweet ↗</a></td>
+<td class=tweet>Günaydın, benim de meşhur bir son sözüm olsun istiyorum : Kendisine Leventte arazi alması teklif edilen dedenizi  nasıl buruk bir sevgi ile anıyorsanız <mark>şayet S&amp;P ve Bitcoin pozisyonunuza sahip çıkmazsanız torunlarınız da aynı burukluğu size karşı hissedecek</mark>.  Şaka bir yana Jesse Livermore&#x27;un şu sözünü unutmayın &quot;&quot;It was never my thinking that made the big money for me, it always was sitting. sitting tight.&quot;</td><td>SPX</td><td class=BUY>BUY</td>
+<td>LONG<br><small>1–5 y · eval 730d</small></td><td class=num>0.70</td><td class=num><small>–</small></td>
+<td class=num>2024-02-23<br>5,088.80</td><td class=num>2026-02-23<br>6,837.75</td><td class=num data-v='34.36861858274462'>+34.4%<br><small>flat ±8.7%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1708214400&period2=1709078400'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1771372800&period2=1772236800'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
 <tr class="CORRECT" data-acc="santmanukyan" data-asset="BTC" data-hz="LONG" data-res="CORRECT" data-dir="BUY">
 <td data-v=10>10</td><td>@santmanukyan<br><small>2024-02-09</small><br><a href='https://x.com/santmanukyan/status/1755881406784258373'>tweet ↗</a></td>
 <td class=tweet>Microstrategy veya Bitcoin ETF&#x27;leri doğrudan BTC ile bağlantılı olduğu için alım yaptıklarında hemen manşete çıkıyor. Ama şu gelişme çok daha önemli: Fidelity (Kanada) all in one (bir nevi torba etf) etflerine Bitcoin almaya başladı. Aşağıda paylaştığım fon yapısında , ki muhafazakar fon, 1.1% payı var (agresif fonda daha yüksek). Doğrudan BTC etf&#x27;i almak isteyen fonlar/kişiler ne yaptığını bilerek alıyor. Burada ise özel bir kripto talebi olmadan fon paranızın ufak bir kısmını &quot;Bitcoine de&quot; aloke ediyor. Bu ikisi çok farklı akım türleri. 4 Şubatta yazdığım gibi <mark>&quot;malınıza , bitcoin de buna dahil, sahip çıkın&quot;</mark> .</td><td>BTC</td><td class=BUY>BUY</td>
@@ -924,152 +924,180 @@ Pazartesi günü &quot;ouvvv İran Amerika&#x27;yı vurmuş dünya karışacak ,
 </tbody></table>
 <h2>Debug</h2>
 <details><summary>Sample of asset-mentioning tweets the classifier judged <b>not a call</b> (30 random) — check for missed calls</summary><table>
-<tr><td>@santmanukyan<br><small>2025-01-27 · BTC,GOLD</small></td><td class=tweet>Bitcoin&#x27;e geçmeden önce bir detay; Rune&#x27;de yaşanan hareketi görmüşsünüzdür. Bir Luna sonu beklemiyorum ama ilginç bir yolculuk oldu.  
+<tr><td>@santmanukyan<br><small>2024-10-15 · SPX</small></td><td class=tweet>Günaydın, Nvidia yeni zirve yaparken 2. ekte gördüğünüz üzere S&amp;P eşit ağırlıklı endeksi de (yani her hissenin 0.2% ağırlığı var) yeni zirve yapıyor. Sabah akşam ve her şeye balon deyince kelimenin bir ağırlığı da kalmıyor. S&amp;P&#x27;nin M-8 dışı değerlemesi pahalı olarak nitelendirilebilir ama (henüz) balon değil.</td></tr>
+<tr><td>@laplace2011<br><small>2025-07-13 · GOLD</small></td><td class=tweet>Gümüşşşş!!! &amp;amp; Altın’da $20,000 Senaryosu?!? https://t.co/8DXrA13FLr @YouTube aracılığıyla
 
-Gelelim BTC&#x27;te. Bitcoin camiası miyopik davranarak Trump&#x27;ın genelgesinde rezervlere odaklanıyor. Oysa çok daha önemli noktalar vardı. Birincisi merkez bankası dijital para çalışmalarını yasaklaması. Varlığı otoriter kullanımı bir yana günlük işlemler açısından da kripto negatif bir gelişme olurdu. Diğeri Sab 121&#x27;in iptali. Larry Fink’in tokenizasyon çağrısı https://t.co/bWEjTKrVvK J. Dorsey’in Bitcoin dijital altın olursa başarısız olmuştur açıklaması https://t.co/JWCMbzCG8N bu adımlarla beraber okunduğunda önemli gelişmeler. Dorsey Bitcoin yatırımcısının önce etf ardından rezervlerle beraber ruhunu piyasaya sattığını görebiliyor.</td></tr>
-<tr><td>@laplace2011<br><small>2025-10-04 · GOLD</small></td><td class=tweet>Dolar &amp;amp; Altın’da Kaçınılmaz’a Doğru! https://t.co/8SuBuVnk8T @YouTube aracılığıyla
-
-#dolar #altın #borsa #enflasyon #GRAMALTIN #gümüş #bist100 #enflasyon</td></tr>
-<tr><td>@laplace2011<br><small>2025-11-06 · GOLD</small></td><td class=tweet>Sevgili @simgefstk ‘na konuk oldum. İzlenir
-
-Asıl Kriz Başlamadı! Altın ve Borsada Büyük Şok Kapıda! Devrim Akyıl Uyardı https://t.co/RGf5gfItyg @YouTube aracılığıyla</td></tr>
-<tr><td>@laplace2011<br><small>2025-07-27 · BTC,SPX</small></td><td class=tweet>Tarihin En Pahalı Fiyatlaması! https://t.co/Ks0hVK9Xta @YouTube aracılığıyla
-
-#Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Bayer #EsteeLauder #Google #Microsoft #Apple  #Raytheon #Baba #Occidental #ethereum #Ripple #Matic  #solana $btc $eth $XRP $bayry $oxy $el $Baba $Rtx</td></tr>
-<tr><td>@apompliano<br><small>2025-11-26 · BTC</small></td><td class=tweet>Extreme Fear in the market could actually be the signal that bitcoin will recover from here, according to @binance https://t.co/1YIlmQClBW</td></tr>
-<tr><td>@laplace2011<br><small>2025-09-14 · BTC,SPX</small></td><td class=tweet>Borsalarda Kader Haftası! https://t.co/swX7xIdCMV @YouTube aracılığıyla
-
-Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Bayer  #Baba  #Occidental #ethereum #Ripple #Avax #solana $btc $eth $XRP $bayry $oxy $Baba $intc</td></tr>
-<tr><td>@laplace2011<br><small>2025-08-01 · SPX</small></td><td class=tweet>Dünkü Nasdaq kapanışı tarihinde %1&#x27;den fazla artışla rekor seviyelere çıkıp günü düşüşle tamamladığı sadece 7. sefer gerçekleşmiş. Öncekilerin üçünde (2000 2007 2020), 1-3 ay içerisinde çok daha dramatik kriz dönüşlerinin öncü göstergesi olmuş!
-Sadece istatistik…😜</td></tr>
-<tr><td>@laplace2011<br><small>2025-11-23 · SPX</small></td><td class=tweet>Yanlış anlaşılmasın henüz bir şey ima etmiyorum, ancak bazı konuları açıklığa kavuşturmak açısından #Nasdaq’ın https://t.co/HjGgq9MuYi balonu zirvesini geçmesi 16 yıldan uzun sürmüştü! ☂️ https://t.co/dPWpa8JCz4</td></tr>
+#altın #para #ekonomi #dolar #euro  #gümüş #borsa #eurusd #buğday #brent #petrol #platin #paladyum #natgas #Wheat #weat #rice #coffee #usdjpy $Xauusd $Xagusd $Xptusd $Xpdusd #staglasyon</td></tr>
 <tr><td>@laplace2011<br><small>2025-08-03 · GOLD</small></td><td class=tweet>Zor Zamanlarda Altın Sakin Sakin… https://t.co/A6jomoNGdV @YouTube aracılığıyla 
 
 #altın #para #ekonomi #dolar #euro  #gümüş #borsa #devrimakyıl #us10y #eurusd #buğday #brent #petrol #platin #natgas #Wheat #weat #usdjpy $Xauusd $Xagusd $Xptusd #staglasyon #enflasyon</td></tr>
-<tr><td>@laplace2011<br><small>2025-07-12 · BTC</small></td><td class=tweet>Bolivya Başkanı, “Dolar Kullanmayın!” çağrısı yapmış! 
-Çin işi ama… Aslında Trump da aynısını söylüyor! Dolar satın ama yerine #btc alın onu almak için  #stablecoin alın! Ben onlara tahvil çakıyorum diyor! 😫 Çok zekice!🤓🧐😱 
-Nereye kadar..? 
-Günü kurtarsın da…</td></tr>
-<tr><td>@laplace2011<br><small>2025-09-06 · SPX</small></td><td class=tweet>😜🤑🙏🧿 #Nvidia #Baba #nasdaq https://t.co/1hgMx0J0YA</td></tr>
-<tr><td>@santmanukyan<br><small>2024-02-28 · BTC</small></td><td class=tweet>CryptoQuant sitesinden aldığım aslında ilişkili 2 grafik paylaşıyorum. 1- Neredeyse herkes karda (supply in profit indikatörü). Bunun doğal sonucu olarak 2- Borsalara BTC gelmeye başladı. Şimdi bir trader için en zor kısma geldiniz, kendinizle mücadeleye. 7/24 ekrana baktığınız için korkunuz sat , hırsınız bekle diyor. Benim görüşüm değişmedi ama ben sadece ufak bir detayım.</td></tr>
-<tr><td>@santmanukyan<br><small>2024-09-19 · GOLD,SPX</small></td><td class=tweet>Sanırım artık ZH&#x27;in sitesinde Fed para bastığı/yaktığı için Altında&amp;S&amp;P&#x27;de bla bla oldu analizleri olmadığından sadece faiz kararı konuşuldu, QT konusu arada kaynıyor. Fed bilançosu gördüğünüz üzere Covid şoku sonrası (+sonrası) genişlemeyi geri vermiş durumda. Sarı çizgi ise rezervlerin seyri. 2019 krizi sonrası gerekli önlemler alınmış olsa da rezervlerde yeterli seviye Fed (ve piyasa) açısından hala kritik bir konu. Meraklıları için rezervlerin seviyesine yönelik Ağustos ayında yayınlanan 2 analiz paylaşıyorum https://t.co/LYchYPOcio  ve    https://t.co/qDyGtXpqom</td></tr>
-<tr><td>@santmanukyan<br><small>2024-04-21 · BTC,GOLD</small></td><td class=tweet>Gunaydin, ailenizin analisti olarak bugun tt olan Incil konusuna asagida dikkatinizi cekmistim zaten. https://t.co/wyGkUsZd6n . Ama Temsilciler Meclisinden gecen taslakta bence baska 2 onemli konu daha var. Ilki Trump kanadi diyebilecegim dis politikada izolasyon taraftarlarinin , simdilik, azinlikta kalmasi. Olasi bir Trump-2 donemininde bilinmezlik ekonomi degil dis politikada soz konusu olacak. Ikinci nokta ise Rus varliklarina el koyma niyeti - That bill also allows the confiscation of Russian dollar assets to help fund assistance to Ukraine-. Rakam kucuk olsa da mahkeme karari olmadan boyle bir adim buyuk kirilma demek. Cin not edecektir. Isler o noktaya gelirse Altin Bitcoine oranla daha &quot;notr/merkeziyetsiz&quot; bir finansal varlik.</td></tr>
-<tr><td>@laplace2011<br><small>2025-10-12 · GOLD</small></td><td class=tweet>Büyük Gümüş Sıkıntısı! Altın’ın $4000 Sınavı! https://t.co/972rZHo7QN @YouTube aracılığıyla
+<tr><td>@laplace2011<br><small>2025-09-14 · GOLD</small></td><td class=tweet>Rekora Doymayanlar: Altın Gümüş Kardeşler! https://t.co/tEwnzF7kBB @YouTube aracılığıyla
 
-#altın #para #dolar  #gümüş #borsa #devrimakyıl #eurusd #buğday #brent #petrol #platin #paladyum #natgas #Wheat #weat #rice #soybean #usdjpy $Xauusd $Xagusd $Xptusd $Xpdusd #staglasyon</td></tr>
-<tr><td>@santmanukyan<br><small>2023-08-30 · BTC</small></td><td class=tweet>Tabii şunu da unutmamak lazım; &quot;agresif&quot; -anahtar sende değilse senin coinin değildir yiğenimden- ETF çıksa da fiyat yükselse noktasına gelen bir kesim var. Oysa Bitcoin (veya benim gözümde Ethereum) tutmakla önünüzde açılan dünya ile bir ETF tutmak arasında büyük bir fark var. Kurumsal yatırımcı açısından hala neden almalıyız sorusu cevaplanmış değil.</td></tr>
+#altın #para #ekonomi #dolar #euro  #gümüş #borsa #devrimakyıl #eurusd #buğday #brent #petrol #platin #natgas #Wheat #weat #corn #coffee #usdjpy $Xauusd $Xagusd $Xptusd  #staglasyon</td></tr>
+<tr><td>@santmanukyan<br><small>2023-09-12 · GOLD</small></td><td class=tweet>Japon tahvillerinde yükseliş elbette 10 yıllıklarla sınırlı değil. Eğrinin tamamı hareket ediyor. Eksi getirili tahvil sokuna baktığımızda (1) gördüğümüz şu sert gerileme 2 yıllık JGB kaynaklı. Bir yan not olarak; stok miktarı ve gümüş arasında , doğal olarak, net bir uyum vardı. Getirilerin artıya geçmesi gümüş (dm) üzerinde baskı kuruyor. Reel faiz hareketi bittiğinde değerli metaller de rahatlayacak. (Altın yen bazında tarihi zirvesinin sadece 1% altında).</td></tr>
+<tr><td>@santmanukyan<br><small>2025-04-15 · SPX</small></td><td class=tweet>Apple’ın CEO’su Tim Cook’un yıllar önce bir panelde söylediği “Çin’de olma nedenimiz sanıldığı gibi ucuz işçilik değil ekspertiz” babında açıklaması sosyal medyada tur dönüyor. Söylediği elbette çok doğru, zaten Çin’de ücretlerin düşük olmadığını herkes de biliyor. Ancak Cook gerçeğin tamamını söylemiyor. Gerçek , WSJ’den Greg Ip’nin dikkat çektiği gibi çok daha farklı. Cook 1998 yılında operasyonların başına geldiğinde Apple’ın ABD’deki fabrikalarını kapatıp Çin’e taşıdı. Yani Cook’un bahsettiği uzmanlık ABD’de vardı ancak Apple bunun yerine daha ucuz iş gücü olan bir bölgeye fabrika kurarak bu uzmanlığı da oraya taşımayı yeğledi ve Çinli iş gücünün kalitesini de yükseltti. Tıpkı diğer ABD şirketleri gibi. Bu nedenle aşağıda da paylaştığım üzere ticaret savaşları veya globalizasyon aslında bir sınıf savaşı. ABD’de orta sınıf daha yüksek karlar ve Wall Street için çökertilirken Çin’de düşük gelirli kesim fakirlikten kurtarıldı ancak yine de zenginleşmeden alması gereken payı alamadı. Sosyal medyada var olan “basit anlatıyorum” ilkesi “eksik anlatıyorum” ile kol kola gidiyor. Trump orta sınıfı düşünecek olan kurtarıcı mı elbette tartışılır ancak ortada bir sorun olduğu net. Buffet’ın tek cümlelik öz deyişlerini paylaşmak yerine felsefesi ve görüşlerini çalışmak daha faydalı olabilir. 2016 yılında ticaret açığına yönelik makalesini paylaşıyorum : https://t.co/uzYob0nlqH.</td></tr>
+<tr><td>@apompliano<br><small>2025-11-17 · BTC</small></td><td class=tweet>Does bitcoin close 2025 above or below $100,000 per coin?</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-20 · GOLD</small></td><td class=tweet>Göreceğiz… El mi yaman…
+#Altın… #Xauusd</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-08 · GOLD</small></td><td class=tweet>Yeter! https://t.co/fZTPa5uQFZ @YouTube aracılığıyla
+
+#dolar #altın #borsa #ekonomi #para #gümüş #bist100 #Borsaİstanbul</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-20 · SPX</small></td><td class=tweet>🤑👍🧿 #Nvidia #Nasdaq 🎈🎈🎈🎈🎈</td></tr>
+<tr><td>@laplace2011<br><small>2025-08-10 · BTC,SPX</small></td><td class=tweet>ABD Stagflasyonu Yine Yeniden! https://t.co/B9CphI6a4q @YouTube aracılığıyla
+
+#Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Baba #sarepta #EsteeLauder #Occidental #Intel #ethereum #ripple $btc $eth $XRP $tia $oxy $el $Baba $intc $srpt</td></tr>
+<tr><td>@santmanukyan<br><small>2023-12-14 · BTC</small></td><td class=tweet>Ara ara Jamie Dimon kalbimizi kırsa da JP gönlümü(zü) alıyor : “JPMorgan expects ether to outperform bitcoin and other cryptocurrencies in 2024, although the bank remains generally &quot;cautious&quot; about crypto markets in the coming year. &quot;We believe that next year Ethereum will re-assert itself and recapture market share within the crypto ecosystem,&quot; JPMorgan analysts led by Nikolaos Panigirtzoglou wrote in a note on Wednesday.” . Bu arada devlettir, hem döver hem sever: https://t.co/bb1J8pfoBR . Geçtiğimiz aylarda gündeme gelen kripto varlıkların muhasebeleştirilmesinde düşünülen düzenlemeler devreye girdi. Artık fair value olarak nitelendirilen piyasa değeri kullanılacak.</td></tr>
+<tr><td>@santmanukyan<br><small>2024-11-07 · SPX</small></td><td class=tweet>S&amp;P (2.53%, yeni zirve) ve Nasdaq (2.95%, yeni zirve ve evet NVDA da yeni zirve) ile karşılaştırıldığında Russell dün 5.85% artışla öne çıktı ancak oran hala istediğim yerlerin uzağında. 
+
+Yazılarımda sık sık kullanırım, belki burada da daha önce paylaşmışımdır. Louis Menand’ın Tolystoy’un tarih görüşüne dair tespitini isabetli bulurum. Her şeyi önüne katıp sürükleyen ağır çekim hareket eden bir tarih vs Hollywood tipi, bir tek kişi veya olayın yönünü belirlediği tarih. Trump&#x27;ın seçimine sanırım çoğunluk 2. pencereden bakıyor. Ben 1. pencereden bakıyorum , piyasa görüşüm de ona paralel gelişiyor....  “There is history the way Tolstoy imagined it, as a great, slow-moving weather system in which even tsars and generals are just leaves before the storm. And there is history the way Hollywood imagines it, as a single story line in which the right move by the tsar or the wrong move by the general changes everything. Most of us, deep down, are probably Hollywood people. We like to invent “what if” scenarios--what if x had never happened, what if y had happened instead?--because we like to believe that individual decisions make a difference: that, if not for x, or if only there had been y, history might have plunged forever down a completely different path. Since we are agents, we have an interest in the efficacy of agency.”</td></tr>
+<tr><td>@apompliano<br><small>2025-11-26 · BTC</small></td><td class=tweet>From the Desk of Anthony Pompliano
+
+0:00 The Housing Market Is Improving - But Is It Too Late?
+17:15 Will Fear In The Markets Lead To A Bitcoin Rebound?
+
+Enjoy! https://t.co/JgXS0wMJHG</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-09 · BTC,SPX</small></td><td class=tweet>Nasdaq’ta İlk Tokat Geldi! Devamı? https://t.co/5iRbJEvQZh @YouTube aracılığıyla
+
+Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Meta #Microsoft #Apple #PSQ #Merck #Pfizer $pfe $nvda $Meta  $btc</td></tr>
+<tr><td>@santmanukyan<br><small>2024-09-23 · GOLD</small></td><td class=tweet>CFTC pozisyonlarına baktığımızda ise fonların altın pozisyonu yüksek gümüşte ise ortalamaya yakın diyebiliriz. https://t.co/H9gOpELMoc</td></tr>
 <tr><td>@apompliano<br><small>2025-11-21 · BTC,SPX</small></td><td class=tweet>Bitcoin is going down because there are more sellers than buyers.</td></tr>
-<tr><td>@laplace2011<br><small>2025-09-16 · GOLD</small></td><td class=tweet>Konut satışları hız kesmeden devam ediyor! Kişisel görüşüm: 
-1.Vatandaş #Altın’dan  kazandığının bir kısmını konuta yatırıyor! 
-2.Vatandaş konut fiyatlatlarının aşağı gidebileceğine ihtimal vermiyor zira enflasyonda sert inişe inanmıyor!</td></tr>
-<tr><td>@laplace2011<br><small>2025-07-13 · BTC,SPX</small></td><td class=tweet>Balonlar Uçuşuyordu..! https://t.co/HSDD1ndhj0 @YouTube aracılığıyla
+<tr><td>@laplace2011<br><small>2025-09-14 · BTC,SPX</small></td><td class=tweet>Borsalarda Kader Haftası! https://t.co/swX7xIdCMV @YouTube aracılığıyla
 
-#Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Bayer #EsteeLauder #Coterra #Raytheon #Baba #Intel #Occidental #ethereum #Ripple #Avax #solana $btc $eth $XRP $bayry $oxy $el $Baba $ctra $intc $RTX</td></tr>
-<tr><td>@santmanukyan<br><small>2024-10-30 · GOLD,SPX</small></td><td class=tweet>Altın konusu ağırlıklı korku pornosuna dönüştürüldüğü için aklı başında tartışılamıyor. Ekteki grafikte burada değinmeyeceğim sorunlar ve hikayeler var ama tıpkı daha önce paylaştığım enfasyonla düzeltilmiş altın fiyatı gibi önemli bir grafik: Dow/altın. https://t.co/5VAYhjrZia</td></tr>
+Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Bayer  #Baba  #Occidental #ethereum #Ripple #Avax #solana $btc $eth $XRP $bayry $oxy $Baba $intc</td></tr>
+<tr><td>@santmanukyan<br><small>2025-11-07 · GOLD</small></td><td class=tweet>Günaydın,
+
+Görmüşsünüzdür veya göreceksiniz ABD&#x27;de gümüş dahil 10 ismi stratejik mineraller listesine aldı : https://t.co/6AY5z8TSRe . Çin adımını önceki gün aşağıda paylaşmıştım. Ham madde akışlarının giderek sorunlu hale geldiği bir döneme ilerliyoruz. Bu ikili fiyatlamaya da neden olacak. 
+
+Gümüş hareketlerinin pek çok insana anlaşılmaz gelmesinin bir nedeni ile gümüş arzının dinamikleri. Eylül ayında yatırımcılarla paylaştığım bir nottan &quot; İkinci nokta ise hep duyduğumuz güneş panelleri veya akıllı füzeler için gerekli olan gümüş miktarı. Yani gümüşün end. kullanımı ve talebi. (Verimlilik artışı nedeni ile miktarın giderek düşmesini bir kenara bırakıyorum .) Gümüşün bu özelliği altın alıcılarının aksine gümüş kullanıcısının fiyat hassasiyetine sahip olması ve ikamelere yönelmesini sağlıyor. Ancak daha da önemli bir nokta var. Gümüş altın gibi doğrudan çıkartılan bir maden olmaktan ziyade tıpkı bazı nadir elementler gibi yan madde olabiliyor. Gümüş üretiminin 70%’i bakır, çinko, kurşun ve altın üretimi neticesinde. Bu nedenle gümüş fiyatlarında görülen artış veya azalış gümüş üretimini doğrudan etkileyemiyor. Endüstri bakır talep ettiğinde gümüş üretimi de artıyor. Fiyat düştüğünde okuduklarınızda siz bunun JP Morgan’ın manipülasyonu zannediyorsunuz. Oysa bakır kaynaklı alt yapı veya yanı başınızda gördüğünüz inşaat, elektrikli araba kaynaklı talep artışı ile  gümüş düşüşü söz konusu olabiliyor. Bu durumda bakır fiyatları düşüyor ancak gümüş yükseliyorsa arz da artmayacak demektir.  Ki o noktaya doğru gittiğimizi düşünüyorum.&quot; 
+
+Bakır konusuna da çok detaya girmeden tek bir grafikle değinmek gerekirse 2008 krizinden sonra yeni bakır madeni keşfi çok azaldı. Ve bakırın kalitesi de giderek düşüyor.</td></tr>
+<tr><td>@santmanukyan<br><small>2024-03-26 · BTC,GOLD</small></td><td class=tweet>G.Afrikalı Altın madencisi Nilam&#x27;ın BTC alım haberini ciddiye alanlar için 2 tablo paylaşıyorum. Ben insaniyetliğimi yapiyim de siz istediğiniz şeye inanın: https://t.co/eLdtKegzBi</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-15 · GOLD</small></td><td class=tweet>Sıkıntı Derinleşiyor! https://t.co/dQlnIHAqEU @YouTube aracılığıyla
+
+#dolar #altın #borsa #ekonomi #para #gümüş #bist100</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-14 · BTC</small></td><td class=tweet>Günaydınn! 
+#Bitcoin &amp;amp; #kriptopara yatırımcısı bu sabaha da güzel uyanamadı! https://t.co/SgO5tfsAz1</td></tr>
+<tr><td>@santmanukyan<br><small>2024-02-19 · BTC</small></td><td class=tweet>Evet bu önemli bir haber ama eksik. Hatta asıl önemli olan bölüme değinilmemiş. Bitcoin ETF&#x27;lerinde saklama hizmetini Coinbase&#x27;e kaptıran bankalar pastadan pay almak için SEC&#x27;ten tanım değişikliği istiyorlar. Ancak asıl önemli talep 2. madde. Yani varlıkların tokenize edilmesi durumunda otomatik olarak &quot;kripto varlık&quot; olarak adlandırılması uygulamasında değişiklik istemeleri : https://t.co/I1rLmmjWID</td></tr>
 <tr><td>@santmanukyan<br><small>2025-09-09 · GOLD</small></td><td class=tweet>Günaydın, enflasyona göre düzeltilmiş fiyatı ile altın 1980 zirvesini aşarak yeni bir rekor kırdı. https://t.co/WSvFfiDnrD</td></tr>
-<tr><td>@santmanukyan<br><small>2024-01-02 · BTC</small></td><td class=tweet>Günaydın,
-SEC&#x27;nin Bitcoin ETF&#x27;ine yönelik kararını yarın veya Çarşamba günü ilgili şirketlere bildireceği haberi ile (ki hafta sonu vardı ) BTC 45K seviyesinde. Option piyasasına baktığımızda açık pozisyonların (Cuma büyük bir itfa vardı) yüksek (1) , kararın açıklanacağı tarihte put ve calların dengeli (2) gönüllerin ise 50K seviyesinde olduğunu görüyoruz (3) .</td></tr>
-<tr><td>@santmanukyan<br><small>2023-10-27 · GOLD</small></td><td class=tweet>Altının savaşla beraber yükselmesi altın bakır oranını (beyaz) baskılarken ABD 10 yıllık getiri ile olan uyumsuzluk son yılların en net seviyesinde. https://t.co/uqodwgr2oH</td></tr>
-<tr><td>@santmanukyan<br><small>2023-09-20 · BTC</small></td><td class=tweet>Bitcoin vs fiyatı önemli ama işlem hacminin geldiği nokta belli başlı bir kaç kripto dışında gerçek bir fiyatlama/piyasa olmadığını düşündürüyor. https://t.co/LX5tJAdoWh</td></tr>
-<tr><td>@laplace2011<br><small>2025-11-01 · GOLD</small></td><td class=tweet>Dolar &amp;amp; Altın’da Fırtına’ya Adım Adım… https://t.co/g8r34DsRzZ @YouTube aracılığıyla
+<tr><td>@laplace2011<br><small>2025-11-19 · BTC</small></td><td class=tweet>Bunu sabah kaçırmışım… Ne Hoş..😂 
 
-#dolar #altın #borsa #enflasyon #GRAMALTIN #gümüş #bist100</td></tr>
+#Eth Kurucusu Vitalik Butterin, Quantum Bilgisayarların 2028&#x27;e kadar #Ethereum &amp;amp; #Bitcoin’in kodunu çözebileceğini söylemiş!</td></tr>
+<tr><td>@santmanukyan<br><small>2023-09-18 · SPX</small></td><td class=tweet>ROUBINI: SHORT US STOCKS FOR REST OF YEAR, 10% DROP POSSIBLE https://t.co/qIagkJrR3u</td></tr>
+<tr><td>@apompliano<br><small>2025-11-21 · SPX</small></td><td class=tweet>The Nasdaq is up 15% year-to-date and people are acting like the world is ending.
+
+Insane.</td></tr>
+<tr><td>@laplace2011<br><small>2025-08-31 · GOLD</small></td><td class=tweet>Altın Rekorda, Gümüş Rekora Koşuyor! https://t.co/9Jy6GmrlEM @YouTube aracılığıyla
+
+#altın #para #ekonomi #dolar #euro  #gümüş #borsa #eurusd #buğday #brent #petrol #platin 
+ #natgas #Wheat #weat #corn #soybean #coffee #usdjpy $Xauusd $Xagusd $Xptusd #staglasyon #enflasyon #us10</td></tr>
 <tr><td>@santmanukyan<br><small>2024-04-15 · GOLD,SPX</small></td><td class=tweet>Günaydın, altın/petrol/S&amp;amp;P. Şimdilik kitaba uygun, hatta fazlası ile uygun.... https://t.co/5OmVmtuATz</td></tr>
-<tr><td>@santmanukyan<br><small>2024-09-20 · GOLD</small></td><td class=tweet>Grafiklerde altın ve gümüşte etflerin tuttuğu altın ve gümüş miktarı ile fiyatın seyri. Ayrışmanın neden  kaynaklandığını çok işledim zaten. Diğer ana fikir: henüz bireysel yatırımcı ciddi anlamda pozisyon açmış değil. Gümüş için (31 ve 31.70) önemli. https://t.co/IyqQWCDArh</td></tr>
-<tr><td>@santmanukyan<br><small>2024-03-11 · GOLD</small></td><td class=tweet>Çok sık okuduğumuz bir detay dolar yükseldiği için sanki altın yatırımı değer kazanmış gibi -gram altın yükseldi- manşetleridir. Kur illüzyonuna maruz kalmamak için her zaman altın fiyatlarına tüm ana para birimi bazında bakarım. USD/EUR/CHF bazında yeni zirveler söz konusu. Yani hareket gerçek. Ama bir noktada piyasadan ayrışıyorum. Piyasaya göre bu hareketin temelinde faiz indirim beklentileri var (bu nedenle yarın volatilite yüksek olacak), bana göre alımların büyük kısmı jeopolitik gelişmeler kaynaklı. Bekleyelim görelim.</td></tr>
-<tr><td>@santmanukyan<br><small>2024-12-03 · SPX</small></td><td class=tweet>Günaydın, nihayet Nasdaq da (tabii S&amp;P ile beraber) yeni bir zirve yaptı. Bu arada &quot;Buffett satıyor siz de panik olun&quot; temalı sohbetlerin merkezindeki Apple da yeni zirve kaydetti. Bu konuda Kasım başında yazdıklarımı paylaşıyorum, ki aşağıdakiler  benim orijinal fikirlerim  olmaktan  ziyade zaten zaman içinde anlaşılmış/ifade edilmiş ve aklı başında insanların olaya yaklaşım biçimi  : 
-
-&quot;Bir diğer itina ile değinmekten kaçındığım ama beni yakalayan konu Buffett’ın likit pozisyonlarının büyüklüğü. Bu konu da her çeyrekte Cassandra (Burry) gibi önümüze çıkartılan bir konu. Brooklyn&#x27;in yaklaşımı üzerinden giderek bu pozisyonlara bakarken 1- pozisyonların kompozisyonu 2- pozisyonların görece büyüklüğünü göz önünde bulundurarak yorum yapmak gerek. Kompozisyona baktığımızda 2011 yılına kadar cash&amp;tbills kalemi vs fixed income kalemleri önce fixed income lehine bir kompozisyon, ardından ağırlıkların eşitlendiği bir dönem görüyoruz. 2011 sonrasında ise Buffet net bir strateji değişikliğine giderek nakit ve bill miktarını her zaman tahvil miktarından daha fazla tutuyor. Daha fazladan kastım 1.5 kat ile 5 kata kadar oranlarda. Bugüne geldiğimizde ise 20 kata varan bir fark var. 2. kısma geldiğimizde ise Buffett’ın ne iş yaptığını hatırlamamız gerek. Malumunuz pozisyon Buffett’ın aracı kurum hesabında değil şirket bilançosunda duruyor. Bu kez Google’a değil Bloom’a gidiyoruz “Berkshire Hathaway Inc. is a holding company owning subsidiaries in a variety of business sectors. The Company&#x27;s principal operations are insurance business conducted nationwide on a primary basis and worldwide on a reinsurance basis.” Berkshire bir sigorta şirketiymiş.... Bu durumda Buffett gibi temkinli ve bilançodan çok iyi anlayan birisi yükümlülüklerine karşı likit varlıklar tutuyor olmalı. Check. Kendisinin bu konuda pek çok açıklaması var. Peki yükümlülükleri ne kadar? Float value tabir edilen ödenmemiş miktar 160 bn dolar civarında.
-İşte bu 160 bn dolar ile yukarıda gördüğünüz 325 bn dolarlık nakit ve benzeri varlık arasındaki fark 2024 yılı satışına denk düşüyor. Buffet bu 160 bn doları piyasa çökeceği için mi nakitte tutuyor? Kısa vade pozisyon artırıp (cash&amp;bill) uzun vadeyi düşürerek tahvil piyasasına yönelik bir fikir mi beyan ediyor? Deflasyon mu bekliyor? Yoksa daha basit bir şekilde ör. Apple değerlemesi nedeni ile satıp başka bir hisse veya şirket alımına mı bakıyor? Geçen yıllın ann. meetiniginde rahmetli Munger artık rekabetin çok arttığını ve bu nedenle eski performanslarını gösteremediklerini söylerken Buffett asıl sorunun yönettikleri paranın büyüklüğü olduğunu ve bu büyüklük nedeni ile sadece dev şirketlere yatırım yapabildiklerini, ufak bir portföyleri olması durumundan rahatlıkla eski performanslarını gösterebileceklerini söylemişti. Bu aslında son dönemde yaşadığımız tartışmanın paralelinde bir konu. M-8 pahalı (anlaşılan BH hissesini de pahalı görüyor ki hisse geri alımı yapmamdı) piyasanın geri kalanı ise değil. Ancak büyüklük ve derinlik de M-8’de.&quot;</td></tr>
-<tr><td>@santmanukyan<br><small>2023-10-16 · BTC</small></td><td class=tweet>SEC&#x27;nin Grayscale davasında bir üst mahkemeye gitmeyeceği haberi &quot;SEC WON&#x27;T APPEAL GRAYSCALE BITCOIN SPOT ETF RULING, PERSON SAYS&quot; 2 türlü yorumlanabilir. İlki dar kapsamlı, aşağıdaki twitte bahsettiğim ıskonto oranı daha da kapanacak, zaten kapanıyor.2.&#x27;si ise tek bir kuruma izin vermektense tüm Bitcoin etf baş vurularına aynı anda izin vereceği (tabii başka bir nedenle erteleme stratejisini sürdürebilir de) şeklinde . Ancak hala önemli olan etf&#x27;in kendisinden ziyade BTC&#x27;nin portföylerde oynayacağı rolün kesinleşmesi.</td></tr>
+<tr><td>@santmanukyan<br><small>2024-09-19 · GOLD,SPX</small></td><td class=tweet>Sanırım artık ZH&#x27;in sitesinde Fed para bastığı/yaktığı için Altında&amp;S&amp;P&#x27;de bla bla oldu analizleri olmadığından sadece faiz kararı konuşuldu, QT konusu arada kaynıyor. Fed bilançosu gördüğünüz üzere Covid şoku sonrası (+sonrası) genişlemeyi geri vermiş durumda. Sarı çizgi ise rezervlerin seyri. 2019 krizi sonrası gerekli önlemler alınmış olsa da rezervlerde yeterli seviye Fed (ve piyasa) açısından hala kritik bir konu. Meraklıları için rezervlerin seviyesine yönelik Ağustos ayında yayınlanan 2 analiz paylaşıyorum https://t.co/LYchYPOcio  ve    https://t.co/qDyGtXpqom</td></tr>
 </table></details>
 <details><summary>Sample of tweets the <b>prefilter dropped</b> (no asset keyword; 30 random) — check for missed asset mentions</summary><table>
-<tr><td>@zerohedge<br><small>2025-07-03</small></td><td class=tweet>*BOJ&#x27;S TAKATA: BOJ IS AT STAGE FOR PAUSE IN RATE HIKE</td></tr>
-<tr><td>@billackman<br><small>2024-11-16</small></td><td class=tweet>Agreed.</td></tr>
-<tr><td>@amitisinvesting<br><small>2025-08-01</small></td><td class=tweet>TRUMP:
+<tr><td>@gavinsbaker<br><small>2026-06-12</small></td><td class=tweet>Fun interview on a super exciting day</td></tr>
+<tr><td>@litcapital<br><small>2026-04-07</small></td><td class=tweet>How Polymarket traders be moving after making $100 in profit from Trump bombing Iran   https://t.co/dt8Ig5FNh4</td></tr>
+<tr><td>@citrini<br><small>2024-02-13</small></td><td class=tweet>In trading it’s really important to have friends who suffer from the same mental illness you do. Luckily all serious traders are mentally ill, so they’re easy enough to find. https://t.co/rJsEvrHiQb</td></tr>
+<tr><td>@zerohedge<br><small>2024-06-02</small></td><td class=tweet>State Supreme Courts Take Up COVID-19 Vaccine Cases https://t.co/rBpqcaVXxf</td></tr>
+<tr><td>@kingkong9888<br><small>2025-11-03</small></td><td class=tweet>Some comments are so delusional and dumb I don’t even bother responding.
 
-- JOB NUMBERS ARE BEING PRODUCED BY A BIDEN APPOINTEE 
+🤣🤣🤣🙈 https://t.co/oCR7gA8NW1</td></tr>
+<tr><td>@zerohedge<br><small>2024-08-02</small></td><td class=tweet>Emergency meeting at Centralbahnplatz 2 any second</td></tr>
+<tr><td>@marionawfal<br><small>2024-04-01</small></td><td class=tweet>🇵🇸 12-year-old Zakariya from Gaza has been volunteering at Al-Aqsa Hospital
 
-- MY TEAM IS FIRING THEM IMMEDIATELY 
+He is assisting doctors in treating injured Palestinians.
+https://t.co/nzygl3q4jz</td></tr>
+<tr><td>@tavicosta<br><small>2026-04-08</small></td><td class=tweet>Outstanding day for LatAm today.
 
-- ECONOMY IS BOOMING, WE NEED ACCURATE NUMBERS THAT AREN&#x27;T BEING MANIPULATED
+War ending or not… one thing seems highly likely:
 
-biden&#x27;s market, once again</td></tr>
-<tr><td>@zerohedge<br><small>2025-09-02</small></td><td class=tweet>sounds familiar
+None of the major tech companies will go out of their way to allocate capital toward building new data centers or large-scale facilities in the Middle East anytime soon, in my view.
 
-TRUMP’S ENERGY CHIEF: SOARING ELECTRICITY PRICES BIGGEST CONCERN</td></tr>
-<tr><td>@forinvestapp<br><small>2024-09-20</small></td><td class=tweet>📉 #BIST100 günü %0,76 kayıpla 9.900,25 puanda tamamladı.</td></tr>
-<tr><td>@biancoresearch<br><small>2023-10-24</small></td><td class=tweet>Me talking today about the trend in the market and interest rates.
+If anything, the clear beneficiary of this shift is Latin America as a strategic alternative.
 
-All our videos are here.
-https://t.co/kRaQPnmjow https://t.co/efgPUa06wu</td></tr>
-<tr><td>@cryptohayes<br><small>2023-12-06</small></td><td class=tweet>Tis the season for stinky fruit bitches. 
+https://t.co/hZnJWTny9Q</td></tr>
+<tr><td>@zerohedge<br><small>2026-07-02</small></td><td class=tweet>&quot;Nowhere To Hide&quot;: Leveraged ETFs Are Just The Tip Of The Iceberg https://t.co/BK4LwA4Rd2</td></tr>
+<tr><td>@litcapital<br><small>2026-02-28</small></td><td class=tweet>It’s insane how markets aren’t open 24/7
 
-Can’t stop, won’t stop until $SOL = $100 https://t.co/57RidwlRmk</td></tr>
-<tr><td>@raoulgmi<br><small>2026-04-01</small></td><td class=tweet>Join us in Geneva! It will be a great event...</td></tr>
-<tr><td>@forinvestapp<br><small>2025-05-08</small></td><td class=tweet>📈 #BIST100 güne %0,54 artışla 9.123,90 puandan başladı.</td></tr>
-<tr><td>@raoulgmi<br><small>2025-12-11</small></td><td class=tweet>It’s great to be here! @SolanaConf</td></tr>
-<tr><td>@biancoresearch<br><small>2025-04-12</small></td><td class=tweet>1/16
+I want to see some mf mayhem and people repricing assets in real time</td></tr>
+<tr><td>@schuldensuehner<br><small>2025-01-15</small></td><td class=tweet>Good Morning from Germany, where the economy has shrunk for 2nd year in a row ahead of elections, driven by both cyclical &amp; structural challenges. German GDP declined by 0.2% in 2024, following a 0.3% drop in 2023. This marks only 2nd time since 1950 that econ has contracted for 2 consecutive yrs. Germany&#x27;s prospects for 2025 remain bleak. Bundesbank predicts growth of just 0.2% and warns that another contraction is even possible if US President-elect Trump follows through on his tariff threats. (BBG)</td></tr>
+<tr><td>@citrini<br><small>2023-11-28</small></td><td class=tweet>Heaven is about to find out which of its securities are undervalued.</td></tr>
+<tr><td>@schuldensuehner<br><small>2025-09-11</small></td><td class=tweet>G7 govt debt levels becoming a growing concern for investors as yields creep higher on the back of extreme fiscal imbalances, political instability, and elevated inflation, w/a particular focus on France, the UK, the US, and Japan. (HT @knowledge_vital)  https://t.co/2o3nUtTUgq https://t.co/BpL8Tg7dzn</td></tr>
+<tr><td>@jsblokland<br><small>2025-07-14</small></td><td class=tweet>She thanks a lot of people
+She celebrates many relationships
+She stands with many countries
+She welcomes many leaders
+She delivers many promises
+But what has Ursula actually achieved for Europe? The continent lags in competitiveness, innovation, and technology. It suffers from abysmal energy policies, is burdened by out-of-control bureaucracy and legislation, collapses under climate rules, has become defenseless, and is unable to end a war on its own territory.</td></tr>
+<tr><td>@winc300<br><small>2024-07-16</small></td><td class=tweet>Herkese merhaba,
 
-What Happened to Bonds Last Week?
+Anılarımızı ve tecrübelerimizi paylaşmak bizim için en büyük zevklerden birisi. 
+Bu keyifli anlara tanık olmak için podcastlerimizde bizimle buluşmaya davet ediyoruz sizleri. 
+Bu kesitimizde, borsanın günlük yaşamımıza nasıl yön verdiği ve nasıl değiştirdiğine parmak bastık🎙️✨
 
-🧵
+Unutmayın, yeni bölüm her Pazar saat 10.30’da Spotify ve Youtube kanallarımızda yayında 🎙️</td></tr>
+<tr><td>@marionawfal<br><small>2024-01-02</small></td><td class=tweet>🚨HAMAS LEADER DR. SAMI ABU ZAHRI’S STATEMENT ON ASSASSINATION
 
-Last week, the 30-year yield rose 46 basis points last week to end at 4.87%.
+Dr. Sami Abu Zuhri: 
+&quot;The assassination of Sheikh Saleh Al-Arouri and the leaders of the resistance will not succeed in breaking the will of our people, or restoring face to the occupation, and what happened on the seventh of October will not be erased by these cowardly assassinations, and martyrdom is dignity and the blood of heroic leaders is part of the sacrifices of our great people.
 
-As this chart shows, this was its biggest weekly rise since April 1987 (38 years ago!). https://t.co/i5HUdrWD25</td></tr>
-<tr><td>@kobeissiletter<br><small>2026-04-02</small></td><td class=tweet>BREAKING: Private credit giant Blue Owl Capital was struck with a &quot;mammoth&quot; $5.4 billion increase in redemption requests in Q1 2026, per FT.
+This crime is an expression of the occupation’s desire to expand the area of ​​conflict, and all the people of the nation must prepare for this open confrontation.&quot;
 
-Details include:
+Source: Palestine Now</td></tr>
+<tr><td>@marionawfal<br><small>2024-08-02</small></td><td class=tweet>🚨🇹🇭THAILAND SUSPENDS WORKERS TO ISRAEL BECAUSE OF THREATS
 
-1. Withdrawal requests at Blue Owl&#x27;s tech-lending fund have surged to 40.7% per cent of the fund’s $3B value
+In light of direct threats of Iran and Hezbollah to carry out a combined attack on Israel, Thailand has decided to suspend the arrival of thousands of foreign workers to Israel on Friday. 
 
-2. Concerns have intensified about the health of the private credit market
+The Israel Population Authority states that once the response likelihood is clear and the risk level decreases, they will likely resume sending workers. 
 
-3. Requests to exit the the firm’s marquee $20B direct-lending fund surged toto 21.9% of the fund’s value
+Thai laborers began returning to Israel in May, seven months after many left following the Hamas attack on October 7.
 
-4. Blue Owl said it has limited withdrawals to 5 per cent at both vehicles
+Source: Al Jazeera, Jerusalem Post</td></tr>
+<tr><td>@macrocharts<br><small>2026-06-15</small></td><td class=tweet>&quot;One of the clearest setups in years.&quot;
 
-Private credit markets are under pressure.</td></tr>
-<tr><td>@caprioleio<br><small>2024-12-05</small></td><td class=tweet>MINDS ARE BREAKING</td></tr>
-<tr><td>@citrini<br><small>2024-06-22</small></td><td class=tweet>From these levels, do you think it’s better risk reward to play a 2s10s steepener or widening HY credit spreads?</td></tr>
-<tr><td>@davthewave<br><small>2025-06-02</small></td><td class=tweet>Violence toward innocent people is never justifiable, and they should face the full force of the law.
+The race is on... https://t.co/Xy2wEZjry8</td></tr>
+<tr><td>@burak_tamac<br><small>2024-08-21</small></td><td class=tweet>Sanırım yakın zamanda hangisinin önde olduğunun bir anlamı olmayacak.
 
-But when law is not observed on the international stage, where an innocent population is bombed and starved, weak individuals will give in to rage, hate, anger. 
+Benzin gibi.
 
-This goes some way toward explaining violence, and predicting it may continue to break out, as opposed to justifying it.</td></tr>
-<tr><td>@peterlbrandt<br><small>2024-05-03</small></td><td class=tweet>The Bible and Christ of the Bible trumps everything</td></tr>
-<tr><td>@billackman<br><small>2025-03-07</small></td><td class=tweet>I would guess the @Harvard number will be much larger.</td></tr>
-<tr><td>@citrini<br><small>2023-11-03</small></td><td class=tweet>Y’all seriously thought my “weather in Manhattan” indicator was a joke</td></tr>
-<tr><td>@hamptonism<br><small>2024-07-02</small></td><td class=tweet>No neuron left un-networked.</td></tr>
-<tr><td>@barchart<br><small>2023-09-02</small></td><td class=tweet>The mortgage to income ratio (% of disposable income needed to cover the cost of a mortgage) is at its highest level in history https://t.co/DZWlknpVQm</td></tr>
-<tr><td>@raoulgmi<br><small>2025-07-16</small></td><td class=tweet>&quot;The Everything Code&quot;  - First published in April 2023 in Global Macro Investor and then in Real Vision Pro a couple of months later appears to be proven as the correct general framework of understanding of crypto and tech, time and time again... https://t.co/fUMTL4Ks5Q</td></tr>
-<tr><td>@tavicosta<br><small>2026-03-31</small></td><td class=tweet>The reality is:
+En ucuzu hangisi ise onu alacağız. Çünkü çıktısı hemen hemen aynı olacak.
 
-Iran’s most effective strike was blowing out US rates.
+h/t Linus Ekenstam https://t.co/VZyXjTSkan</td></tr>
+<tr><td>@mmcrypto<br><small>2024-11-12</small></td><td class=tweet>$XRP BREAKING THE 4 YEAR TRIANGLE! https://t.co/U4BaQ6U4gZ</td></tr>
+<tr><td>@zerohedge<br><small>2025-12-02</small></td><td class=tweet>OpenAI coast vs Google coast https://t.co/QhdPFnZBDY</td></tr>
+<tr><td>@santmanukyan<br><small>2023-10-08</small></td><td class=tweet>Ortadoğu endeks kapanışları:
+Mısır Hermes 30: -2.36%
 
-https://t.co/c6iBgHsqgy https://t.co/qKrpX9KxvL</td></tr>
-<tr><td>@citrini<br><small>2025-06-24</small></td><td class=tweet>i’m going to launch some ETFs solely because it seems the industry has run out of ideas and i can’t bear to know what happens after 2x HIMS if they don’t get some fresh content</td></tr>
-<tr><td>@citrini<br><small>2025-10-08</small></td><td class=tweet>Something about this part of the cycle is that the market kind of gets ADHD. The attention span shrinks significantly as investors reach to justify things. 
+Telaviv 125: -6.69%
 
-Personally, I don’t like it as much as when trends begin and are building momentum. But you can make a lot of money.</td></tr>
-<tr><td>@100trillionusd<br><small>2025-09-12</small></td><td class=tweet>Bull market continues https://t.co/6Rvz8Jz2gv</td></tr>
-<tr><td>@biancoresearch<br><small>2024-04-02</small></td><td class=tweet>Me discussing Interest rates, the economy, and the stock market.
+S.Arabistan Tadavul : -1.57%
 
-All our videos are here.
-https://t.co/WO2AOPLIbu https://t.co/aaKSIZGKcp</td></tr>
-<tr><td>@burak_tamac<br><small>2023-12-10</small></td><td class=tweet>ChatGPT&#x27;ye güvenip iş yapmayın.
+Katar All Shares: -0.65%
 
-Ben her gün kullanıyorum. Bazen o kadar yanlış sonuçlar veriyor ki aklım almıyor. Dün bir veri ile alakalı gelecek projeksiyonu sordum, Kasım 25 2023&#x27;te o seviyeye ulaşacak dedi.
+Iran TSE: -2.51% (sanırım)
 
-Dedim bugün zaten 9 Aralık.
+Iran Riali: Cuma kapanış 49800, cari fiyat 52000/52100 https://t.co/J0Yytjb6v0</td></tr>
+<tr><td>@cdixon<br><small>2024-07-23</small></td><td class=tweet>“The United States’ advantage is decentralized and open innovation. Some people argue that we must close our models to prevent China from gaining access to them, but my view is that this will not work and will only disadvantage the US and its allies. Our adversaries are great at espionage, stealing models that fit on a thumb drive is relatively easy, and most tech companies are far from operating in a way that would make this more difficult. It seems most likely that a world of only closed models results in a small number of big companies plus our geopolitical adversaries having access to leading models, while startups, universities, and small businesses miss out on opportunities.”
 
-&#x27;Aaa pardon&#x27; dedi yeniden hesapladı 😂</td></tr>
-<tr><td>@billackman<br><small>2026-03-08</small></td><td class=tweet>Remarkable how this fact has been left out of the media coverage.</td></tr>
-<tr><td>@ergun_unutmaz<br><small>2025-11-14</small></td><td class=tweet>✅ “Tamamen yanlış olmaktansa yaklaşık olarak doğru olmak daha iyidir.”
+- Mark Zuckerberg, “Open Source AI Is the Path Forward”
 
-John Maynard Keynes’e atfedilen bu değerli sözü ilk olarak Carveth Read kullanmış; Buffett ise bu sözü finans dünyasına ilke yapmıştır.</td></tr>
-<tr><td>@tavicosta<br><small>2023-12-25</small></td><td class=tweet>Merry Christmas!</td></tr>
+https://t.co/yQg18zbciW</td></tr>
+<tr><td>@forinvestapp<br><small>2024-11-15</small></td><td class=tweet>📈 #BIST100 güne %0,29 artışla 9.447,70 puandan başladı.</td></tr>
+<tr><td>@billackman<br><small>2023-12-08</small></td><td class=tweet>True</td></tr>
+<tr><td>@jam_croissant<br><small>2025-06-06</small></td><td class=tweet>The cautionary tale of Mikhail Khodorkovsky…
+
+https://t.co/3IdKCzzc9Y</td></tr>
+<tr><td>@zerohedge<br><small>2024-03-03</small></td><td class=tweet>Letters Warn &quot;You Cannot Keep Your Doctor&quot; Thousands Freaking Out https://t.co/9HMrP1Dz3x</td></tr>
+<tr><td>@zerohedge<br><small>2025-03-03</small></td><td class=tweet>Hegseth Orders DoD Civilian Employees To Respond To &#x27;What Did You Do Last Week?&#x27; Email - Then Torches Hillary Clinton https://t.co/5tMGSuCIWp</td></tr>
+<tr><td>@ergun_unutmaz<br><small>2024-02-17</small></td><td class=tweet>Referans için teşekkürler.🙏🏻
+
+M&amp;amp;A konusu önemli ve kredi notu iyileşme sürecinde likidite koşullarına bağlı olarak bir artış görülebilir.</td></tr>
+<tr><td>@burrytracker<br><small>2025-07-03</small></td><td class=tweet>JUST IN:
+
+US JUNE NONFARM PAYROLLS: +147K
+ESTIMATE: +106K
+UNEMPLOYMENT: 4.1% vs 4.3%
+
+Goodbye July rate cuts 👋</td></tr>
 </table></details>
 <details><summary>Price coverage</summary><table><tr><th>asset</th><th>from</th><th>to</th><th>rows</th><th>last close</th></tr>
 <tr><td>BTC</td><td>2020-01-01</td><td>2026-09-15</td><td class=num>2450</td><td class=num>75,898.48</td></tr>

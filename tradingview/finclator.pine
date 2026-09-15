@@ -1,25 +1,25 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
-// © finclator — generated 2026-09-15. Do not edit by hand; regenerate with `python -m src.pine`.
+// © finclator — generated 2026-09-15 · model claude-fable-5.1/interactive. Do not edit by hand; regenerate with `python -m src.pine`.
 //@version=5
 indicator("Finclator — influencer sentiment 3×3", shorttitle="Finclator", overlay=false, max_labels_count=50)
 
 // ── embedded signal history (run-length: value applies from timestamp until the next one) ──────────────────
-var btc_short_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2026-01-03 00:00 +0000'))
+var btc_short_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2025-11-29 00:00 +0000'))
 var btc_short_v = array.from(-1, 0)
-var btc_medium_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2025-11-15 00:00 +0000'), timestamp('2026-09-12 00:00 +0000'))
+var btc_medium_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2025-11-22 00:00 +0000'), timestamp('2026-07-25 00:00 +0000'))
 var btc_medium_v = array.from(0, -1, 0)
 var btc_long_t = array.from(timestamp('2023-09-16 00:00 +0000'))
 var btc_long_v = array.from(1)
-var gold_short_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2025-12-27 00:00 +0000'))
+var gold_short_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2025-12-06 00:00 +0000'))
 var gold_short_v = array.from(1, 0)
-var gold_medium_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2026-05-30 00:00 +0000'))
-var gold_medium_v = array.from(1, 0)
+var gold_medium_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2026-02-28 00:00 +0000'), timestamp('2026-03-07 00:00 +0000'), timestamp('2026-03-14 00:00 +0000'))
+var gold_medium_v = array.from(1, 0, 1, 0)
 var gold_long_t = array.from(timestamp('2023-09-16 00:00 +0000'))
 var gold_long_v = array.from(1)
-var spx_short_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2025-12-27 00:00 +0000'))
+var spx_short_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2025-12-20 00:00 +0000'))
 var spx_short_v = array.from(-1, 0)
-var spx_medium_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2024-07-13 00:00 +0000'), timestamp('2024-08-31 00:00 +0000'), timestamp('2024-10-19 00:00 +0000'), timestamp('2025-09-20 00:00 +0000'), timestamp('2025-10-11 00:00 +0000'), timestamp('2025-10-18 00:00 +0000'), timestamp('2025-11-01 00:00 +0000'), timestamp('2025-12-20 00:00 +0000'), timestamp('2026-01-10 00:00 +0000'), timestamp('2026-05-16 00:00 +0000'), timestamp('2026-07-11 00:00 +0000'))
-var spx_medium_v = array.from(-1, 0, -1, 0, -1, 0, -1, 0, -1, 0, -1, 0)
+var spx_medium_t = array.from(timestamp('2023-09-16 00:00 +0000'), timestamp('2026-05-16 00:00 +0000'))
+var spx_medium_v = array.from(-1, 0)
 var spx_long_t = array.from(timestamp('2023-09-16 00:00 +0000'))
 var spx_long_v = array.from(-1)
 

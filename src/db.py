@@ -41,7 +41,13 @@ CREATE TABLE IF NOT EXISTS tweets (
     source      TEXT NOT NULL,                -- 'csv' | 'twitterapi'
     assets_hint TEXT NOT NULL DEFAULT '',     -- prefilter: 'BTC,GOLD'
     relevant    INTEGER NOT NULL DEFAULT 0,   -- prefilter passed → eligible for LLM
-    classified  INTEGER NOT NULL DEFAULT 0
+    classified  INTEGER NOT NULL DEFAULT 0    -- legacy flag; per-model state lives in classified_by
+);
+CREATE TABLE IF NOT EXISTS classified_by (
+    tweet_id TEXT NOT NULL REFERENCES tweets(id),
+    model    TEXT NOT NULL,
+    at       TEXT,
+    PRIMARY KEY (tweet_id, model)
 );
 CREATE INDEX IF NOT EXISTS ix_tweets_handle_created ON tweets(handle, created_at);
 CREATE INDEX IF NOT EXISTS ix_tweets_pending ON tweets(relevant, classified);
@@ -58,10 +64,10 @@ CREATE TABLE IF NOT EXISTS calls (
     price_target REAL,                        -- explicit level if stated (same units as prices table)
     quote       TEXT,                         -- exact span justifying the label (audit trail)
     called_at   TEXT NOT NULL,                -- = tweet created_at
-    model       TEXT NOT NULL,
-    UNIQUE(tweet_id, asset)
+    model       TEXT NOT NULL,               -- classifier that produced this call; every downstream table is per-model
+    UNIQUE(tweet_id, asset, model)
 );
-CREATE INDEX IF NOT EXISTS ix_calls_cell ON calls(asset, horizon, called_at);
+CREATE INDEX IF NOT EXISTS ix_calls_cell ON calls(model, asset, horizon, called_at);
 
 CREATE TABLE IF NOT EXISTS prices (
     asset  TEXT NOT NULL,
@@ -87,6 +93,7 @@ CREATE TABLE IF NOT EXISTS outcomes (
 );
 
 CREATE TABLE IF NOT EXISTS trust (
+    model       TEXT NOT NULL,
     handle      TEXT NOT NULL,
     asset       TEXT NOT NULL,                -- or '*' for overall
     horizon     TEXT NOT NULL,                -- or '*' for overall
@@ -94,7 +101,7 @@ CREATE TABLE IF NOT EXISTS trust (
     correct     REAL NOT NULL,                -- CORRECT=1, PARTIAL=0.5
     score       REAL NOT NULL,                -- shrunk toward 0.5
     computed_at TEXT NOT NULL,
-    PRIMARY KEY (handle, asset, horizon)
+    PRIMARY KEY (model, handle, asset, horizon)
 );
 """
 

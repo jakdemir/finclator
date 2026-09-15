@@ -14,6 +14,7 @@ from pathlib import Path
 
 from .db import connect
 from .evaluate import MATURITY_DAYS
+from .models import active_model
 from .score import TrustLookup
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -34,11 +35,13 @@ def _label(net: float, total: float) -> str:
     return "NEUTRAL"
 
 
-def build(conn: sqlite3.Connection, today: date | None = None, write: bool = True) -> dict:
+def build(conn: sqlite3.Connection, today: date | None = None, write: bool = True, model: str | None = None) -> dict:
+    """Matrix from one model's calls, weighted by that model's trust scores."""
+    model = model or active_model()
     today = today or datetime.now(timezone.utc).date()
-    trust = TrustLookup(conn, as_of=today)
+    trust = TrustLookup(conn, model=model, as_of=today)
     schools = {r["handle"]: r["school"] for r in conn.execute("SELECT handle, school FROM accounts")}
-    matrix: dict = {"generated_at": datetime.now(timezone.utc).isoformat(), "cells": {}}
+    matrix: dict = {"generated_at": datetime.now(timezone.utc).isoformat(), "model": model, "cells": {}}
 
     for asset in ASSETS:
         for horizon in HORIZONS:
@@ -46,8 +49,8 @@ def build(conn: sqlite3.Connection, today: date | None = None, write: bool = Tru
             half_life = window / 3
             since = (today - timedelta(days=window)).isoformat()
             rows = conn.execute("""SELECT handle, direction, confidence, called_at, quote, tweet_id FROM calls
-                                   WHERE asset=? AND horizon=? AND called_at>=? ORDER BY called_at DESC""",
-                                (asset, horizon, since)).fetchall()
+                                   WHERE model=? AND asset=? AND horizon=? AND called_at>=? ORDER BY called_at DESC""",
+                                (model, asset, horizon, since)).fetchall()
             # latest call per account dominates; older ones from the same account decay
             per_school: dict[str, dict] = {}
             contributors = []

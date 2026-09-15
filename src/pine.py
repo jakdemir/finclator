@@ -12,18 +12,20 @@ from pathlib import Path
 
 from .db import connect
 from .matrix import ASSETS, HORIZONS, build
+from .models import active_model
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "tradingview" / "finclator.pine"
 LABEL_NUM = {"BUY": 1, "NEUTRAL": 0, "SELL": -1, "N/A": 0}
 
 
-def history(conn: sqlite3.Connection, start: date, end: date, step_days: int = 7) -> dict[str, list[tuple[str, int]]]:
+def history(conn: sqlite3.Connection, start: date, end: date, step_days: int = 7,
+            model: str | None = None) -> dict[str, list[tuple[str, int]]]:
     """Weekly matrix snapshots from start→end, as (date, label) runs per cell."""
     series: dict[str, list[tuple[str, int]]] = {f"{a}:{h}": [] for a in ASSETS for h in HORIZONS}
     d = start
     while d <= end:
-        m = build(conn, today=d, write=False)
+        m = build(conn, today=d, write=False, model=model)
         for k, cell in m["cells"].items():
             v = LABEL_NUM[cell["label"]]
             s = series[k]
@@ -119,14 +121,15 @@ if showTbl and barstate.islast
 '''
 
 
-if __name__ == "__main__":
-    conn = connect()
+def generate(conn: sqlite3.Connection, years: int = 3, model: str | None = None) -> Path:
+    model = model or active_model()
     end = date.today()
-    start = end - timedelta(days=3 * 365)
-    ser = history(conn, start, end)
+    ser = history(conn, end - timedelta(days=years * 365), end, model=model)
     OUT.parent.mkdir(exist_ok=True)
-    OUT.write_text(render(ser, end.isoformat()))
-    # also dump the JSON series for other consumers (dashboard, TV alternative transports)
-    (ROOT / "data" / "matrix_history.json").write_text(json.dumps(ser, indent=1))
+    OUT.write_text(render(ser, f"{end.isoformat()} · model {model}"))
+    (ROOT / "data" / "matrix_history.json").write_text(json.dumps({"model": model, "series": ser}, indent=1))
+    return OUT
 
-    print(OUT, {k: len(v) for k, v in ser.items()})
+
+if __name__ == "__main__":
+    print(generate(connect()))

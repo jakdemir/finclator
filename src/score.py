@@ -1,9 +1,9 @@
-"""Trust scores with sample-size shrinkage.
+"""Trust scores with sample-size shrinkage — computed per classifier model.
 
 score = (hits + PRIOR_N * 0.5) / (n + PRIOR_N), hits = CORRECT + 0.5*PARTIAL, then ±TARGET_BONUS if the
 call carried an explicit price target that was hit / missed (a stated level is a stronger, more falsifiable claim).
 With PRIOR_N=10, one lucky call moves you from 0.50 to 0.545, not to 1.0.
-Computed per (handle, asset, horizon), per (handle, asset, *), and (handle, *, *).
+Computed per (model, handle, asset, horizon), per (model, handle, asset, *), and (model, handle, *, *).
 
 Point-in-time: `as_of` restricts to outcomes whose exit_date <= as_of, so historical matrices have no lookahead.
 """
@@ -13,6 +13,7 @@ import sqlite3
 from datetime import date, datetime, timezone
 
 from .db import connect
+from .models import active_model, list_models
 
 PRIOR_N = 10
 HIT = {"CORRECT": 1.0, "PARTIAL": 0.5, "WRONG": 0.0}
@@ -30,14 +31,14 @@ def _hit(result: str, target_hit: int | None) -> float:
     return h
 
 
-def compute(conn: sqlite3.Connection, as_of: date | None = None) -> dict[tuple[str, str, str], tuple[int, float, float]]:
-    """{(handle, asset, horizon): (n, hits, score)} using outcomes matured on/before as_of."""
+def compute(conn: sqlite3.Connection, model: str, as_of: date | None = None) -> dict[tuple[str, str, str], tuple[int, float, float]]:
+    """{(handle, asset, horizon): (n, hits, score)} for one model, using outcomes matured on/before as_of."""
     q = """SELECT c.handle, c.asset, c.horizon, o.result, o.target_hit
-           FROM outcomes o JOIN calls c ON c.id = o.call_id"""
-    args: tuple = ()
+           FROM outcomes o JOIN calls c ON c.id = o.call_id WHERE c.model = ?"""
+    args: tuple = (model,)
     if as_of:
-        q += " WHERE o.exit_date <= ?"
-        args = (as_of.isoformat(),)
+        q += " AND o.exit_date <= ?"
+        args += (as_of.isoformat(),)
     agg: dict[tuple[str, str, str], list[float]] = {}
     for r in conn.execute(q, args):
         h = _hit(r["result"], r["target_hit"])
@@ -47,20 +48,26 @@ def compute(conn: sqlite3.Connection, as_of: date | None = None) -> dict[tuple[s
 
 
 def recompute(conn: sqlite3.Connection) -> int:
-    scores = compute(conn)
+    """Recompute trust for every model that has calls."""
     conn.execute("DELETE FROM trust")
     now = datetime.now(timezone.utc).isoformat()
-    conn.executemany("INSERT INTO trust(handle, asset, horizon, n, correct, score, computed_at) VALUES(?,?,?,?,?,?,?)",
-                     [(h, a, hz, n, hits, s, now) for (h, a, hz), (n, hits, s) in scores.items()])
+    total = 0
+    for model in list_models(conn):
+        scores = compute(conn, model)
+        conn.executemany(
+            "INSERT INTO trust(model, handle, asset, horizon, n, correct, score, computed_at) VALUES(?,?,?,?,?,?,?,?)",
+            [(model, h, a, hz, n, hits, s, now) for (h, a, hz), (n, hits, s) in scores.items()])
+        total += len(scores)
     conn.commit()
-    return len(scores)
+    return total
 
 
 class TrustLookup:
-    """Point-in-time trust lookup with the specific→asset→overall→prior fallback."""
+    """Point-in-time trust lookup for one model with the specific→asset→overall→prior fallback."""
 
-    def __init__(self, conn: sqlite3.Connection, as_of: date | None = None):
-        self.scores = compute(conn, as_of)
+    def __init__(self, conn: sqlite3.Connection, model: str | None = None, as_of: date | None = None):
+        self.model = model or active_model()
+        self.scores = compute(conn, self.model, as_of)
 
     def get(self, handle: str, asset: str, horizon: str) -> float:
         for a, h in ((asset, horizon), (asset, "*"), ("*", "*")):
@@ -70,17 +77,8 @@ class TrustLookup:
         return 0.5
 
 
-def trust_for(conn: sqlite3.Connection, handle: str, asset: str, horizon: str) -> float:
-    """Current trust from the `trust` table (specific → asset → overall → prior 0.5)."""
-    for a, h in ((asset, horizon), (asset, "*"), ("*", "*")):
-        r = conn.execute("SELECT score FROM trust WHERE handle=? AND asset=? AND horizon=?", (handle, a, h)).fetchone()
-        if r:
-            return r["score"]
-    return 0.5
-
-
 if __name__ == "__main__":
     conn = connect()
     print(recompute(conn), "trust rows")
-    for r in conn.execute("SELECT handle, asset, horizon, n, round(correct,1), round(score,3) FROM trust ORDER BY handle, asset, horizon"):
+    for r in conn.execute("SELECT model, handle, asset, horizon, n, round(correct,1), round(score,3) FROM trust ORDER BY 1,2,3,4"):
         print(tuple(r))

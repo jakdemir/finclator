@@ -13,6 +13,7 @@ from pathlib import Path
 
 from .db import connect
 from .evaluate import MATURITY_DAYS
+from .models import active_model, list_models
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "audit.html"
@@ -72,15 +73,18 @@ def _fmt(x, nd=2):
     return "" if x is None else f"{x:,.{nd}f}"
 
 
-def build() -> Path:
+def build(model: str | None = None) -> Path:
     conn = connect()
+    model = model or active_model()
     e = html.escape
     now = datetime.now(timezone.utc)
     matrix_p = ROOT / "data" / "matrix.json"
     matrix = json.loads(matrix_p.read_text()) if matrix_p.exists() else {"generated_at": "", "cells": {}}
 
     P = [f"<!doctype html><meta charset=utf-8><title>Finclator — verification</title><style>{CSS}</style><script>{JS}</script>"]
+    others = [m for m in list_models(conn) if m != model]
     P.append(f"<h1>Finclator verification &amp; debug</h1><small>generated {now:%Y-%m-%d %H:%M} UTC · "
+             f"<b>model: {e(model)}</b>{' (others in DB: ' + ', '.join(e(m) for m in others) + ')' if others else ''} · "
              "prices: BTC=Yahoo BTC-USD (UTC close), GOLD=COMEX GC=F front month, SPX=^GSPC · "
              "flat band = 0.5σ·√days (trailing-1y daily vol at entry)</small>")
 
@@ -96,9 +100,12 @@ def build() -> Path:
     P.append("</table>")
 
     # ---- funnel
-    f = conn.execute("""SELECT count(*) t, sum(relevant) rel, sum(relevant AND classified) cls,
-                        (SELECT count(*) FROM calls) calls, (SELECT count(*) FROM outcomes) outs,
-                        (SELECT count(DISTINCT tweet_id) FROM calls) call_tweets FROM tweets""").fetchone()
+    f = conn.execute("""SELECT count(*) t, sum(relevant) rel,
+                        (SELECT count(*) FROM classified_by cb JOIN tweets tt ON tt.id=cb.tweet_id WHERE cb.model=? AND tt.relevant=1) cls,
+                        (SELECT count(*) FROM calls WHERE model=?) calls,
+                        (SELECT count(*) FROM outcomes o JOIN calls c ON c.id=o.call_id WHERE c.model=?) outs,
+                        (SELECT count(DISTINCT tweet_id) FROM calls WHERE model=?) call_tweets FROM tweets""",
+                     (model, model, model, model)).fetchone()
     P.append(f"""<h2>Pipeline funnel</h2><div class=bar>
 <span class=pill>tweets stored: <b>{f['t']:,}</b></span> →
 <span class=pill>asset-mentioning (prefilter): <b>{f['rel']:,}</b></span> →
@@ -117,11 +124,11 @@ def build() -> Path:
         SELECT a.handle, a.school, a.language, a.followers, a.rate_per_year, a.sampling, a.active,
                (SELECT count(*) FROM tweets t WHERE t.handle=a.handle) n_t,
                (SELECT sum(relevant) FROM tweets t WHERE t.handle=a.handle) n_rel,
-               (SELECT count(*) FROM calls c WHERE c.handle=a.handle) n_c,
+               (SELECT count(*) FROM calls c WHERE c.handle=a.handle AND c.model=?) n_c,
                (SELECT min(created_at) FROM tweets t WHERE t.handle=a.handle) first_t,
                (SELECT max(created_at) FROM tweets t WHERE t.handle=a.handle) last_t
-        FROM accounts a ORDER BY a.handle""").fetchall()
-    trust = {(r["handle"], r["asset"], r["horizon"]): r for r in conn.execute("SELECT * FROM trust")}
+        FROM accounts a ORDER BY a.handle""", (model,)).fetchall()
+    trust = {(r["handle"], r["asset"], r["horizon"]): r for r in conn.execute("SELECT * FROM trust WHERE model=?", (model,))}
 
     def tcell(h, a):
         r = trust.get((h, a, "*"))
@@ -149,7 +156,7 @@ def build() -> Path:
                c.tweet_id, c.model, t.text, o.entry_date, o.exit_date, o.entry_close, o.exit_close, o.return_pct,
                o.threshold_pct, o.actual, o.result, o.target_hit, o.extreme
         FROM calls c JOIN tweets t ON t.id = c.tweet_id LEFT JOIN outcomes o ON o.call_id = c.id
-        ORDER BY c.called_at DESC""").fetchall()
+        WHERE c.model = ? ORDER BY c.called_at DESC""", (model,)).fetchall()
     handles = sorted({r["handle"] for r in rows})
     P.append(f"""<h2>Calls ({len(rows)})</h2><div class=bar>
 <select id=f-acc><option value="">all accounts</option>{''.join(f'<option>{e(h)}</option>' for h in handles)}</select>
@@ -194,8 +201,10 @@ vs the flat band; <i>target</i> shows whether the stated level was touched by an
 
     # ---- debug: rejects + classified non-calls
     P.append("<h2>Debug</h2>")
-    rej = conn.execute("""SELECT handle, created_at, text, assets_hint FROM tweets WHERE relevant=1 AND classified=1
-                          AND id NOT IN (SELECT tweet_id FROM calls) ORDER BY random() LIMIT 30""").fetchall()
+    rej = conn.execute("""SELECT handle, created_at, text, assets_hint FROM tweets WHERE relevant=1
+                          AND id IN (SELECT tweet_id FROM classified_by WHERE model=?)
+                          AND id NOT IN (SELECT tweet_id FROM calls WHERE model=?) ORDER BY random() LIMIT 30""",
+                       (model, model)).fetchall()
     P.append("<details><summary>Sample of asset-mentioning tweets the classifier judged <b>not a call</b> (30 random) — check for missed calls</summary><table>")
     for r in rej:
         P.append(f"<tr><td>@{e(r['handle'])}<br><small>{r['created_at'][:10]} · {r['assets_hint']}</small></td><td class=tweet>{e(r['text'])}</td></tr>")

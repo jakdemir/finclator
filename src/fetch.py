@@ -94,6 +94,7 @@ def _dotenv(name: str) -> str | None:
 SAMPLE_ABOVE_PER_YEAR = 1000   # originals/yr; above this we use keyword-filtered search instead of full timeline
 SAMPLE_WINDOW_DAYS = 7         # one search window per week
 SAMPLE_MIN_PER_WINDOW = 21     # ≥ 3/day; if the keyword search returns fewer, top up with one unfiltered page
+NO_TOPUP_ABOVE_PER_YEAR = 4000  # news firehoses: keyword-only, the unfiltered page would be pure noise
 
 # Server-side keyword filter (same vocabulary as prefilter). X search handles Turkish terms.
 _KW = ("bitcoin OR btc OR kripto OR gold OR xau OR altın OR altin OR spx OR spy OR nasdaq OR nvidia OR dow OR "
@@ -155,10 +156,10 @@ def _search_window(c: httpx.Client, handle: str, start: datetime, end: datetime,
     return out
 
 
-def _sample_window(c: httpx.Client, handle: str, start: datetime, end: datetime) -> list[dict]:
+def _sample_window(c: httpx.Client, handle: str, start: datetime, end: datetime, topup: bool = True) -> list[dict]:
     """Keyword-filtered tweets for the window; if below the floor, add one unfiltered page for baseline coverage."""
     rows = _search_window(c, handle, start, end, keywords=True)
-    if len(rows) < SAMPLE_MIN_PER_WINDOW:
+    if topup and len(rows) < SAMPLE_MIN_PER_WINDOW:
         seen = {r["id"] for r in rows}
         rows += [r for r in _search_window(c, handle, start, end, keywords=False, max_pages=1) if r["id"] not in seen]
     return rows
@@ -170,12 +171,14 @@ def fetch_sampled(conn: sqlite3.Connection, handle: str, until: str) -> int:
     handle = handle.lower()
     start = datetime.fromisoformat(until).replace(tzinfo=timezone.utc)
     now = datetime.now(timezone.utc)
+    rate = conn.execute("SELECT rate_per_year FROM accounts WHERE handle=?", (handle,)).fetchone()[0] or 0
+    topup = rate <= NO_TOPUP_ABOVE_PER_YEAR
     inserted = 0
     with _client() as c:
         w = start
         while w < now:
             w_end = min(w + timedelta(days=SAMPLE_WINDOW_DAYS), now)
-            rows = _sample_window(c, handle, w, w_end)
+            rows = _sample_window(c, handle, w, w_end, topup=topup)
             inserted += _insert(conn, rows)
             w = w_end
         log(f"  {handle}: sampled {inserted} tweets in weekly keyword windows")
@@ -199,6 +202,12 @@ def fetch_account(conn: sqlite3.Connection, handle: str, max_pages: int = 50, ba
         if info.get("followers"):
             conn.execute("UPDATE accounts SET followers=? WHERE handle=?", (info["followers"], handle))
 
+    if backfill and until:
+        known = conn.execute("SELECT rate_per_year FROM accounts WHERE handle=?", (handle,)).fetchone()[0]
+        if known and known > SAMPLE_ABOVE_PER_YEAR:
+            return fetch_sampled(conn, handle, until)  # rate already measured: skip the probe pages
+
+    with _client() as c:
         cursor, pages, batch, newest, inserted, last_date = "", 0, [], since_int, 0, ""
         done = False
         probe: list[dict] = []

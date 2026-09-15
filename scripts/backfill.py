@@ -32,8 +32,10 @@ for h in handles:
     oldest = conn0.execute("SELECT min(created_at) FROM tweets WHERE handle=? AND source='twitterapi'", (h,)).fetchone()[0]
     done = conn0.execute("SELECT sampling, rate_per_year FROM accounts WHERE handle=?", (h,)).fetchone()
     if (oldest and oldest[:10] <= UNTIL) or (done and done["sampling"]):
-        log(f"{h}: already backfilled, skip")
-        continue
+        heavy = done and done["rate_per_year"] and done["rate_per_year"] > 1000
+        if not (heavy and not done["sampling"]):  # heavy accounts without keyword sampling still need redoing
+            log(f"{h}: already backfilled, skip")
+            continue
     q.put(h)
 conn0.close()
 log(f"{q.qsize()} accounts to fetch with {workers} workers, back to {UNTIL}")

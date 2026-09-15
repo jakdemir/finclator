@@ -47,11 +47,14 @@ Respond with JSON only:
 Only include assets the tweet actually takes a stance on. calls=[] when is_call=false."""
 
 
-def pending(conn: sqlite3.Connection, limit: int | None = None) -> list[sqlite3.Row]:
-    q = "SELECT id, handle, created_at, text, assets_hint FROM tweets WHERE relevant=1 AND classified=0 ORDER BY created_at"
+def pending(conn: sqlite3.Connection, limit: int | None = None, model: str | None = None) -> list[sqlite3.Row]:
+    """Relevant tweets not yet classified by `model`."""
+    model = model or MODEL
+    q = """SELECT id, handle, created_at, text, assets_hint FROM tweets
+           WHERE relevant=1 AND id NOT IN (SELECT tweet_id FROM classified_by WHERE model=?) ORDER BY created_at"""
     if limit:
         q += f" LIMIT {int(limit)}"
-    return conn.execute(q).fetchall()
+    return conn.execute(q, (model,)).fetchall()
 
 
 def store_result(conn: sqlite3.Connection, tweet: sqlite3.Row | dict, result: dict, model: str) -> int:
@@ -68,46 +71,82 @@ def store_result(conn: sqlite3.Connection, tweet: sqlite3.Row | dict, result: di
                 pt = None
             conn.execute(
                 """INSERT OR REPLACE INTO calls(tweet_id, handle, asset, direction, horizon, confidence, price_target,
-                   quote, called_at, model) VALUES(?,?,?,?,?,?,?,?,?,?)""",
+                   quote, called_at, model) VALUES(?,?,?,?,?,?,?,?,?,?)""",  # unique per (tweet, asset, model)
                 (tid, handle, c["asset"], c["direction"], c["horizon"], float(c.get("confidence", 0.5)), pt,
                  c.get("quote"), created, model),
             )
             n += 1
+    conn.execute("INSERT OR REPLACE INTO classified_by(tweet_id, model, at) VALUES(?,?,datetime('now'))", (tid, model))
     conn.execute("UPDATE tweets SET classified=1 WHERE id=?", (tid,))
     return n
 
 
 # ---------- API mode ----------
 
-def classify_pending(conn: sqlite3.Connection, limit: int | None = None) -> tuple[int, int]:
+BASE_URL = os.environ.get("FINCLATOR_MODEL_BASE_URL")  # e.g. http://localhost:11434/v1 → OpenAI-compatible (Ollama)
+
+
+def _user_msg(t) -> str:
+    return f"@{t['handle']} ({t['created_at'][:10]}), assets mentioned: {t['assets_hint']}\n\n{t['text']}"
+
+
+def _parse(raw: str) -> dict:
+    raw = raw[raw.find("{"): raw.rfind("}") + 1]
+    try:
+        r = json.loads(raw)
+        return r if isinstance(r, dict) else {"is_call": False, "calls": []}
+    except json.JSONDecodeError:
+        return {"is_call": False, "calls": []}
+
+
+def make_classifier():
+    """Return (fn(tweet_row) -> result dict, model_name). Anthropic by default; OpenAI-compatible if BASE_URL set."""
+    if BASE_URL:
+        from openai import OpenAI
+
+        client = OpenAI(base_url=BASE_URL, api_key=os.environ.get("FINCLATOR_MODEL_API_KEY", "local"))
+
+        def run(t):
+            r = client.chat.completions.create(
+                model=MODEL, temperature=0, max_tokens=600,
+                messages=[{"role": "system", "content": SYSTEM + "\n/no_think"},
+                          {"role": "user", "content": _user_msg(t)}],
+                response_format={"type": "json_object"},
+            )
+            return _parse(r.choices[0].message.content or "")
+        return run, MODEL
+
     from anthropic import Anthropic
 
     client = Anthropic()
-    rows = pending(conn, limit)
-    tweets_done = calls_made = 0
-    for t in rows:
+
+    def run(t):
         msg = client.messages.create(
             model=MODEL, max_tokens=600, system=SYSTEM, temperature=0,
-            messages=[{"role": "user", "content": f"@{t['handle']} ({t['created_at'][:10]}), assets mentioned: {t['assets_hint']}\n\n{t['text']}"}],
+            messages=[{"role": "user", "content": _user_msg(t)}],
         )
-        raw = "".join(getattr(b, "text", "") for b in msg.content).strip()
-        raw = raw[raw.find("{"): raw.rfind("}") + 1]
-        try:
-            result = json.loads(raw)
-        except json.JSONDecodeError:
-            result = {"is_call": False, "calls": []}
-        calls_made += store_result(conn, t, result, MODEL)
+        return _parse("".join(getattr(b, "text", "") for b in msg.content))
+    return run, MODEL
+
+
+def classify_pending(conn: sqlite3.Connection, limit: int | None = None) -> tuple[int, int]:
+    run, model = make_classifier()
+    rows = pending(conn, limit, model)
+    tweets_done = calls_made = 0
+    for t in rows:
+        calls_made += store_result(conn, t, run(t), model)
         tweets_done += 1
         if tweets_done % 20 == 0:
             conn.commit()
+            print(f"  classified {tweets_done}/{len(rows)} ({calls_made} calls)", flush=True)
     conn.commit()
     return tweets_done, calls_made
 
 
 # ---------- interactive mode ----------
 
-def export_pending(conn: sqlite3.Connection, path: Path, limit: int | None = None) -> int:
-    rows = pending(conn, limit)
+def export_pending(conn: sqlite3.Connection, path: Path, limit: int | None = None, model: str | None = None) -> int:
+    rows = pending(conn, limit, model)
     with open(path, "w") as f:
         for t in rows:
             f.write(json.dumps({"id": t["id"], "handle": t["handle"], "created_at": t["created_at"],
