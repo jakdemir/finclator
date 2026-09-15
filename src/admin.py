@@ -78,10 +78,11 @@ def _log_tail(n=200) -> str:
 
 
 def _page(title: str, body: str, active: str) -> str:
-    tabs = [("/", "Progress"), ("/matrix", "Matrix"), ("/accounts", "Accounts"), ("/audit", "Audit"), ("/architecture", "Architecture"), ("/api/status", "JSON")]
+    tabs = [("/", "Progress"), ("/matrix", "Matrix"), ("/accounts", "Accounts"), ("/audit", "Audit"), ("/architecture", "Architecture"), ("/tables", "Tables"), ("/api/status", "JSON")]
     nav = "".join(f"<a href='{h}' class='{'on' if h == active else ''}'>{t}</a>" for h, t in tabs)
+    refresh = "" if active == "/tables" else f"<meta http-equiv=refresh content={60 if active == '/' else 30}>"
     return (f"<!doctype html><meta charset=utf-8><title>Finclator admin — {title}</title>"
-            f"<meta http-equiv=refresh content={60 if active == '/' else 30}><style>{CSS}</style><script>{JS}</script>"
+            f"{refresh}<style>{CSS}</style><script>{JS}</script>"
             f"<nav>{nav}<span style='margin-left:auto;color:#9aa'>{datetime.now(timezone.utc):%H:%M:%S} UTC · {'page 60s · log live 3s' if active == '/' else 'auto-refresh 30s'}</span></nav>"
             f"<main>{body}</main>")
 
@@ -313,6 +314,78 @@ def page_architecture(conn) -> str:
     return _page("architecture", "".join(B), "/architecture")
 
 
+def _render_rows(cur, limit_cell=160) -> str:
+    e = html.escape
+    cols = [d[0] for d in cur.description]
+    out = ["<table class=sortable><thead><tr>" + "".join(f"<th>{e(c)}</th>" for c in cols) + "</tr></thead><tbody>"]
+    for r in cur:
+        tds = ""
+        for c, v in zip(cols, r, strict=True):
+            if v is None:
+                tds += "<td><small>∅</small></td>"
+            elif isinstance(v, (int, float)):
+                tds += f"<td class=num>{v:,}</td>" if isinstance(v, int) else f"<td class=num>{v:.4g}</td>"
+            else:
+                s = str(v)
+                cell = e(s[:limit_cell]) + ("…" if len(s) > limit_cell else "")
+                if c == "tweet_id" or (c == "id" and cols and "text" in cols):
+                    h = r[cols.index("handle")] if "handle" in cols else ""
+                    cell = f"<a href='https://x.com/{e(h)}/status/{e(s)}' style='color:#9ecbff'>{e(s)}</a>"
+                tds += f"<td title='{e(s[:800])}'>{cell}</td>"
+        out.append(f"<tr>{tds}</tr>")
+    out.append("</tbody></table>")
+    return "".join(out)
+
+
+def page_tables(conn, qs: str) -> str:
+    from urllib.parse import parse_qs
+    e = html.escape
+    q = parse_qs(qs)
+    name = q.get("t", [""])[0]
+    offset = max(0, int(q.get("o", ["0"])[0] or 0))
+    limit = min(500, max(1, int(q.get("n", ["50"])[0] or 50)))
+    sql = q.get("sql", [""])[0].strip()
+    tables = [r[0] for r in _q(conn, "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")]
+
+    B = ["<h2>Tables</h2><table><tr><th>table</th><th>rows</th><th>columns</th></tr>"]
+    for t in tables:
+        n = _one(conn, f"SELECT count(*) FROM {t}")[0]
+        cols = ", ".join(r["name"] + ("*" if r["pk"] else "") for r in _q(conn, f"PRAGMA table_info({t})"))
+        B.append(f"<tr><td><a href='/tables?t={t}' style='color:#9ecbff'><b>{t}</b></a></td><td class=num>{n:,}</td><td><small>{e(cols)}</small></td></tr>")
+    B.append("</table>")
+
+    B.append("<h2>SQL <small>(read-only; SELECT / WITH / EXPLAIN only, 500 rows max)</small></h2>"
+             f"<form method=get action=/tables><textarea name=sql rows=3 style='width:100%;max-width:900px;background:#0a0c10;color:#e6e6e6;border:1px solid #2a2f3a;padding:6px;font-family:ui-monospace,monospace'>{e(sql)}</textarea><br>"
+             "<button style='margin-top:6px'>run</button> "
+             "<small style='color:#9aa'>examples: <code>SELECT handle, count(*) n FROM calls GROUP BY 1 ORDER BY 2 DESC</code> · "
+             "<code>SELECT * FROM outcomes WHERE result='WRONG'</code> · <code>SELECT date, close FROM prices WHERE asset='BTC' ORDER BY date DESC LIMIT 10</code></small></form>")
+    if sql:
+        first = sql.lstrip("(").split(None, 1)[0].upper() if sql else ""
+        if first not in ("SELECT", "WITH", "EXPLAIN", "PRAGMA") or ";" in sql.rstrip(";"):
+            B.append("<p class=err>only a single SELECT / WITH / EXPLAIN / PRAGMA statement is allowed</p>")
+        else:
+            try:
+                ro = connect()
+                ro.execute("PRAGMA query_only=1")
+                cur = ro.execute(sql.rstrip(";") + (" LIMIT 500" if first == "SELECT" and " LIMIT " not in sql.upper() else ""))
+                B.append("<h3>result</h3>" + _render_rows(cur))
+                ro.close()
+            except Exception as ex:  # noqa: BLE001
+                B.append(f"<p class=err>{e(str(ex))}</p>")
+
+    if name in tables:
+        total = _one(conn, f"SELECT count(*) FROM {name}")[0]
+        order = {"tweets": "created_at DESC", "calls": "called_at DESC", "outcomes": "exit_date DESC", "prices": "date DESC",
+                 "trust": "score DESC", "accounts": "handle"}.get(name, "rowid")
+        cur = conn.execute(f"SELECT * FROM {name} ORDER BY {order} LIMIT ? OFFSET ?", (limit, offset))
+        prev_ = f"<a href='/tables?t={name}&o={max(0, offset - limit)}&n={limit}' style='color:#9ecbff'>← prev</a>" if offset else ""
+        next_ = f"<a href='/tables?t={name}&o={offset + limit}&n={limit}' style='color:#9ecbff'>next →</a>" if offset + limit < total else ""
+        B.append(f"<h2>{name} <small>rows {offset + 1:,}–{min(offset + limit, total):,} of {total:,} · order {e(order)} · "
+                 f"{prev_} {next_} · <a href='/tables?t={name}&o={offset}&n=200' style='color:#9ecbff'>200/page</a></small></h2>")
+        B.append(_render_rows(cur))
+    return _page("tables", "".join(B), "/tables")
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):  # noqa: A002 — quiet
         pass
@@ -344,6 +417,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(page_matrix(conn))
             elif path == "/accounts":
                 self._send(page_accounts(conn))
+            elif path == "/tables":
+                self._send(page_tables(conn, qs))
             elif path == "/architecture":
                 self._send(page_architecture(conn))
             elif path == "/audit":
