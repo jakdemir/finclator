@@ -221,5 +221,10 @@ vs the flat band; <i>target</i> shows whether the stated level was touched by an
     return OUT
 
 
+def render() -> str:
+    """Build and return the HTML (also refreshes data/audit.html)."""
+    return build().read_text()
+
+
 if __name__ == "__main__":
     print(build())
