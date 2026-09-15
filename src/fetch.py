@@ -12,7 +12,7 @@ from pathlib import Path
 import httpx
 import yaml
 
-from .db import connect
+from .db import connect, log
 from .prefilter import is_relevant
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -158,7 +158,7 @@ def fetch_sampled(conn: sqlite3.Connection, handle: str, until: str) -> int:
             w_end = min(m + timedelta(days=SAMPLE_DAYS_PER_MONTH), now)
             rows = _search_window(c, handle, m, w_end)
             inserted += _insert(conn, rows)
-            print(f"  {handle}: {m:%Y-%m} window → {len(rows)} tweets ({inserted} total)", flush=True)
+            log(f"  {handle}: {m:%Y-%m} window → {len(rows)} tweets ({inserted} total)")
             m = (m.replace(day=28) + timedelta(days=4)).replace(day=1)  # next month
     conn.execute("UPDATE accounts SET sampling=?, updated_at=? WHERE handle=?",
                  (f"days1-{SAMPLE_DAYS_PER_MONTH}/month", now.isoformat(), handle))
@@ -197,7 +197,7 @@ def fetch_account(conn: sqlite3.Connection, handle: str, max_pages: int = 50, ba
                     conn.execute("UPDATE accounts SET rate_per_year=? WHERE handle=?", (round(rate), handle))
                     conn.commit()
                     if rate > SAMPLE_ABOVE_PER_YEAR:
-                        print(f"  {handle}: ~{rate:,.0f} originals/yr > {SAMPLE_ABOVE_PER_YEAR} → sampling", flush=True)
+                        log(f"  {handle}: ~{rate:,.0f} originals/yr > {SAMPLE_ABOVE_PER_YEAR} → sampling")
                         return fetch_sampled(conn, handle, until)
             for t in tweets:
                 tid = int(t["id"])
@@ -215,7 +215,7 @@ def fetch_account(conn: sqlite3.Connection, handle: str, max_pages: int = 50, ba
             if len(batch) >= 500:
                 inserted += _insert(conn, batch)  # checkpoint long backfills
                 batch = []
-                print(f"  {handle}: {pages} pages, {inserted} inserted, at {last_date}", flush=True)
+                log(f"  {handle}: {pages} pages, {inserted} inserted, at {last_date}")
             if not resp.get("has_next_page") or not resp.get("next_cursor"):
                 break
             cursor = resp["next_cursor"]

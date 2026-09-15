@@ -5,6 +5,17 @@ import sqlite3
 from pathlib import Path
 
 DB_PATH = Path(__file__).resolve().parent.parent / "data" / "finclator.db"
+LOG_PATH = DB_PATH.parent / "pipeline.log"
+
+
+def log(msg: str) -> None:
+    """Timestamped line to stdout and data/pipeline.log (the admin page tails it)."""
+    from datetime import datetime, timezone
+    line = f"{datetime.now(timezone.utc):%Y-%m-%d %H:%M:%S} {msg}"
+    print(line, flush=True)
+    LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with LOG_PATH.open("a") as f:
+        f.write(line + "\n")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS accounts (

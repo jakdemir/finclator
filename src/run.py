@@ -4,22 +4,22 @@ from __future__ import annotations
 import sys
 
 from . import audit, classify, evaluate, fetch, matrix, pine, prices, score
-from .db import connect
+from .db import connect, log
 
 
 def main(skip_fetch: bool = False, skip_classify: bool = False) -> None:
     conn = connect()
     fetch.sync_roster(conn)
     if not skip_fetch:
-        print("fetch:", fetch.fetch_all(conn))
+        log(f"fetch: {fetch.fetch_all(conn)}")
     if not skip_classify:
-        print("classify:", classify.classify_pending(conn))
-    print("prices:", prices.update_prices(conn))
-    print("evaluate:", evaluate.evaluate(conn))
-    print("score:", score.recompute(conn))
+        log(f"classify: {classify.classify_pending(conn)}")
+    log(f"prices: {prices.update_prices(conn)}")
+    log(f"evaluate: {evaluate.evaluate(conn)}")
+    log(f"score: {score.recompute(conn)}")
     matrix.print_grid(matrix.build(conn))
-    print("audit:", audit.build())
-    print("pine:", pine.generate(conn))
+    log(f"audit: {audit.build()}")
+    log(f"pine: {pine.generate(conn)}")
 
 
 if __name__ == "__main__":

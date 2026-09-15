@@ -14,10 +14,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from . import audit
+from .db import LOG_PATH as LOG
 from .db import connect
 
 ROOT = Path(__file__).resolve().parent.parent
-LOG = ROOT / "data" / "backfill.log"
 ASSETS = ("BTC", "GOLD", "SPX")
 HORIZONS = ("SHORT", "MEDIUM", "LONG")
 
@@ -45,6 +45,10 @@ document.addEventListener('click',e=>{const th=e.target.closest('th');if(!th||!t
 const t=th.closest('table'),i=[...th.parentNode.children].indexOf(th),tb=t.tBodies[0],asc=th.dataset.asc!=='1';
 th.dataset.asc=asc?'1':'0';const v=td=>td.dataset.v!==undefined?+td.dataset.v:(isNaN(parseFloat(td.textContent))?td.textContent:parseFloat(td.textContent));
 [...tb.rows].sort((a,b)=>{const x=v(a.cells[i]),y=v(b.cells[i]);return (x>y?1:x<y?-1:0)*(asc?1:-1)}).forEach(r=>tb.appendChild(r));});
+async function tailLog(){const el=document.getElementById('log');if(!el)return;
+ try{const t=await (await fetch('/api/log')).text();if(t!==el.textContent){el.textContent=t;
+ if(document.getElementById('follow').checked)el.scrollTop=el.scrollHeight;}}catch(e){}}
+window.addEventListener('load',()=>{const el=document.getElementById('log');if(el){el.scrollTop=el.scrollHeight;setInterval(tailLog,3000);}});
 """
 
 
@@ -61,19 +65,24 @@ def _proc_running(pattern: str) -> bool:
     return bool(out.strip())
 
 
-def _log_tail(n=40) -> str:
-    if not LOG.exists():
-        return ""
-    lines = LOG.read_text(errors="replace").splitlines()
-    return "\n".join(lines[-n:])
+def _log_tail(n=200) -> str:
+    """Tail of data/pipeline.log; the legacy backfill.log (no timestamps) is shown until it disappears."""
+    out = []
+    legacy = ROOT / "data" / "backfill.log"
+    if legacy.exists():
+        out += ["# backfill.log (legacy, untimestamped, mtime %s UTC)" % datetime.fromtimestamp(legacy.stat().st_mtime, timezone.utc).strftime("%H:%M:%S")]
+        out += legacy.read_text(errors="replace").splitlines()[-n:]
+    if LOG.exists():
+        out += LOG.read_text(errors="replace").splitlines()[-n:]
+    return "\n".join(out[-n:])
 
 
 def _page(title: str, body: str, active: str) -> str:
     tabs = [("/", "Progress"), ("/matrix", "Matrix"), ("/accounts", "Accounts"), ("/audit", "Audit"), ("/api/status", "JSON")]
     nav = "".join(f"<a href='{h}' class='{'on' if h == active else ''}'>{t}</a>" for h, t in tabs)
     return (f"<!doctype html><meta charset=utf-8><title>Finclator admin — {title}</title>"
-            f"<meta http-equiv=refresh content=30><style>{CSS}</style><script>{JS}</script>"
-            f"<nav>{nav}<span style='margin-left:auto;color:#9aa'>{datetime.now(timezone.utc):%H:%M:%S} UTC · auto-refresh 30s</span></nav>"
+            f"<meta http-equiv=refresh content={60 if active == '/' else 30}><style>{CSS}</style><script>{JS}</script>"
+            f"<nav>{nav}<span style='margin-left:auto;color:#9aa'>{datetime.now(timezone.utc):%H:%M:%S} UTC · {'page 60s · log live 3s' if active == '/' else 'auto-refresh 30s'}</span></nav>"
             f"<main>{body}</main>")
 
 
@@ -155,7 +164,8 @@ def page_progress(conn) -> str:
                  f"<td>{(r['f'] or '')[:10]}</td><td>{(r['l'] or '')[:10]}</td></tr>")
     B.append("</tbody></table>")
 
-    B.append(f"<h2>backfill.log (tail)</h2><pre>{e(_log_tail())}</pre>")
+    B.append("<h2>pipeline.log <small>(live, last 200 lines, UTC) · <label><input type=checkbox id=follow checked> follow</label></small></h2>"
+             f"<pre id=log>{e(_log_tail())}</pre>")
     return _page("progress", "".join(B), "/")
 
 
@@ -259,6 +269,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(page_accounts(conn))
             elif path == "/audit":
                 self._send(audit.render())
+            elif path == "/api/log":
+                self._send(_log_tail(), "text/plain; charset=utf-8")
             elif path == "/api/status":
                 self._send(json.dumps(status(conn), indent=1), "application/json")
             elif path == "/api/matrix":

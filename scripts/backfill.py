@@ -7,7 +7,7 @@ import threading
 from datetime import datetime, timedelta, timezone
 from queue import Queue
 
-from src.db import DB_PATH, connect
+from src.db import DB_PATH, connect, log
 from src.fetch import fetch_account, sync_roster
 
 UNTIL = (datetime.now(timezone.utc) - timedelta(days=3 * 365)).date().isoformat()
@@ -32,11 +32,11 @@ for h in handles:
     oldest = conn0.execute("SELECT min(created_at) FROM tweets WHERE handle=? AND source='twitterapi'", (h,)).fetchone()[0]
     done = conn0.execute("SELECT sampling, rate_per_year FROM accounts WHERE handle=?", (h,)).fetchone()
     if (oldest and oldest[:10] <= UNTIL) or (done and done["sampling"]):
-        print(f"{h}: already backfilled, skip", flush=True)
+        log(f"{h}: already backfilled, skip")
         continue
     q.put(h)
 conn0.close()
-print(f"{q.qsize()} accounts to fetch with {workers} workers, back to {UNTIL}", flush=True)
+log(f"{q.qsize()} accounts to fetch with {workers} workers, back to {UNTIL}")
 
 
 def worker():
@@ -51,9 +51,9 @@ def worker():
         try:
             n = fetch_account(conn, h, max_pages=pages, backfill=True, until=UNTIL)
             tot, rel = conn.execute("SELECT count(*), sum(relevant) FROM tweets WHERE handle=?", (h,)).fetchone()
-            print(f"{h}: +{n} → {tot} total, {rel} relevant  [{q.qsize()} left]", flush=True)
+            log(f"{h}: +{n} → {tot} total, {rel} relevant  [{q.qsize()} left]")
         except Exception as e:  # noqa: BLE001
-            print(f"{h}: ERROR {e}", flush=True)
+            log(f"{h}: ERROR {e}")
         finally:
             q.task_done()
 
@@ -63,4 +63,4 @@ for t in threads:
     t.start()
 for t in threads:
     t.join()
-print("backfill complete", flush=True)
+log("backfill complete")
