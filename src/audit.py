@@ -1,8 +1,6 @@
-"""Verification & debugging page → data/audit.html (self-contained, no server).
-
-Sections: matrix · pipeline funnel · accounts (trust, volume, sampling) · calls (filterable, with tweet link,
-highlighted quote, entry/exit prices, target hit, Yahoo/TradingView verify links) · prefilter rejects sample ·
-price coverage.
+"""Audit tab: every call with tweet, highlighted quote, prices, outcome, verify links, review flags and raw JSON.
+Plus debug samples (classifier "not a call", prefilter rejects, price gaps, models). Rendered inside the admin chrome
+(`admin._page`) at /audit and also written to data/audit.html as a static copy by src.run.
 """
 from __future__ import annotations
 
@@ -22,33 +20,41 @@ TV = {"BTC": "BITSTAMP:BTCUSD", "GOLD": "COMEX:GC1!", "SPX": "SP:SPX"}
 YH = {"BTC": "BTC-USD", "GOLD": "GC=F", "SPX": "%5EGSPC"}
 HZ = {"SHORT": "0–3 mo · eval 90d", "MEDIUM": "3–12 mo · eval 365d", "LONG": "1–5 y · eval 730d"}
 
+# Extra CSS/JS for this tab only (admin CSS provides the base: dark theme, nav, cards, tables, .BUY/.SELL, sortable).
 CSS = """
-body{font:13px/1.45 -apple-system,system-ui,sans-serif;margin:0;padding:20px 24px;color:#1b1b1b;background:#fff}
-h1{margin:0 0 4px}h2{margin:28px 0 8px;font-size:17px;border-bottom:1px solid #ddd;padding-bottom:4px}
-table{border-collapse:collapse;width:100%}th,td{border:1px solid #e3e3e3;padding:5px 7px;vertical-align:top;text-align:left}
-th{background:#f5f5f5;position:sticky;top:0;z-index:1;cursor:pointer}th:hover{background:#e9e9e9}
-mark{background:#ffe58a;padding:0 1px}small{color:#777}.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
-.BUY{color:#0a7d33;font-weight:600}.SELL{color:#c0392b;font-weight:600}.NEUTRAL{color:#666;font-weight:600}.NA{color:#aaa}
-tr.CORRECT td{background:#eefaf1}tr.WRONG td{background:#fdeeec}tr.PARTIAL td{background:#fff9e3}
-.tweet{max-width:560px;white-space:pre-wrap}.grid td{text-align:center;font-size:18px;width:130px;padding:10px}
-.hit1{color:#0a7d33}.hit0{color:#c0392b}.bar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 12px;align-items:center}
-select,input{font:inherit;padding:3px 6px}.pill{background:#eee;border-radius:10px;padding:1px 8px;font-size:12px}
-a{color:#1a5fb4;text-decoration:none}a:hover{text-decoration:underline}.hidden{display:none}
-details summary{cursor:pointer;color:#1a5fb4}
+#calls td{vertical-align:top}.tweet{max-width:520px;white-space:pre-wrap;word-break:break-word}
+mark{background:#6b5a00;color:#fff;padding:0 2px;border-radius:2px}
+tr.CORRECT>td{background:#17301f}tr.WRONG>td{background:#3a1b18}tr.PARTIAL>td{background:#3a3212}
+.dir.BUY,.dir.SELL,.dir.NEUTRAL{background:none;font-weight:700}.dir.BUY{color:#7ddc8a}.dir.SELL{color:#ff7b6b}.dir.NEUTRAL{color:#aaa}
+.hit1{color:#7ddc8a}.hit0{color:#ff7b6b}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 10px;align-items:center}
+select,input{font:inherit;padding:3px 6px;background:#181b22;color:#e6e6e6;border:1px solid #2a2f3a;border-radius:4px}
+.pill{background:#2a2f3a;border-radius:10px;padding:1px 8px;font-size:12px;white-space:nowrap}
+.flag{display:inline-block;background:#4a1f1a;color:#ff9b8b;border-radius:4px;padding:0 5px;font-size:11px;margin:2px 4px 0 0}
+.x{cursor:pointer;color:#9ecbff;font-size:11px}tr.raw>td{background:#0a0c10;padding:6px 10px}
+tr.raw pre{margin:0;max-height:none}small{color:#9aa}a{color:#9ecbff}.hidden{display:none!important}
+th.sa:after{content:" ▲"}th.sd:after{content:" ▼"}.help{color:#9aa;font-size:12px;margin:0 0 8px}
 """
 
 JS = """
-function filt(){const a=v('f-acc'),s=v('f-asset'),h=v('f-hz'),r=v('f-res'),d=v('f-dir'),q=v('f-q').toLowerCase();
-let n=0;document.querySelectorAll('#calls tbody tr').forEach(tr=>{const D=tr.dataset;
-const ok=(!a||D.acc===a)&&(!s||D.asset===s)&&(!h||D.hz===h)&&(!r||D.res===r)&&(!d||D.dir===d)&&(!q||tr.textContent.toLowerCase().includes(q));
-tr.classList.toggle('hidden',!ok);if(ok)n++;});document.getElementById('f-n').textContent=n+' shown';}
-function v(id){return document.getElementById(id).value}
-function sortTable(tbl,col){const tb=tbl.tBodies[0],rows=[...tb.rows],asc=tbl.dataset.sc!=col+'a';
-rows.sort((x,y)=>{const a=x.cells[col].dataset.v??x.cells[col].textContent,b=y.cells[col].dataset.v??y.cells[col].textContent;
-const na=parseFloat(a),nb=parseFloat(b);const c=(!isNaN(na)&&!isNaN(nb))?na-nb:a.localeCompare(b);return asc?c:-c;});
-rows.forEach(r=>tb.appendChild(r));tbl.dataset.sc=col+(asc?'a':'d');}
-document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('table.sortable th').forEach((th,i)=>th.onclick=()=>sortTable(th.closest('table'),i));
-['f-acc','f-asset','f-hz','f-res','f-dir'].forEach(id=>document.getElementById(id).onchange=filt);document.getElementById('f-q').oninput=filt;filt();});
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+function v(id){return $('#'+id).value}
+function filt(){const a=v('f-acc'),s=v('f-asset'),h=v('f-hz'),r=v('f-res'),d=v('f-dir'),m=v('f-flag'),q=v('f-q').toLowerCase();let n=0;
+ $$('#calls tbody tr.row').forEach(tr=>{const D=tr.dataset;
+ const ok=(!a||D.acc===a)&&(!s||D.asset===s)&&(!h||D.hz===h)&&(!r||D.res===r)&&(!d||D.dir===d)&&(!m||D.flags.split(' ').includes(m))&&(!q||tr.textContent.toLowerCase().includes(q));
+ tr.classList.toggle('hidden',!ok);if(!ok)$('#raw-'+D.id).classList.add('hidden');if(ok)n++;});$('#f-n').textContent=n+' shown';
+ const p=new URLSearchParams();for(const [k,id] of [['acc','f-acc'],['asset','f-asset'],['hz','f-hz'],['res','f-res'],['dir','f-dir'],['flag','f-flag'],['q','f-q']]){if(v(id))p.set(k,v(id))}
+ history.replaceState(null,'',location.pathname+(p.toString()?'?'+p:''))}
+function toggleRaw(id){$('#raw-'+id).classList.toggle('hidden')}
+function copyRow(id){navigator.clipboard.writeText($('#raw-'+id+' pre').textContent)}
+function setFlag(f){$('#f-flag').value=f;filt();$('#calls').scrollIntoView()}
+document.addEventListener('DOMContentLoaded',()=>{
+ const p=new URLSearchParams(location.search);for(const [k,id] of [['acc','f-acc'],['asset','f-asset'],['hz','f-hz'],['res','f-res'],['dir','f-dir'],['flag','f-flag'],['q','f-q']]){if(p.get(k))$('#'+id).value=p.get(k)}
+ ['f-acc','f-asset','f-hz','f-res','f-dir','f-flag'].forEach(id=>$('#'+id).onchange=filt);$('#f-q').oninput=filt;filt();
+ document.addEventListener('keydown',e=>{if(e.key==='/'&&document.activeElement.tagName!=='INPUT'){e.preventDefault();$('#f-q').focus()}});
+ // keep raw rows attached to their call row after admin's sortable reorders tbody
+ new MutationObserver(()=>{$$('#calls tbody tr.row').forEach(r=>{const raw=$('#raw-'+r.dataset.id);if(raw&&r.nextElementSibling!==raw)r.after(raw)})}).observe($('#calls tbody'),{childList:true});
+});
 """
 
 
@@ -73,111 +79,80 @@ def _fmt(x, nd=2):
     return "" if x is None else f"{x:,.{nd}f}"
 
 
-def build(model: str | None = None) -> Path:
-    conn = connect()
+def _flags(r) -> list[str]:
+    """Automatic review hints — where a human should look first."""
+    f = []
+    if r["quote"] and r["quote"] not in r["text"]:
+        f.append("quote-mismatch")
+    if r["confidence"] < 0.5:
+        f.append("low-conf")
+    if r["direction"] == "NEUTRAL":
+        f.append("neutral")
+    if r["price_target"] and r["entry_close"]:
+        ratio = r["price_target"] / r["entry_close"]
+        if ratio > 5 or ratio < 0.2:
+            f.append("target-units")
+        elif (r["direction"] == "BUY" and ratio < 1) or (r["direction"] == "SELL" and ratio > 1):
+            f.append("target-vs-direction")
+    if r["result"] == "WRONG" and r["confidence"] >= 0.7:
+        f.append("confident-wrong")
+    if r["result"] and r["actual"] == "NEUTRAL" and r["result"] == "PARTIAL":
+        f.append("flat-market")
+    return f
+
+
+def body(conn, model: str | None = None) -> str:
+    """HTML fragment for the audit tab (no chrome)."""
     model = model or active_model()
     e = html.escape
-    now = datetime.now(timezone.utc)
-    matrix_p = ROOT / "data" / "matrix.json"
-    matrix = json.loads(matrix_p.read_text()) if matrix_p.exists() else {"generated_at": "", "cells": {}}
-
-    P = [f"<!doctype html><meta charset=utf-8><title>Finclator — verification</title><style>{CSS}</style><script>{JS}</script>"]
-    others = [m for m in list_models(conn) if m != model]
-    P.append(f"<h1>Finclator verification &amp; debug</h1><small>generated {now:%Y-%m-%d %H:%M} UTC · "
-             f"<b>model: {e(model)}</b>{' (others in DB: ' + ', '.join(e(m) for m in others) + ')' if others else ''} · "
-             "prices: BTC=Yahoo BTC-USD (UTC close), GOLD=COMEX GC=F front month, SPX=^GSPC · "
-             "flat band = 0.5σ·√days (trailing-1y daily vol at entry)</small>")
-
-    # ---- matrix
-    P.append("<h2>Matrix</h2><table class=grid><tr><th></th><th>SHORT<br><small>0–3 mo</small></th><th>MEDIUM<br><small>3–12 mo</small></th><th>LONG<br><small>1–5 y</small></th></tr>")
-    for a in ("BTC", "GOLD", "SPX"):
-        tds = ""
-        for h in ("SHORT", "MEDIUM", "LONG"):
-            c = matrix["cells"].get(f"{a}:{h}", {"label": "N/A", "n_calls": 0, "net": 0})
-            cls = c["label"] if c["label"] != "N/A" else "NA"
-            tds += f"<td class={cls}>{c['label']}<br><small>n={c['n_calls']} net={c['net']:+.2f}</small></td>"
-        P.append(f"<tr><th>{a}</th>{tds}</tr>")
-    P.append("</table>")
-
-    # ---- funnel
-    f = conn.execute("""SELECT count(*) t, sum(relevant) rel,
-                        (SELECT count(*) FROM classified_by cb JOIN tweets tt ON tt.id=cb.tweet_id WHERE cb.model=? AND tt.relevant=1) cls,
-                        (SELECT count(*) FROM calls WHERE model=?) calls,
-                        (SELECT count(*) FROM outcomes o JOIN calls c ON c.id=o.call_id WHERE c.model=?) outs,
-                        (SELECT count(DISTINCT tweet_id) FROM calls WHERE model=?) call_tweets FROM tweets""",
-                     (model, model, model, model)).fetchone()
-    P.append(f"""<h2>Pipeline funnel</h2><div class=bar>
-<span class=pill>tweets stored: <b>{f['t']:,}</b></span> →
-<span class=pill>asset-mentioning (prefilter): <b>{f['rel']:,}</b></span> →
-<span class=pill>classified: <b>{f['cls']:,}</b></span> →
-<span class=pill>tweets with calls: <b>{f['call_tweets']:,}</b> ({f['calls']:,} calls)</span> →
-<span class=pill>matured &amp; evaluated: <b>{f['outs']:,}</b></span></div>""")
-    pend = f["rel"] - f["cls"]
-    if pend:
-        P.append(f"<p><b>{pend:,}</b> tweets await classification.</p>")
-
-    # ---- accounts
-    P.append("<h2>Accounts</h2><table class=sortable><thead><tr><th>account</th><th>school</th><th>lang</th>"
-             "<th>followers</th><th>orig/yr</th><th>sampling</th><th>tweets</th><th>relevant</th><th>calls</th>"
-             "<th>evaluated</th><th>hits</th><th>trust</th><th>BTC</th><th>GOLD</th><th>SPX</th><th>first</th><th>last</th></tr></thead><tbody>")
-    acc = conn.execute("""
-        SELECT a.handle, a.school, a.language, a.followers, a.rate_per_year, a.sampling, a.active,
-               (SELECT count(*) FROM tweets t WHERE t.handle=a.handle) n_t,
-               (SELECT sum(relevant) FROM tweets t WHERE t.handle=a.handle) n_rel,
-               (SELECT count(*) FROM calls c WHERE c.handle=a.handle AND c.model=?) n_c,
-               (SELECT min(created_at) FROM tweets t WHERE t.handle=a.handle) first_t,
-               (SELECT max(created_at) FROM tweets t WHERE t.handle=a.handle) last_t
-        FROM accounts a ORDER BY a.handle""", (model,)).fetchall()
-    trust = {(r["handle"], r["asset"], r["horizon"]): r for r in conn.execute("SELECT * FROM trust WHERE model=?", (model,))}
-
-    def tcell(h, a):
-        r = trust.get((h, a, "*"))
-        return f"<td class=num data-v='{r['score'] if r else 0}'>{r['score']:.2f}<br><small>n={r['n']}</small></td>" if r else "<td class=num data-v=0><small>–</small></td>"
-
-    for r in acc:
-        ov = trust.get((r["handle"], "*", "*"))
-        P.append(f"<tr><td><a href='https://x.com/{r['handle']}'>@{e(r['handle'])}</a>{'' if r['active'] else ' <small>(inactive)</small>'}</td>"
-                 f"<td>{e(r['school'] or '')}</td><td>{r['language']}</td>"
-                 f"<td class=num>{_fmt(r['followers'], 0)}</td><td class=num>{_fmt(r['rate_per_year'], 0)}</td>"
-                 f"<td>{e(r['sampling'] or 'full')}</td><td class=num>{r['n_t'] or 0}</td><td class=num>{r['n_rel'] or 0}</td>"
-                 f"<td class=num>{r['n_c']}</td>")
-        if ov:
-            P.append(f"<td class=num>{ov['n']}</td><td class=num>{_fmt(ov['correct'], 1)}</td>"
-                     f"<td class=num data-v='{ov['score']}'><b>{ov['score']:.3f}</b></td>")
-        else:
-            P.append("<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>")
-        P.append(tcell(r["handle"], "BTC") + tcell(r["handle"], "GOLD") + tcell(r["handle"], "SPX"))
-        P.append(f"<td><small>{(r['first_t'] or '')[:10]}</small></td><td><small>{(r['last_t'] or '')[:10]}</small></td></tr>")
-    P.append("</tbody></table>")
-
-    # ---- calls
     rows = conn.execute("""
         SELECT c.id, c.handle, c.asset, c.direction, c.horizon, c.confidence, c.price_target, c.quote, c.called_at,
-               c.tweet_id, c.model, t.text, o.entry_date, o.exit_date, o.entry_close, o.exit_close, o.return_pct,
-               o.threshold_pct, o.actual, o.result, o.target_hit, o.extreme
+               c.tweet_id, c.model, t.text, t.assets_hint, o.entry_date, o.exit_date, o.entry_close, o.exit_close,
+               o.return_pct, o.threshold_pct, o.actual, o.result, o.target_hit, o.extreme
         FROM calls c JOIN tweets t ON t.id = c.tweet_id LEFT JOIN outcomes o ON o.call_id = c.id
         WHERE c.model = ? ORDER BY c.called_at DESC""", (model,)).fetchall()
+    res_counts = {k: 0 for k in ("CORRECT", "PARTIAL", "WRONG", "PENDING")}
+    flag_counts: dict[str, int] = {}
+    row_flags: dict[int, list[str]] = {}
+    for r in rows:
+        res_counts[r["result"] or "PENDING"] += 1
+        fl = _flags(r)
+        row_flags[r["id"]] = fl
+        for x in fl:
+            flag_counts[x] = flag_counts.get(x, 0) + 1
+    others = [m for m in list_models(conn) if m != model]
     handles = sorted({r["handle"] for r in rows})
-    P.append(f"""<h2>Calls ({len(rows)})</h2><div class=bar>
+
+    B = [f"<style>{CSS}</style><script>{JS}</script>"]
+    B.append(f"<h2>Calls <small>{len(rows)} · model <b>{e(model)}</b>{' · also in DB: ' + ', '.join(e(m) for m in others) if others else ''}</small></h2>")
+    B.append("<div class=filters>")
+    B.append(f"<span class=pill><span class=hit1>CORRECT {res_counts['CORRECT']}</span> · <span style='color:#f0b64c'>PARTIAL {res_counts['PARTIAL']}</span> · "
+             f"<span class=hit0>WRONG {res_counts['WRONG']}</span> · pending {res_counts['PENDING']}</span>")
+    for k, n in sorted(flag_counts.items(), key=lambda x: -x[1]):
+        B.append(f"<span class='pill flagpill' style='cursor:pointer' onclick=\"setFlag('{k}')\">{k} <b>{n}</b></span>")
+    B.append("</div>")
+    B.append(f"""<div class=filters>
 <select id=f-acc><option value="">all accounts</option>{''.join(f'<option>{e(h)}</option>' for h in handles)}</select>
 <select id=f-asset><option value="">all assets</option><option>BTC</option><option>GOLD</option><option>SPX</option></select>
 <select id=f-hz><option value="">all horizons</option><option>SHORT</option><option>MEDIUM</option><option>LONG</option></select>
 <select id=f-dir><option value="">all directions</option><option>BUY</option><option>SELL</option><option>NEUTRAL</option></select>
 <select id=f-res><option value="">all results</option><option>CORRECT</option><option>PARTIAL</option><option>WRONG</option><option value=PENDING>pending</option></select>
-<input id=f-q placeholder="search text…" size=28> <span id=f-n class=pill></span></div>
-<p><b>How to verify a row:</b> open <i>tweet ↗</i>, read the highlighted quote, judge asset / direction / horizon / target.
-Then open <i>entry</i> / <i>exit</i> (Yahoo history, ±5 days) or <i>TV</i> and compare the closes. <i>market did</i> is the realised direction
-vs the flat band; <i>target</i> shows whether the stated level was touched by any close inside the horizon (extreme = best close reached).</p>
-<table id=calls class=sortable><thead><tr><th>#</th><th>account · date</th><th class=tweet>tweet (quote highlighted)</th><th>asset</th>
+<select id=f-flag><option value="">all flags</option>{''.join(f'<option value="{k}">{k} ({n})</option>' for k, n in sorted(flag_counts.items()))}</select>
+<input id=f-q placeholder="search text… ( / )" size=26> <span id=f-n class=pill></span></div>
+<p class=help><b>Verify a row:</b> <i>tweet ↗</i> → read the highlighted quote → judge asset / direction / horizon / target.
+<i>entry</i> / <i>exit</i> open Yahoo history (±5 d) to check closes; <i>TV</i> opens the chart. <i>raw</i> shows the stored record as JSON.
+<i>market did</i> = realised direction vs the flat band. Flags are automatic review hints, not errors. Filters are kept in the URL — share it.</p>
+<table id=calls class=sortable><thead><tr><th>#</th><th>account · date</th><th>tweet (quote highlighted)</th><th>asset</th>
 <th>call</th><th>horizon</th><th>conf</th><th>target</th><th>entry</th><th>exit</th><th>return</th><th>market did</th><th>result</th><th>verify</th></tr></thead><tbody>""")
     for r in rows:
         d = r["called_at"][:10]
         res = r["result"] or "PENDING"
+        fl = row_flags[r["id"]]
         if r["result"]:
             entry = f"{r['entry_date']}<br>{_fmt(r['entry_close'])}"
             exit_ = f"{r['exit_date']}<br>{_fmt(r['exit_close'])}"
             ret = f"{r['return_pct']:+.1f}%<br><small>flat ±{r['threshold_pct']:.1f}%</small>"
-            actual = f"<span class={r['actual']}>{r['actual']}</span>"
+            actual = f"<span class='dir {r['actual']}'>{r['actual']}</span>"
             result = r["result"]
             verify = (f"<a href='{_yahoo(r['asset'], r['entry_date'])}'>entry</a> · <a href='{_yahoo(r['asset'], r['exit_date'])}'>exit</a>"
                       f" · <a href='{_tv(r['asset'])}'>TV</a>")
@@ -192,47 +167,62 @@ vs the flat band; <i>target</i> shows whether the stated level was touched by an
                 tgt += f"<br><small class=hit{r['target_hit']}>{'HIT' if r['target_hit'] else 'miss'} · ext {_fmt(r['extreme'], 0)}</small>"
         else:
             tgt = "<small>–</small>"
-        P.append(f"""<tr class="{r['result'] or ''}" data-acc="{e(r['handle'])}" data-asset="{r['asset']}" data-hz="{r['horizon']}" data-res="{res}" data-dir="{r['direction']}">
-<td data-v={r['id']}>{r['id']}</td><td>@{e(r['handle'])}<br><small>{d}</small><br><a href='https://x.com/{r['handle']}/status/{r['tweet_id']}'>tweet ↗</a></td>
-<td class=tweet>{_hl(r['text'], r['quote'])}</td><td>{r['asset']}</td><td class={r['direction']}>{r['direction']}</td>
-<td>{r['horizon']}<br><small>{HZ[r['horizon']]}</small></td><td class=num>{r['confidence']:.2f}</td><td class=num>{tgt}</td>
-<td class=num>{entry}</td><td class=num>{exit_}</td><td class=num data-v='{r['return_pct'] or 0}'>{ret}</td><td>{actual}</td><td>{result}</td><td>{verify}</td></tr>""")
-    P.append("</tbody></table>")
+        raw = {k: r[k] for k in r.keys() if k != "text"}
+        B.append(f"""<tr class="row {r['result'] or ''}" data-id={r['id']} data-acc="{e(r['handle'])}" data-asset="{r['asset']}" data-hz="{r['horizon']}"
+ data-res="{res}" data-dir="{r['direction']}" data-flags="{' '.join(fl)}">
+<td data-v={r['id']}>{r['id']}<br><span class=x onclick="toggleRaw({r['id']})">raw</span></td>
+<td>@{e(r['handle'])}<br><small>{d}</small><br><a href='https://x.com/{r['handle']}/status/{r['tweet_id']}'>tweet ↗</a></td>
+<td class=tweet>{_hl(r['text'], r['quote'])}{'<br>' if fl else ''}{''.join(f'<span class=flag>{x}</span>' for x in fl)}</td>
+<td>{r['asset']}<br><small>{e(r['assets_hint'] or '')}</small></td>
+<td class='dir {r['direction']}'>{r['direction']}</td><td>{r['horizon']}<br><small>{HZ[r['horizon']]}</small></td><td class=num>{r['confidence']:.2f}</td>
+<td class=num>{tgt}</td><td class=num>{entry}</td><td class=num>{exit_}</td><td class=num data-v='{r['return_pct'] or 0}'>{ret}</td>
+<td>{actual}</td><td>{result}</td><td>{verify}</td></tr>
+<tr id=raw-{r['id']} class="raw hidden"><td colspan=14><span class=x onclick="copyRow({r['id']})">copy JSON</span>
+<pre>{e(json.dumps(raw, ensure_ascii=False, indent=1))}</pre></td></tr>""")
+    B.append("</tbody></table>")
 
-    # ---- debug: rejects + classified non-calls
-    P.append("<h2>Debug</h2>")
-    rej = conn.execute("""SELECT handle, created_at, text, assets_hint FROM tweets WHERE relevant=1
+    # ---- debug samples
+    rej = conn.execute("""SELECT handle, created_at, text, assets_hint, id FROM tweets WHERE relevant=1
                           AND id IN (SELECT tweet_id FROM classified_by WHERE model=?)
-                          AND id NOT IN (SELECT tweet_id FROM calls WHERE model=?) ORDER BY random() LIMIT 30""",
+                          AND id NOT IN (SELECT tweet_id FROM calls WHERE model=?) ORDER BY random() LIMIT 40""",
                        (model, model)).fetchall()
-    P.append("<details><summary>Sample of asset-mentioning tweets the classifier judged <b>not a call</b> (30 random) — check for missed calls</summary><table>")
+    B.append("<h2>Classifier said “not a call” <small>40 random — look for missed calls</small></h2><table>")
     for r in rej:
-        P.append(f"<tr><td>@{e(r['handle'])}<br><small>{r['created_at'][:10]} · {r['assets_hint']}</small></td><td class=tweet>{e(r['text'])}</td></tr>")
-    P.append("</table></details>")
-    norel = conn.execute("""SELECT handle, created_at, text FROM tweets WHERE relevant=0 AND is_reply=0
-                            ORDER BY random() LIMIT 30""").fetchall()
-    P.append("<details><summary>Sample of tweets the <b>prefilter dropped</b> (no asset keyword; 30 random) — check for missed asset mentions</summary><table>")
+        B.append(f"<tr><td style='white-space:nowrap'><a href='https://x.com/{r['handle']}/status/{r['id']}'>@{e(r['handle'])}</a><br><small>{r['created_at'][:10]} · {r['assets_hint']}</small></td><td class=tweet>{e(r['text'])}</td></tr>")
+    B.append("</table>")
+    norel = conn.execute("SELECT handle, created_at, text, id FROM tweets WHERE relevant=0 ORDER BY random() LIMIT 40").fetchall()
+    B.append("<h2>Prefilter dropped <small>40 random — look for missed asset mentions</small></h2><table>")
     for r in norel:
-        P.append(f"<tr><td>@{e(r['handle'])}<br><small>{r['created_at'][:10]}</small></td><td class=tweet>{e(r['text'])}</td></tr>")
-    P.append("</table></details>")
-    P.append("<details><summary>Price coverage</summary><table><tr><th>asset</th><th>from</th><th>to</th><th>rows</th><th>last close</th></tr>")
+        B.append(f"<tr><td style='white-space:nowrap'><a href='https://x.com/{r['handle']}/status/{r['id']}'>@{e(r['handle'])}</a><br><small>{r['created_at'][:10]}</small></td><td class=tweet>{e(r['text'])}</td></tr>")
+    B.append("</table>")
+    B.append("<h2>Price coverage</h2><table><tr><th>asset</th><th>from</th><th>to</th><th>rows</th><th>last close</th><th>gaps &gt; 5 d</th></tr>")
     for r in conn.execute("SELECT asset, min(date) a, max(date) b, count(*) n FROM prices GROUP BY asset"):
         last = conn.execute("SELECT close FROM prices WHERE asset=? ORDER BY date DESC LIMIT 1", (r["asset"],)).fetchone()[0]
-        P.append(f"<tr><td>{r['asset']}</td><td>{r['a']}</td><td>{r['b']}</td><td class=num>{r['n']}</td><td class=num>{_fmt(last)}</td></tr>")
-    P.append("</table></details>")
-    P.append("<details><summary>Scoring rules</summary><ul>"
-             "<li>Direction: CORRECT=1, PARTIAL (off by one step, e.g. BUY vs flat)=0.5, WRONG=0.</li>"
-             "<li>Price target: +0.25 if touched within horizon, −0.25 if not (clamped 0–1).</li>"
-             "<li>Trust = (Σhits + 5) / (n + 10): shrinkage toward 0.5; n≈10 before the score means much.</li>"
-             "<li>Matrix weight per call = trust(account, asset, horizon → fallbacks) × confidence × 2^(−age / (window/3)); hard cutoff at window.</li>"
-             "<li>Cell label: net=(buy−sell)/total; BUY &gt; +0.15, SELL &lt; −0.15, else NEUTRAL; N/A when total weight &lt; 0.3.</li></ul></details>")
-    OUT.write_text("\n".join(P))
+        dates = [x[0] for x in conn.execute("SELECT date FROM prices WHERE asset=? ORDER BY date", (r["asset"],))]
+        gaps = sum(1 for x, y in zip(dates, dates[1:]) if (date.fromisoformat(y) - date.fromisoformat(x)).days > 5)
+        B.append(f"<tr><td>{r['asset']}</td><td>{r['a']}</td><td>{r['b']}</td><td class=num>{r['n']}</td><td class=num>{_fmt(last)}</td><td class=num>{gaps}</td></tr>")
+    B.append("</table>")
+    B.append("<h2>Models in DB</h2><table><tr><th>model</th><th>classified</th><th>calls</th><th>evaluated</th></tr>")
+    for m in list_models(conn):
+        c = conn.execute("""SELECT (SELECT count(*) FROM classified_by WHERE model=?) a, (SELECT count(*) FROM calls WHERE model=?) b,
+                            (SELECT count(*) FROM outcomes o JOIN calls c ON c.id=o.call_id WHERE c.model=?) d""", (m, m, m)).fetchone()
+        B.append(f"<tr><td>{e(m)}{' <b>(active)</b>' if m == model else ''}</td><td class=num>{c['a']}</td><td class=num>{c['b']}</td><td class=num>{c['d']}</td></tr>")
+    B.append("</table>")
+    return "".join(B)
+
+
+def render(model: str | None = None) -> str:
+    """Full page (admin chrome + audit body). Also refreshes the static copy."""
+    from .admin import _page
+    conn = connect()
+    page = _page("audit", body(conn, model), "/audit")
+    OUT.write_text(page)
+    return page
+
+
+def build(model: str | None = None) -> Path:
+    render(model)
     return OUT
-
-
-def render() -> str:
-    """Build and return the HTML (also refreshes data/audit.html)."""
-    return build().read_text()
 
 
 if __name__ == "__main__":

@@ -16,6 +16,7 @@ from pathlib import Path
 from . import audit
 from .db import LOG_PATH as LOG
 from .db import connect
+from .models import active_model
 
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ("BTC", "GOLD", "SPX")
@@ -106,10 +107,10 @@ def _log_tail(n=200) -> str:
 def _page(title: str, body: str, active: str) -> str:
     tabs = [("/", "Progress"), ("/matrix", "Matrix"), ("/accounts", "Accounts"), ("/audit", "Audit"), ("/architecture", "Architecture"), ("/tables", "Tables"), ("/api/status", "JSON")]
     nav = "".join(f"<a href='{h}' class='{'on' if h == active else ''}'>{t}</a>" for h, t in tabs)
-    refresh = "" if active == "/tables" else f"<meta http-equiv=refresh content={60 if active == '/' else 30}>"
+    refresh = "" if active in ("/tables", "/audit") else f"<meta http-equiv=refresh content={60 if active == '/' else 30}>"
     return (f"<!doctype html><meta charset=utf-8><title>Finclator admin — {title}</title>"
             f"{refresh}<style>{CSS}</style><script>{JS}</script>"
-            f"<nav>{nav}<span style='margin-left:auto;color:#9aa'>{datetime.now(timezone.utc):%H:%M:%S} UTC · {'page 60s · log live 3s' if active == '/' else 'auto-refresh 30s'}</span></nav>"
+            f"<nav>{nav}<span style='margin-left:auto;color:#9aa'>{datetime.now(timezone.utc):%H:%M:%S} UTC · {'page 60s · log live 3s' if active == '/' else ('no auto-refresh' if active in ('/tables', '/audit') else 'auto-refresh 30s')}</span></nav>"
             f"<main>{body}</main>")
 
 
@@ -234,8 +235,8 @@ def page_matrix(conn) -> str:
 
     B.append("<h2>Trust by school</h2><table class=sortable><thead><tr><th>school</th><th>accounts</th><th>scored</th><th>mean trust</th><th>Σn</th></tr></thead><tbody>")
     for r in _q(conn, """SELECT a.school, count(*) n_acc, count(t.score) scored, avg(t.score) mean, coalesce(sum(t.n),0) sn
-                          FROM accounts a LEFT JOIN trust t ON t.handle=a.handle AND t.asset='*' AND t.horizon='*'
-                          GROUP BY a.school ORDER BY mean DESC"""):
+                          FROM accounts a LEFT JOIN trust t ON t.handle=a.handle AND t.asset='*' AND t.horizon='*' AND t.model=?
+                          GROUP BY a.school ORDER BY mean DESC""", active_model()):
         B.append(f"<tr><td>{e(r['school'] or '')}</td><td class=num>{r['n_acc']}</td><td class=num>{r['scored']}</td>"
                  f"<td class=num>{(r['mean'] or 0):.3f}</td><td class=num>{r['sn']}</td></tr>")
     B.append("</tbody></table>")
@@ -244,16 +245,17 @@ def page_matrix(conn) -> str:
 
 def page_accounts(conn) -> str:
     e = html.escape
-    trust = {(r["handle"], r["asset"], r["horizon"]): r for r in _q(conn, "SELECT * FROM trust")}
+    model = active_model()
+    trust = {(r["handle"], r["asset"], r["horizon"]): r for r in _q(conn, "SELECT * FROM trust WHERE model=?", model)}
 
     def tc(h, a, hz="*"):
         r = trust.get((h, a, hz))
         return f"<td class=num data-v={r['score'] if r else 0.5}>{r['score']:.2f}<small> n={r['n']}</small></td>" if r else "<td class=num data-v=0.5><small>–</small></td>"
 
-    B = ["<h2>Trust scores <small>(shrunk toward 0.5; n = matured outcomes)</small></h2>",
+    B = [f"<h2>Trust scores <small>(shrunk toward 0.5; n = matured outcomes) · model {e(model)}</small></h2>",
          "<table class=sortable><thead><tr><th>account</th><th>school</th><th>calls</th><th>n</th><th>hits</th><th>overall</th>",
          "<th>BTC</th><th>GOLD</th><th>SPX</th><th>SHORT</th><th>MEDIUM</th><th>LONG</th></tr></thead><tbody>"]
-    for r in _q(conn, """SELECT a.handle, a.school, (SELECT count(*) FROM calls c WHERE c.handle=a.handle) calls FROM accounts a"""):
+    for r in _q(conn, """SELECT a.handle, a.school, (SELECT count(*) FROM calls c WHERE c.handle=a.handle AND c.model=?) calls FROM accounts a""", model):
         ov = trust.get((r["handle"], "*", "*"))
         B.append(f"<tr><td><a href='https://x.com/{e(r['handle'])}' style='color:#9ecbff'>@{e(r['handle'])}</a></td><td>{e(r['school'] or '')}</td><td class=num>{r['calls']}</td>")
         if ov:
