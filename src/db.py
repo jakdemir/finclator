@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS accounts (
     followers     INTEGER,
     rate_per_year INTEGER,                    -- measured originals/yr at backfill
     sampling      TEXT,                       -- NULL = full timeline; e.g. 'days1-3/month'
-    tier          TEXT NOT NULL DEFAULT 'B',
     updated_at    TEXT
 );
 
@@ -98,7 +97,7 @@ def connect(path: Path = DB_PATH) -> sqlite3.Connection:
     conn.executescript(SCHEMA)
     # additive migrations for existing DBs
     cols = {r["name"] for r in conn.execute("PRAGMA table_info(accounts)")}
-    for col, typ in (("rate_per_year", "INTEGER"), ("sampling", "TEXT"), ("tier", "TEXT NOT NULL DEFAULT 'B'")):
+    for col, typ in (("rate_per_year", "INTEGER"), ("sampling", "TEXT")):
         if col not in cols:
             conn.execute(f"ALTER TABLE accounts ADD COLUMN {col} {typ}")
     for table, col, typ in (("calls", "price_target", "REAL"), ("outcomes", "target_hit", "INTEGER"),

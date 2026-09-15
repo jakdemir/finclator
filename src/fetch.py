@@ -26,12 +26,12 @@ def sync_roster(conn: sqlite3.Connection) -> list[dict]:
     accounts = yaml.safe_load(ROSTER.read_text())["accounts"]
     for a in accounts:
         conn.execute(
-            """INSERT INTO accounts(handle, display_name, school, language, active, tier, updated_at)
-               VALUES(?,?,?,?,1,?,?)
+            """INSERT INTO accounts(handle, display_name, school, language, active, updated_at)
+               VALUES(?,?,?,?,1,?)
                ON CONFLICT(handle) DO UPDATE SET display_name=excluded.display_name,
-                 school=excluded.school, language=excluded.language, tier=excluded.tier, active=1""",
+                 school=excluded.school, language=excluded.language, active=1""",
             (a["handle"].lower(), a.get("display_name"), a["school"], a.get("language", "en"),
-             a.get("tier", "B"), datetime.now(timezone.utc).isoformat()),
+             datetime.now(timezone.utc).isoformat()),
         )
     conn.commit()
     return accounts

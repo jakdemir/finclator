@@ -3,11 +3,6 @@ import csv
 
 import yaml
 
-TIER_A = {
-    "santmanukyan", "laplace2011", "peterschiff", "peterlbrandt", "lynaldencontact", "tavicosta", "jsblokland",
-    "100trillionusd", "ki_young_ju", "caprioleio", "kobeissiletter", "zerohedge", "raoulgmi", "cryptohayes",
-    "macroalf", "garethsoloway", "markminervini", "rektcapital", "tuncsatiroglu", "burak_tamac",
-}
 SCHOOL_HINTS = [
     (("bitcoin", "btc", "crypto", "on-chain", "onchain", "hodl"), "Crypto"),
     (("gold", "silver", "precious", "altın", "gümüş", "sound money"), "Goldbug"),
@@ -45,10 +40,9 @@ for r in rows:
         "handle": h, "display_name": r.get("name") or h,
         "school": guess_school(r.get("bio", ""), r.get("school", "")),
         "language": guess_lang(r.get("bio", ""), h, r.get("lang", "")),
-        "tier": "A" if h.lower() in TIER_A else "B",
         "source": r["source"],
     })
-accounts.sort(key=lambda a: (a["tier"], a["handle"].lower()))
+accounts.sort(key=lambda a: a["handle"].lower())
 yaml.safe_dump({"accounts": accounts}, open("roster.yaml", "w"), sort_keys=False, allow_unicode=True)
-print(len(accounts), "accounts;", sum(a["tier"] == "A" for a in accounts), "tier A")
+print(len(accounts), "accounts")
 print({s: sum(a["school"] == s for a in accounts) for s in ("Macro", "Crypto", "Technical", "Goldbug", "Quant")})

@@ -110,17 +110,17 @@ def build() -> Path:
         P.append(f"<p><b>{pend:,}</b> tweets await classification.</p>")
 
     # ---- accounts
-    P.append("<h2>Accounts</h2><table class=sortable><thead><tr><th>account</th><th>tier</th><th>school</th><th>lang</th>"
+    P.append("<h2>Accounts</h2><table class=sortable><thead><tr><th>account</th><th>school</th><th>lang</th>"
              "<th>followers</th><th>orig/yr</th><th>sampling</th><th>tweets</th><th>relevant</th><th>calls</th>"
              "<th>evaluated</th><th>hits</th><th>trust</th><th>BTC</th><th>GOLD</th><th>SPX</th><th>first</th><th>last</th></tr></thead><tbody>")
     acc = conn.execute("""
-        SELECT a.handle, a.tier, a.school, a.language, a.followers, a.rate_per_year, a.sampling, a.active,
+        SELECT a.handle, a.school, a.language, a.followers, a.rate_per_year, a.sampling, a.active,
                (SELECT count(*) FROM tweets t WHERE t.handle=a.handle) n_t,
                (SELECT sum(relevant) FROM tweets t WHERE t.handle=a.handle) n_rel,
                (SELECT count(*) FROM calls c WHERE c.handle=a.handle) n_c,
                (SELECT min(created_at) FROM tweets t WHERE t.handle=a.handle) first_t,
                (SELECT max(created_at) FROM tweets t WHERE t.handle=a.handle) last_t
-        FROM accounts a ORDER BY a.tier, a.handle""").fetchall()
+        FROM accounts a ORDER BY a.handle""").fetchall()
     trust = {(r["handle"], r["asset"], r["horizon"]): r for r in conn.execute("SELECT * FROM trust")}
 
     def tcell(h, a):
@@ -130,7 +130,7 @@ def build() -> Path:
     for r in acc:
         ov = trust.get((r["handle"], "*", "*"))
         P.append(f"<tr><td><a href='https://x.com/{r['handle']}'>@{e(r['handle'])}</a>{'' if r['active'] else ' <small>(inactive)</small>'}</td>"
-                 f"<td>{r['tier']}</td><td>{e(r['school'] or '')}</td><td>{r['language']}</td>"
+                 f"<td>{e(r['school'] or '')}</td><td>{r['language']}</td>"
                  f"<td class=num>{_fmt(r['followers'], 0)}</td><td class=num>{_fmt(r['rate_per_year'], 0)}</td>"
                  f"<td>{e(r['sampling'] or 'full')}</td><td class=num>{r['n_t'] or 0}</td><td class=num>{r['n_rel'] or 0}</td>"
                  f"<td class=num>{r['n_c']}</td>")
