@@ -91,8 +91,14 @@ def _dotenv(name: str) -> str | None:
     return None
 
 
-SAMPLE_ABOVE_PER_YEAR = 1000   # originals/yr; above this we sample windows instead of full timeline
-SAMPLE_DAYS_PER_MONTH = 3      # days 1..3 of every month → ~10% coverage, evenly spread
+SAMPLE_ABOVE_PER_YEAR = 1000   # originals/yr; above this we use keyword-filtered search instead of full timeline
+SAMPLE_WINDOW_DAYS = 7         # one search window per week
+SAMPLE_MIN_PER_WINDOW = 21     # ≥ 3/day; if the keyword search returns fewer, top up with one unfiltered page
+
+# Server-side keyword filter (same vocabulary as prefilter). X search handles Turkish terms.
+_KW = ("bitcoin OR btc OR kripto OR gold OR xau OR altın OR altin OR spx OR spy OR nasdaq OR nvidia OR dow OR "
+       "\"s&p\" OR sp500 OR hisse OR borsa OR endeks")
+SAMPLE_QUERY = f"({_KW})"
 
 
 def _get(c: httpx.Client, path: str, **params) -> dict:
@@ -131,9 +137,12 @@ def _rate_per_year(tweets: list[dict]) -> float:
     return len(tweets) / days * 365
 
 
-def _search_window(c: httpx.Client, handle: str, start: datetime, end: datetime, max_pages: int = 30) -> list[dict]:
-    """All original tweets of `handle` in [start, end) via advanced search (epoch bounds)."""
+def _search_window(c: httpx.Client, handle: str, start: datetime, end: datetime, keywords: bool = True,
+                   max_pages: int = 30) -> list[dict]:
+    """Original tweets of `handle` in [start, end) via advanced search (epoch bounds), optionally keyword-filtered."""
     q = f"from:{handle} -filter:replies -filter:retweets since_time:{int(start.timestamp())} until_time:{int(end.timestamp())}"
+    if keywords:
+        q += f" {SAMPLE_QUERY}"
     out, cursor = [], ""
     for _ in range(max_pages):
         time.sleep(1.0)
@@ -146,22 +155,32 @@ def _search_window(c: httpx.Client, handle: str, start: datetime, end: datetime,
     return out
 
 
+def _sample_window(c: httpx.Client, handle: str, start: datetime, end: datetime) -> list[dict]:
+    """Keyword-filtered tweets for the window; if below the floor, add one unfiltered page for baseline coverage."""
+    rows = _search_window(c, handle, start, end, keywords=True)
+    if len(rows) < SAMPLE_MIN_PER_WINDOW:
+        seen = {r["id"] for r in rows}
+        rows += [r for r in _search_window(c, handle, start, end, keywords=False, max_pages=1) if r["id"] not in seen]
+    return rows
+
+
 def fetch_sampled(conn: sqlite3.Connection, handle: str, until: str) -> int:
-    """Backfill by sampling days 1..SAMPLE_DAYS_PER_MONTH of every month from `until` to now."""
+    """Backfill a heavy poster: weekly keyword-filtered search windows from `until` to now (all asset-relevant tweets,
+    ≥ SAMPLE_MIN_PER_WINDOW per week). Cost ≈ 1–2 calls/week + only the tweets that matter."""
     handle = handle.lower()
-    start = datetime.fromisoformat(until).replace(day=1, tzinfo=timezone.utc)
+    start = datetime.fromisoformat(until).replace(tzinfo=timezone.utc)
     now = datetime.now(timezone.utc)
     inserted = 0
     with _client() as c:
-        m = start
-        while m < now:
-            w_end = min(m + timedelta(days=SAMPLE_DAYS_PER_MONTH), now)
-            rows = _search_window(c, handle, m, w_end)
+        w = start
+        while w < now:
+            w_end = min(w + timedelta(days=SAMPLE_WINDOW_DAYS), now)
+            rows = _sample_window(c, handle, w, w_end)
             inserted += _insert(conn, rows)
-            log(f"  {handle}: {m:%Y-%m} window → {len(rows)} tweets ({inserted} total)")
-            m = (m.replace(day=28) + timedelta(days=4)).replace(day=1)  # next month
+            w = w_end
+        log(f"  {handle}: sampled {inserted} tweets in weekly keyword windows")
     conn.execute("UPDATE accounts SET sampling=?, updated_at=? WHERE handle=?",
-                 (f"days1-{SAMPLE_DAYS_PER_MONTH}/month", now.isoformat(), handle))
+                 ("keyword/weekly", now.isoformat(), handle))
     conn.commit()
     return inserted
 
@@ -228,25 +247,17 @@ def fetch_account(conn: sqlite3.Connection, handle: str, max_pages: int = 50, ba
     return n
 
 
-def fetch_all(conn: sqlite3.Connection, max_pages: int = 20) -> dict[str, int]:
+def fetch_all(conn: sqlite3.Connection, max_pages: int = 500) -> dict[str, int]:
     out = {}
     now = datetime.now(timezone.utc)
     for a in conn.execute("SELECT handle, sampling FROM accounts WHERE active=1"):
         h = a["handle"]
         if a["sampling"]:
-            # sampled account: pull this month's window once its days have passed
-            m = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-            w_end = m + timedelta(days=SAMPLE_DAYS_PER_MONTH)
-            if now < w_end:
-                m = (m - timedelta(days=1)).replace(day=1)
-                w_end = m + timedelta(days=SAMPLE_DAYS_PER_MONTH)
-            have = conn.execute("SELECT count(*) FROM tweets WHERE handle=? AND created_at>=? AND created_at<?",
-                                (h, m.isoformat(), w_end.isoformat())).fetchone()[0]
-            if have:
-                out[h] = 0
-                continue
+            # sampled account: keyword-filtered search for the past window, deduped by tweet id on insert
+            w_end = now
+            w = now - timedelta(days=SAMPLE_WINDOW_DAYS)
             with _client() as c:
-                out[h] = _insert(conn, _search_window(c, h, m, w_end))
+                out[h] = _insert(conn, _sample_window(c, h, w, w_end))
         else:
             out[h] = fetch_account(conn, h, max_pages=max_pages)
     return out
