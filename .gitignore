@@ -54,8 +54,9 @@ htmlcov/
 *.log
 logs/
 
-# Database
-*.db
+# Database (finclator.db is committed: it IS the state)
+*.db-wal
+*.db-shm
 *.sqlite
 *.sqlite3
 

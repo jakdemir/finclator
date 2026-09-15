@@ -1,2 +1,0 @@
-"""FastAPI application and routers."""
-

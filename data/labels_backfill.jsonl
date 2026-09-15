@@ -1,0 +1,334 @@
+{"id": "1532331324639420416", "is_call": false, "calls": []}
+{"id": "1696567001718681945", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.55, "quote": "Hisse ve degerli metaller icin gercek bir rally"}, {"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.55, "quote": "Hisse ve degerli metaller icin gercek bir rally"}, {"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.5, "quote": "btc icin fiyat yukselisi diyelum simdilik"}]}
+{"id": "1696728469567115295", "is_call": false, "calls": []}
+{"id": "1696729306012004511", "is_call": false, "calls": []}
+{"id": "1696734678638530809", "is_call": false, "calls": []}
+{"id": "1701424292385194193", "is_call": false, "calls": []}
+{"id": "1702274093179871657", "is_call": false, "calls": []}
+{"id": "1703708301995679817", "is_call": false, "calls": []}
+{"id": "1704360424097873929", "is_call": false, "calls": []}
+{"id": "1705168490598941163", "is_call": false, "calls": []}
+{"id": "1706169087066325349", "is_call": false, "calls": []}
+{"id": "1706502941232767163", "is_call": false, "calls": []}
+{"id": "1706898854849757649", "is_call": false, "calls": []}
+{"id": "1708689102470574586", "is_call": false, "calls": []}
+{"id": "1709035408179253597", "is_call": false, "calls": []}
+{"id": "1709771539913089392", "is_call": false, "calls": []}
+{"id": "1712814008422531271", "is_call": false, "calls": []}
+{"id": "1713755235015942358", "is_call": false, "calls": []}
+{"id": "1714119343691178268", "is_call": false, "calls": []}
+{"id": "1714264253727715361", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.75, "quote": "Geçici bir satış olacağını düşünüyorum, yeni zirve hedefi değişmedi"}]}
+{"id": "1714852411896897695", "is_call": false, "calls": []}
+{"id": "1714852837337805040", "is_call": false, "calls": []}
+{"id": "1715208806412496934", "is_call": false, "calls": []}
+{"id": "1716653147593035922", "is_call": false, "calls": []}
+{"id": "1717041907061207045", "is_call": false, "calls": []}
+{"id": "1717388016279339393", "is_call": false, "calls": []}
+{"id": "1717388636218409135", "is_call": false, "calls": []}
+{"id": "1717744628344950950", "is_call": false, "calls": []}
+{"id": "1720283315142357454", "is_call": false, "calls": []}
+{"id": "1722488270003597320", "is_call": false, "calls": []}
+{"id": "1722810542929113566", "is_call": false, "calls": []}
+{"id": "1722823057264308319", "is_call": false, "calls": []}
+{"id": "1723931879852634249", "is_call": false, "calls": []}
+{"id": "1723932378609893805", "is_call": false, "calls": []}
+{"id": "1723948909502902718", "is_call": false, "calls": []}
+{"id": "1726816283558138355", "is_call": false, "calls": []}
+{"id": "1727171132275532074", "is_call": false, "calls": []}
+{"id": "1728980633358389415", "is_call": false, "calls": []}
+{"id": "1729734386688376966", "is_call": false, "calls": []}
+{"id": "1732234881638310356", "is_call": false, "calls": []}
+{"id": "1732244409364680988", "is_call": false, "calls": []}
+{"id": "1733131935885500437", "is_call": false, "calls": []}
+{"id": "1734035433808359485", "is_call": false, "calls": []}
+{"id": "1735115412256227536", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "SHORT", "confidence": 0.7, "quote": "Dow yeni zirve (ath) yaptı. S&P de yapacak."}]}
+{"id": "1735134925026701486", "is_call": false, "calls": []}
+{"id": "1742006598682251755", "is_call": false, "calls": []}
+{"id": "1742061260743528485", "is_call": false, "calls": []}
+{"id": "1742061537479602239", "is_call": false, "calls": []}
+{"id": "1742418579989905656", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.5, "quote": "Bitcoin ETFleri bunun yarısı kadar bir büyüklüğe ulaşırsa ,cari seviye baz alarak, fiyatı 57.5K gibi bir yere taşır"}]}
+{"id": "1742745952614572324", "is_call": false, "calls": []}
+{"id": "1743922851374092627", "is_call": false, "calls": []}
+{"id": "1744557342576779399", "is_call": false, "calls": []}
+{"id": "1745319096290353230", "is_call": false, "calls": []}
+{"id": "1745431462801711479", "is_call": false, "calls": []}
+{"id": "1745820842938794255", "is_call": false, "calls": []}
+{"id": "1746732758162968832", "is_call": false, "calls": []}
+{"id": "1748598312318447793", "is_call": false, "calls": []}
+{"id": "1749270937554366743", "is_call": false, "calls": []}
+{"id": "1749631677062582628", "is_call": true, "calls": [{"asset": "GOLD", "direction": "SELL", "horizon": "SHORT", "confidence": 0.65, "quote": "spekülatif iştahın zayıflığını gösteriyor ve 1950 seviyesine çekilmeye işaret ediyor"}]}
+{"id": "1750351806318682600", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.5, "quote": "38K'in altına gelirse tutmak için kolları açtım bekliyorum"}]}
+{"id": "1754031936996098222", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "LONG", "confidence": 0.5, "quote": "malınıza Bitcoin dahil:) sahip çıkın"}]}
+{"id": "1755881406784258373", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "LONG", "confidence": 0.55, "quote": "\"malınıza , bitcoin de buna dahil, sahip çıkın\""}]}
+{"id": "1757959124766040324", "is_call": false, "calls": []}
+{"id": "1759417439639511207", "is_call": false, "calls": []}
+{"id": "1760172676340138454", "is_call": false, "calls": []}
+{"id": "1760629808269263290", "is_call": false, "calls": []}
+{"id": "1760643457683468463", "is_call": false, "calls": []}
+{"id": "1760858168458899485", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "LONG", "confidence": 0.7, "quote": "şayet S&P ve Bitcoin pozisyonunuza sahip çıkmazsanız torunlarınız da aynı burukluğu size karşı hissedecek"}, {"asset": "BTC", "direction": "BUY", "horizon": "LONG", "confidence": 0.7, "quote": "şayet S&P ve Bitcoin pozisyonunuza sahip çıkmazsanız torunlarınız da aynı burukluğu size karşı hissedecek"}]}
+{"id": "1760865107599405152", "is_call": false, "calls": []}
+{"id": "1762305697893523475", "is_call": false, "calls": []}
+{"id": "1762769043709210774", "is_call": false, "calls": []}
+{"id": "1762796823800946860", "is_call": false, "calls": []}
+{"id": "1763403502447935501", "is_call": false, "calls": []}
+{"id": "1764823384615968961", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "LONG", "confidence": 0.55, "quote": "maliniza (sadece BTC degil Eth de buna dahil) sahip cikin"}]}
+{"id": "1767018035582255404", "is_call": false, "calls": []}
+{"id": "1769923379061031272", "is_call": false, "calls": []}
+{"id": "1772453805881249992", "is_call": false, "calls": []}
+{"id": "1772460542805922121", "is_call": false, "calls": []}
+{"id": "1773216211351834840", "is_call": false, "calls": []}
+{"id": "1777536400822239484", "is_call": false, "calls": []}
+{"id": "1778266537758957762", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "SHORT", "confidence": 0.55, "quote": "S&P için kaygılanmayın"}]}
+{"id": "1778629723045728702", "is_call": false, "calls": []}
+{"id": "1778635137581772985", "is_call": false, "calls": []}
+{"id": "1779692153813274840", "is_call": false, "calls": []}
+{"id": "1780458683438137720", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.7, "quote": "BTC'de daha yuksek fiyatlar gorecegiz"}]}
+{"id": "1781926738177540223", "is_call": false, "calls": []}
+{"id": "1782230662914716093", "is_call": false, "calls": []}
+{"id": "1802570069324464205", "is_call": false, "calls": []}
+{"id": "1808377899658936429", "is_call": false, "calls": []}
+{"id": "1817082581763903813", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.65, "quote": "BTC de (ve altın vs) henüz zirve yapmadı, kaygıya gerek yok"}, {"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.6, "quote": "BTC de (ve altın vs) henüz zirve yapmadı, kaygıya gerek yok"}]}
+{"id": "1819268539104350414", "is_call": false, "calls": []}
+{"id": "1823928483585708208", "is_call": false, "calls": []}
+{"id": "1834068552908734531", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.8, "quote": "S&P 6200 hedefinde bir değişiklik yok"}]}
+{"id": "1834109435565809685", "is_call": false, "calls": []}
+{"id": "1834540017454121253", "is_call": true, "calls": [{"asset": "GOLD", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.5, "quote": "Bu muhtemelen ani bir şekilde kesintiye uğrayacak"}, {"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.5, "quote": "Altının kendi yükselişi yani grafiğin solunda gördüğünüz harekete benzer bir hareket"}]}
+{"id": "1835869113182462358", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.85, "quote": "S&P'nin 6200'e gittiğini düşünüyorum"}]}
+{"id": "1836732453358100529", "is_call": false, "calls": []}
+{"id": "1836753101748834457", "is_call": false, "calls": []}
+{"id": "1836966615327355266", "is_call": false, "calls": []}
+{"id": "1838061221188161737", "is_call": false, "calls": []}
+{"id": "1838417904716689709", "is_call": false, "calls": []}
+{"id": "1838815962939953518", "is_call": false, "calls": []}
+{"id": "1839635323862626338", "is_call": false, "calls": []}
+{"id": "1846018104008257996", "is_call": false, "calls": []}
+{"id": "1846035664107622715", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.7, "quote": "S&P dalgası her şeyi yükseltecek"}, {"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.65, "quote": "S&P dalgası her şeyi yükseltecek"}, {"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.65, "quote": "S&P dalgası her şeyi yükseltecek"}]}
+{"id": "1846817176239427780", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.75, "quote": "önce her şeyde bir tur daha yükseliş göreceğiz, S&amp;P , altın, btc"}, {"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.75, "quote": "önce her şeyde bir tur daha yükseliş göreceğiz, S&amp;P , altın, btc"}, {"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.75, "quote": "önce her şeyde bir tur daha yükseliş göreceğiz, S&amp;P , altın, btc"}]}
+{"id": "1850742694605124005", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.75, "quote": "S&amp;P,altın,gümüş, BTC vs hepsinde daha yüksek seviyeler görülecek"}, {"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.75, "quote": "S&amp;P,altın,gümüş, BTC vs hepsinde daha yüksek seviyeler görülecek"}, {"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.75, "quote": "S&amp;P,altın,gümüş, BTC vs hepsinde daha yüksek seviyeler görülecek"}]}
+{"id": "1851478791186509981", "is_call": false, "calls": []}
+{"id": "1851494015486624102", "is_call": false, "calls": []}
+{"id": "1854371871300460890", "is_call": false, "calls": []}
+{"id": "1856159745570418725", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.65, "quote": "henüz BTC'nin de ana zirvede olduğunu düşünmüyorum"}]}
+{"id": "1863771184757621209", "is_call": false, "calls": []}
+{"id": "1863964129272234046", "is_call": false, "calls": []}
+{"id": "1866740705827361005", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.65, "quote": "ana trendde bir degisiklik yok"}]}
+{"id": "1866803740247797999", "is_call": false, "calls": []}
+{"id": "1868488627711340758", "is_call": false, "calls": []}
+{"id": "1875045329550389337", "is_call": false, "calls": []}
+{"id": "1883754636496028006", "is_call": false, "calls": []}
+{"id": "1884490117559079095", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.75, "quote": "Fed ile veya Fed'siz her ikisi de yükselecek"}]}
+{"id": "1885194001482960988", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.6, "quote": "Diğerine yani ana yükselişine daha vakit var"}]}
+{"id": "1886344177341878409", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.6, "quote": "ben de pozitifim"}]}
+{"id": "1890330462746202448", "is_call": false, "calls": []}
+{"id": "1892164432223969296", "is_call": false, "calls": []}
+{"id": "1901534452787908886", "is_call": false, "calls": []}
+{"id": "1909132895509246033", "is_call": false, "calls": []}
+{"id": "1912026153860088212", "is_call": false, "calls": []}
+{"id": "1914210070071517607", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.65, "quote": "Bu hareket dolar likidite krizine kadar (evet dolar likidite krizi) devam edecek"}]}
+{"id": "1922215118122697191", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.7, "quote": "Daha da yukarı yolu var"}]}
+{"id": "1924709040459837779", "is_call": false, "calls": []}
+{"id": "1924742367023710459", "is_call": false, "calls": []}
+{"id": "1937974575565873232", "is_call": false, "calls": []}
+{"id": "1942600076863697293", "is_call": false, "calls": []}
+{"id": "1943614631416623172", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.5, "quote": "Grafiklerdeki benzerlik düşündürücü"}]}
+{"id": "1943709115361997045", "is_call": false, "calls": []}
+{"id": "1943731497606828167", "is_call": false, "calls": []}
+{"id": "1943990742885839270", "is_call": false, "calls": []}
+{"id": "1944100754500841902", "is_call": false, "calls": []}
+{"id": "1944306791711440929", "is_call": false, "calls": []}
+{"id": "1944366893730504902", "is_call": false, "calls": []}
+{"id": "1945068824220385544", "is_call": false, "calls": []}
+{"id": "1945074869181313411", "is_call": true, "calls": [{"asset": "BTC", "direction": "NEUTRAL", "horizon": "SHORT", "confidence": 0.5, "quote": "Güncel seviye üzeri pozitif aşağısı negatifim"}]}
+{"id": "1945080823364854085", "is_call": false, "calls": []}
+{"id": "1945097709632774578", "is_call": false, "calls": []}
+{"id": "1945507278871724535", "is_call": false, "calls": []}
+{"id": "1945930361130676697", "is_call": false, "calls": []}
+{"id": "1945964799822602297", "is_call": false, "calls": []}
+{"id": "1946612720977035589", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.6, "quote": "Dolar &amp; Altın Pat-la-ya-cak!"}]}
+{"id": "1946854564159725838", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.5, "quote": "Balona Balon denir!"}, {"asset": "BTC", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.5, "quote": "Balona Balon denir!"}]}
+{"id": "1946906968418893837", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.5, "quote": "Altın, Gümüş &amp; Platin Devam…!"}]}
+{"id": "1947266001776599452", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "SHORT", "confidence": 0.65, "quote": "Üzeri günlük kapanışların devamı $3500 üzerine hareketin öncü göstergesi bence"}]}
+{"id": "1949177955508256782", "is_call": false, "calls": []}
+{"id": "1949415542936453244", "is_call": false, "calls": []}
+{"id": "1949445261018730972", "is_call": false, "calls": []}
+{"id": "1949894250629661035", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.65, "quote": "Zirve üzeri stoplarla aşağı bakmak fena olmayabilir"}]}
+{"id": "1950288835176210535", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.5, "quote": "daha kuvvetli dönüş mumları geldi"}]}
+{"id": "1951183097677926856", "is_call": false, "calls": []}
+{"id": "1951192795969913006", "is_call": false, "calls": []}
+{"id": "1951206256250605937", "is_call": true, "calls": [{"asset": "SPX", "direction": "NEUTRAL", "horizon": "SHORT", "confidence": 0.5, "quote": "Üzerinde kaldığı sürece boğalar sadece dinlenmiş olur"}]}
+{"id": "1951576830864920622", "is_call": false, "calls": []}
+{"id": "1951717689652883811", "is_call": false, "calls": []}
+{"id": "1951917079310795115", "is_call": false, "calls": []}
+{"id": "1951977153836290392", "is_call": false, "calls": []}
+{"id": "1952861958975439067", "is_call": false, "calls": []}
+{"id": "1953701712918675878", "is_call": false, "calls": []}
+{"id": "1954244461619458448", "is_call": false, "calls": []}
+{"id": "1954453632302068098", "is_call": false, "calls": []}
+{"id": "1954515691232477382", "is_call": false, "calls": []}
+{"id": "1955504544109986122", "is_call": false, "calls": []}
+{"id": "1955939725530824866", "is_call": false, "calls": []}
+{"id": "1956028057694670917", "is_call": true, "calls": [{"asset": "BTC", "direction": "SELL", "horizon": "SHORT", "confidence": 0.55, "quote": "lokal zirve olabilir bu bölge! $118,900 aşağısı gün kapnşı resmi bozar!"}]}
+{"id": "1956780463520919712", "is_call": false, "calls": []}
+{"id": "1956992282898596318", "is_call": false, "calls": []}
+{"id": "1957055219130397071", "is_call": false, "calls": []}
+{"id": "1957371228538429810", "is_call": true, "calls": [{"asset": "BTC", "direction": "SELL", "horizon": "SHORT", "confidence": 0.5, "quote": "bu iş hiç hoş durmuyor! 🤔#Bitcoin"}]}
+{"id": "1957815963056787494", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.4, "quote": "#nasdaq #kriptopara elele köprü korkuluklarına yanaşmaca…"}]}
+{"id": "1957897831932465364", "is_call": false, "calls": []}
+{"id": "1957901431517900882", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.45, "quote": "Aşağısı gün kapanışları düşüşü derinleştirir."}]}
+{"id": "1958938536306254076", "is_call": false, "calls": []}
+{"id": "1959319749604552852", "is_call": false, "calls": []}
+{"id": "1959528391666749672", "is_call": false, "calls": []}
+{"id": "1959590684257657221", "is_call": false, "calls": []}
+{"id": "1959707578100793408", "is_call": false, "calls": []}
+{"id": "1960086430983545297", "is_call": true, "calls": [{"asset": "BTC", "direction": "SELL", "horizon": "LONG", "confidence": 0.5, "quote": "Bir dönem komple kapandı gibime geliyor…"}]}
+{"id": "1960604603986120870", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "LONG", "confidence": 0.55, "quote": "ABD Borsaları pahalı değil pornografik dercede aşırı değerli!"}]}
+{"id": "1960740718000976228", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.5, "quote": "alçak sağ omuzla aşağı dönerse yıkım olasılığı yükselir"}]}
+{"id": "1961522479182270868", "is_call": false, "calls": []}
+{"id": "1961836863150239763", "is_call": false, "calls": []}
+{"id": "1962064567812444309", "is_call": false, "calls": []}
+{"id": "1962130152655036822", "is_call": false, "calls": []}
+{"id": "1962438012798648692", "is_call": false, "calls": []}
+{"id": "1964264699836477601", "is_call": false, "calls": []}
+{"id": "1964265540047777973", "is_call": false, "calls": []}
+{"id": "1964268480292622576", "is_call": true, "calls": [{"asset": "BTC", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.65, "quote": "çok karamsarım #Bitcoin için"}]}
+{"id": "1964377633082552711", "is_call": false, "calls": []}
+{"id": "1964601655196078383", "is_call": false, "calls": []}
+{"id": "1964673277739323889", "is_call": false, "calls": []}
+{"id": "1965273790042308940", "is_call": false, "calls": []}
+{"id": "1965735661463609365", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.6, "quote": "Fiziki için yol uzun benim için"}]}
+{"id": "1965753496889860193", "is_call": false, "calls": []}
+{"id": "1966191559042593222", "is_call": false, "calls": []}
+{"id": "1966450460795023617", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "SHORT", "confidence": 0.5, "quote": "güzel bir TOBO oluşumuyla $119,838 mümkün"}, {"asset": "BTC", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.6, "quote": "#bitcoin için beklediğim büyük düşüş"}]}
+{"id": "1966882836969042355", "is_call": false, "calls": []}
+{"id": "1967210519791874488", "is_call": false, "calls": []}
+{"id": "1967233703798775921", "is_call": false, "calls": []}
+{"id": "1967698242541597017", "is_call": false, "calls": []}
+{"id": "1967859759400489111", "is_call": false, "calls": []}
+{"id": "1967934717937979703", "is_call": false, "calls": []}
+{"id": "1968205402568622339", "is_call": false, "calls": []}
+{"id": "1968257930496774309", "is_call": false, "calls": []}
+{"id": "1968568099663233036", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.7, "quote": "Uzun vadeciler içinse artırma fırsat dönemi başladı"}]}
+{"id": "1968573083473592778", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.5, "quote": "yüksek fiyatlardan yeni kontratlarda alış pozu açmaları uzak ihtimal bence"}]}
+{"id": "1969356516047175766", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.6, "quote": "tüm değerli metallerdeki yükseliş hareketinin devamı hatta sertleşmesi olasılığını yükseltir"}]}
+{"id": "1969449488864436418", "is_call": false, "calls": []}
+{"id": "1969706315497746871", "is_call": false, "calls": []}
+{"id": "1969759353088397330", "is_call": false, "calls": []}
+{"id": "1970007064911999351", "is_call": false, "calls": []}
+{"id": "1970009660477649009", "is_call": true, "calls": [{"asset": "BTC", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.65, "quote": "#bitcoin &amp; #kriptopara larda kuvvetli riskler aşağı yönlü devam ediyor bence!"}]}
+{"id": "1970212585258844404", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.8, "quote": "Nasdaq vadelide kısa vade short (aşağı yönlü trade) denemeleri için mantıklı seviye geldi ve short açıldı: 24785!"}]}
+{"id": "1970397162359156993", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "LONG", "confidence": 0.6, "quote": "ABD Borsaları’ndaki Balonlaşma istatistiklerine bir yenisi daha"}]}
+{"id": "1970470434312225145", "is_call": false, "calls": []}
+{"id": "1970582537211969605", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.6, "quote": "stopu karlı seviyeye çekip aşağı devam eder!"}]}
+{"id": "1970875996611166357", "is_call": false, "calls": []}
+{"id": "1970895421250863524", "is_call": false, "calls": []}
+{"id": "1972010940003766279", "is_call": false, "calls": []}
+{"id": "1972211467870151020", "is_call": false, "calls": []}
+{"id": "1972277135260959040", "is_call": false, "calls": []}
+{"id": "1972911299391537412", "is_call": false, "calls": []}
+{"id": "1974189319612141596", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "LONG", "confidence": 0.5, "quote": "ABD Nasdaq balonu hakkında benden daha da acımasız düşünen analistler de var!"}]}
+{"id": "1974519669748027827", "is_call": false, "calls": []}
+{"id": "1974752364524364199", "is_call": false, "calls": []}
+{"id": "1974815251846557956", "is_call": false, "calls": []}
+{"id": "1975021449305043086", "is_call": false, "calls": []}
+{"id": "1975116255284904358", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.5, "quote": "Altın kalır siz gidersiniz!"}]}
+{"id": "1975850167149740474", "is_call": false, "calls": []}
+{"id": "1975941696002388151", "is_call": false, "calls": []}
+{"id": "1976197748107169835", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "LONG", "confidence": 0.5, "quote": "ABD Borsası’nın altı inanılmaz boş yükselişinin tatlı şeması"}]}
+{"id": "1976542441793540531", "is_call": false, "calls": []}
+{"id": "1976743406454935735", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.6, "quote": "şimdi tekrar aşağı oynamaya başladı! NOKTA"}]}
+{"id": "1976760275924598895", "is_call": false, "calls": []}
+{"id": "1977080037062095317", "is_call": false, "calls": []}
+{"id": "1977287849457467529", "is_call": false, "calls": []}
+{"id": "1977344713410617490", "is_call": false, "calls": []}
+{"id": "1978189309913055744", "is_call": false, "calls": []}
+{"id": "1978192123691209048", "is_call": false, "calls": []}
+{"id": "1980913045527224823", "is_call": true, "calls": [{"asset": "GOLD", "direction": "NEUTRAL", "horizon": "SHORT", "confidence": 0.4, "quote": "Yüksek oynaklık biraz daha devam edebilir."}, {"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.65, "quote": "orta uzun vade trendler kolay kolay değişmez"}]}
+{"id": "1980976116920705079", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.6, "quote": "Bitcoin’i (ki yükseliş devam edecek)"}, {"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.5, "quote": "Benim tezim ABD ve Çin arasında “decoupling/boşanma”  bazlı altın yükselişi."}]}
+{"id": "1981003923550093782", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.65, "quote": "teknik bir düzeltmeden ibaret olur. Orta uzun vade trendi değiştirmez!"}]}
+{"id": "1981070054692130832", "is_call": false, "calls": []}
+{"id": "1981601251553882619", "is_call": false, "calls": []}
+{"id": "1981605121692713156", "is_call": true, "calls": [{"asset": "SPX", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.6, "quote": "S&amp;P yükseliği sürece, ki bence hala yolu var"}, {"asset": "GOLD", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.6, "quote": "altın da yükselir, bu bir düzeltme gibi duruyor"}]}
+{"id": "1982064054761128192", "is_call": false, "calls": []}
+{"id": "1982363964286890129", "is_call": false, "calls": []}
+{"id": "1982382319651750023", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.5, "quote": "ABD’de Balona Üflemeye Devam!"}]}
+{"id": "1982465185748058457", "is_call": false, "calls": []}
+{"id": "1982685769375322297", "is_call": false, "calls": []}
+{"id": "1984626530350252264", "is_call": false, "calls": []}
+{"id": "1984674623548461205", "is_call": false, "calls": []}
+{"id": "1984695355229790248", "is_call": false, "calls": []}
+{"id": "1984911834286010712", "is_call": false, "calls": []}
+{"id": "1984963787880054791", "is_call": false, "calls": []}
+{"id": "1985191353840460005", "is_call": false, "calls": []}
+{"id": "1985690052538638467", "is_call": true, "calls": [{"asset": "BTC", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.55, "quote": "Çok uyardım… hala da uyarıyorum…  Bunlar girdikleri yeri kuruturlar!"}]}
+{"id": "1985768407573180477", "is_call": false, "calls": []}
+{"id": "1985945065475149905", "is_call": false, "calls": []}
+{"id": "1986006077453070601", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.6, "quote": "Nasdaq’da #Nvidia üzerinden dönen ‘finansal mühendislik’ &amp; ‘yapay zeka’ balonlarını"}]}
+{"id": "1986478814814257578", "is_call": false, "calls": []}
+{"id": "1986675203733147830", "is_call": false, "calls": []}
+{"id": "1987215457615499398", "is_call": false, "calls": []}
+{"id": "1987439209414828420", "is_call": false, "calls": []}
+{"id": "1987501894055473313", "is_call": false, "calls": []}
+{"id": "1987554670366138708", "is_call": false, "calls": []}
+{"id": "1987987389919191137", "is_call": false, "calls": []}
+{"id": "1987993783187780060", "is_call": true, "calls": [{"asset": "BTC", "direction": "SELL", "horizon": "SHORT", "confidence": 0.85, "quote": "Btc aşağı devam edecek zaten"}]}
+{"id": "1988126267942555851", "is_call": false, "calls": []}
+{"id": "1988267166479815097", "is_call": false, "calls": []}
+{"id": "1988645616088764826", "is_call": false, "calls": []}
+{"id": "1988652837883052153", "is_call": false, "calls": []}
+{"id": "1988740674251100208", "is_call": false, "calls": []}
+{"id": "1989044022615187567", "is_call": true, "calls": [{"asset": "GOLD", "direction": "SELL", "horizon": "SHORT", "confidence": 0.5, "quote": "#xauusd ve #nasdaq gecikmeli şekilde son yolcularını aldı bence"}, {"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.55, "quote": "#xauusd ve #nasdaq gecikmeli şekilde son yolcularını aldı bence"}]}
+{"id": "1989213804731802048", "is_call": false, "calls": []}
+{"id": "1989226201626574887", "is_call": false, "calls": []}
+{"id": "1989310811097964613", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "LONG", "confidence": 0.6, "quote": "long term resilience.\n\nThe perfect asset for young people to protect their purchasing power over their lifetime"}]}
+{"id": "1989399179236462813", "is_call": false, "calls": []}
+{"id": "1989414278806331526", "is_call": false, "calls": []}
+{"id": "1989487422241919241", "is_call": false, "calls": []}
+{"id": "1989701453762437415", "is_call": false, "calls": []}
+{"id": "1989702635939631158", "is_call": false, "calls": []}
+{"id": "1989756296325722159", "is_call": false, "calls": []}
+{"id": "1989970160753803660", "is_call": false, "calls": []}
+{"id": "1990071097643917517", "is_call": false, "calls": []}
+{"id": "1990205290503954548", "is_call": false, "calls": []}
+{"id": "1990210031300558903", "is_call": false, "calls": []}
+{"id": "1990224490912206945", "is_call": false, "calls": []}
+{"id": "1990595721507320123", "is_call": false, "calls": []}
+{"id": "1990805884205777334", "is_call": false, "calls": []}
+{"id": "1990806561191575967", "is_call": false, "calls": []}
+{"id": "1990893359171297385", "is_call": false, "calls": []}
+{"id": "1990959245089505652", "is_call": false, "calls": []}
+{"id": "1991204833756368970", "is_call": false, "calls": []}
+{"id": "1991251695561564541", "is_call": false, "calls": []}
+{"id": "1991396067687174154", "is_call": false, "calls": []}
+{"id": "1991401267541995884", "is_call": false, "calls": []}
+{"id": "1991564671934234965", "is_call": true, "calls": [{"asset": "SPX", "direction": "SELL", "horizon": "MEDIUM", "confidence": 0.5, "quote": "Tarihin en büyük balonunda sıradan bir gün"}]}
+{"id": "1991576131720605870", "is_call": false, "calls": []}
+{"id": "1991614394695078332", "is_call": true, "calls": [{"asset": "BTC", "direction": "SELL", "horizon": "SHORT", "confidence": 0.55, "quote": "Daha yeni başlıyorz…"}, {"asset": "SPX", "direction": "SELL", "horizon": "SHORT", "confidence": 0.55, "quote": "Daha yeni başlıyorz…"}]}
+{"id": "1991619166827393254", "is_call": false, "calls": []}
+{"id": "1991628661129388342", "is_call": false, "calls": []}
+{"id": "1991774535872606327", "is_call": false, "calls": []}
+{"id": "1991804530288451972", "is_call": false, "calls": []}
+{"id": "1991860220990239018", "is_call": false, "calls": []}
+{"id": "1991878290915893513", "is_call": false, "calls": []}
+{"id": "1991905112055316633", "is_call": false, "calls": []}
+{"id": "1991934636122108002", "is_call": false, "calls": []}
+{"id": "1991945960990167066", "is_call": false, "calls": []}
+{"id": "1992276960722997497", "is_call": false, "calls": []}
+{"id": "1992350962531320188", "is_call": false, "calls": []}
+{"id": "1992508393895207262", "is_call": false, "calls": []}
+{"id": "1992565888059646015", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "LONG", "confidence": 0.55, "quote": "Neden Altın? Çünkü Kimsenin Borcu  Değil!"}]}
+{"id": "1992588424315097538", "is_call": false, "calls": []}
+{"id": "1992623515715944475", "is_call": false, "calls": []}
+{"id": "1992757456444051959", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "LONG", "confidence": 0.5, "quote": "why the bears will never win"}]}
+{"id": "1992950188139561138", "is_call": false, "calls": []}
+{"id": "1992981372676546694", "is_call": false, "calls": []}
+{"id": "1993031869516874016", "is_call": false, "calls": []}
+{"id": "1993095247195185644", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "MEDIUM", "confidence": 0.65, "quote": "If you liked bitcoin at $125,00, you should love it at $89,000."}]}
+{"id": "1993114475575349636", "is_call": false, "calls": []}
+{"id": "1993321767079686545", "is_call": true, "calls": [{"asset": "BTC", "direction": "NEUTRAL", "horizon": "MEDIUM", "confidence": 0.45, "quote": "#Mstr batınca haber verin bolca #Bitcoin alıcam"}]}
+{"id": "1993409355153039762", "is_call": true, "calls": [{"asset": "BTC", "direction": "BUY", "horizon": "LONG", "confidence": 0.6, "quote": "Anyone who is bearish doesn't understand what is happening."}]}
+{"id": "1993701528599683278", "is_call": false, "calls": []}
+{"id": "1993717634894860326", "is_call": false, "calls": []}
+{"id": "1994273748766126082", "is_call": false, "calls": []}
+{"id": "1994853416187957359", "is_call": false, "calls": []}
+{"id": "1995045503017652392", "is_call": false, "calls": []}
+{"id": "1995115781462401334", "is_call": true, "calls": [{"asset": "GOLD", "direction": "BUY", "horizon": "SHORT", "confidence": 0.55, "quote": "Altın&amp; Platin’in de Yolunu Açtı!"}]}

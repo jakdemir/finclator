@@ -1,49 +1,24 @@
 [project]
 name = "finclator"
-version = "0.1.0"
-description = "Trust-scoring system for generating calibrated market indicators from influencer sentiment"
+version = "2.0.0"
+description = "Trust-weighted influencer sentiment → 3x3 Buy/Neutral/Sell matrix (BTC, GOLD, SPX × short/medium/long)"
 requires-python = ">=3.11"
 dependencies = [
-    "fastapi>=0.104.0",
-    "uvicorn[standard]>=0.24.0",
-    "sqlalchemy>=2.0.0",
-    "asyncpg>=0.29.0",
-    "alembic>=1.12.0",
-    "pydantic>=2.5.0",
-    "pydantic-settings>=2.1.0",
-    "httpx>=0.25.0",
-    "requests>=2.31.0",
-    "huggingface-hub>=0.19.0",
-    "python-dotenv>=1.0.0",
-    "yt-dlp>=2024.1.0",
-    "google-generativeai>=0.8.0",
-    "openai>=1.0.0",
+    "httpx>=0.27",
+    "pyyaml>=6.0",
+    "anthropic>=0.40",
 ]
 
 [project.optional-dependencies]
-dev = [
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
-    "ruff>=0.1.0",
-    "mypy>=1.7.0",
-]
-
-[build-system]
-requires = ["setuptools>=68.0"]
-build-backend = "setuptools.build_backend"
+dev = ["pytest>=8.0", "ruff>=0.5"]
 
 [tool.ruff]
-line-length = 100
+line-length = 110
 target-version = "py311"
-select = ["E", "F", "I", "N", "W"]
-ignore = []
 
-[tool.ruff.per-file-ignores]
-"__init__.py" = ["F401"]
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B"]
+ignore = ["E501"]
 
-[tool.mypy]
-python_version = "3.11"
-warn_return_any = true
-warn_unused_configs = true
-disallow_untyped_defs = false
-
+[tool.pytest.ini_options]
+testpaths = ["tests"]

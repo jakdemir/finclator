@@ -1,0 +1,43 @@
+# Fixed roster. Accounts are added/removed here, never discovered at runtime.
+# schools: Macro | Crypto | Technical | Goldbug | Quant
+accounts:
+  - handle: SantManukyan
+    display_name: Sant Manukyan
+    school: Macro
+    language: tr
+  - handle: laplace2011
+    display_name: Devrim Akyil
+    school: Technical
+    language: tr
+  - handle: APompliano
+    display_name: Anthony Pompliano
+    school: Crypto
+    language: en
+  - handle: PeterSchiff
+    display_name: Peter Schiff
+    school: Goldbug
+    language: en
+  - handle: LynAldenContact
+    display_name: Lyn Alden
+    school: Macro
+    language: en
+  - handle: RaoulGMI
+    display_name: Raoul Pal
+    school: Crypto
+    language: en
+  - handle: PeterLBrandt
+    display_name: Peter Brandt
+    school: Technical
+    language: en
+  - handle: KobeissiLetter
+    display_name: The Kobeissi Letter
+    school: Quant
+    language: en
+  - handle: MacroAlf
+    display_name: Alfonso Peccatiello
+    school: Macro
+    language: en
+  - handle: 100trillionUSD
+    display_name: PlanB
+    school: Quant
+    language: en
