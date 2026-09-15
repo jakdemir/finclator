@@ -78,7 +78,7 @@ def _log_tail(n=200) -> str:
 
 
 def _page(title: str, body: str, active: str) -> str:
-    tabs = [("/", "Progress"), ("/matrix", "Matrix"), ("/accounts", "Accounts"), ("/audit", "Audit"), ("/api/status", "JSON")]
+    tabs = [("/", "Progress"), ("/matrix", "Matrix"), ("/accounts", "Accounts"), ("/audit", "Audit"), ("/architecture", "Architecture"), ("/api/status", "JSON")]
     nav = "".join(f"<a href='{h}' class='{'on' if h == active else ''}'>{t}</a>" for h, t in tabs)
     return (f"<!doctype html><meta charset=utf-8><title>Finclator admin — {title}</title>"
             f"<meta http-equiv=refresh content={60 if active == '/' else 30}><style>{CSS}</style><script>{JS}</script>"
@@ -236,6 +236,83 @@ def page_accounts(conn) -> str:
     return _page("accounts", "".join(B), "/accounts")
 
 
+def page_architecture(conn) -> str:
+    from .evaluate import MATURITY_DAYS
+    from .prefilter import _ASSET_PATTERNS
+    e = html.escape
+    f = _one(conn, """SELECT count(*) t, coalesce(sum(relevant),0) rel, coalesce(sum(relevant AND classified),0) cls,
+                       (SELECT count(*) FROM calls) calls, (SELECT count(DISTINCT tweet_id) FROM calls) ct,
+                       (SELECT count(*) FROM outcomes) outs, (SELECT count(*) FROM accounts) acc FROM tweets""")
+    pct = lambda a, b: f"{100 * a / b:.0f}%" if b else "–"  # noqa: E731
+    B = ["<h2>Data flow</h2><pre class=mono>"
+         f"""twitterapi.io ──► fetch.py ──────────► tweets            {f['t']:>8,}  originals only (replies / RTs rejected at insert)
+                    {f['acc']} accounts, 3y   │                       full timeline ≤1,000 orig/yr, else days 1–3 of each month
+                                    ▼
+                     prefilter.py  regex, free ──► relevant=1    {f['rel']:>8,}  ({pct(f['rel'], f['t'])})  "mentions BTC / GOLD / SPX at all?"
+                                    ▼
+                     classify.py   LLM, $ ──────► classified=1  {f['cls']:>8,}  ({pct(f['cls'], f['rel'])} of relevant)  "explicit, falsifiable call?"
+                                    │                calls          {f['calls']:>8,}  from {f['ct']:,} tweets
+                                    ▼
+   Yahoo daily ─► prices.py ─► evaluate.py ─────► outcomes        {f['outs']:>8,}  matured calls only
+                                    ▼
+                     score.py      trust per (account, asset, horizon), shrunk toward 0.5
+                                    ▼
+                     matrix.py     3×3 = Σ trust × confidence × recency-decay  ─► data/matrix.json
+                                    ▼
+                     audit.py · admin.py · pine.py (verification page, this site, TradingView indicator)"""
+         "</pre>"]
+
+    B.append("<h2>Stage 1 — prefilter <small>(src/prefilter.py) · generous: recall over precision</small></h2>"
+             "<p>Pure regex, EN+TR. Text is HTML-unescaped and URLs stripped first. Word boundaries are Turkish-aware "
+             "(Python's <code>\\b</code> is ASCII-only, so <i>altının</i> would otherwise never match). A false positive costs a fraction "
+             "of a cent at stage 2; a false negative is a lost call forever.</p><table><tr><th>asset</th><th>pattern (live from code)</th></tr>")
+    for a in ASSETS:
+        B.append(f"<tr><td>{a}</td><td class=mono><small>{e(_ASSET_PATTERNS[a].pattern)}</small></td></tr>")
+    B.append("</table><p>Disambiguation: <i>hisse / borsa / endeks</i> alone usually means BIST, so they count as SPX only with a "
+             "US cue (ABD, Fed, Nasdaq, Tesla…) <b>and</b> no BIST cue (THY, Aselsan, xu100…). "
+             "Result is stored as <code>tweets.relevant</code> + <code>assets_hint</code>. "
+             "Check it on <a href='/audit' style='color:#9ecbff'>Audit → “prefilter dropped”</a> sample.</p>")
+
+    B.append("<h2>Stage 2 — classifier <small>(src/classify.py) · strict</small></h2>"
+             "<p>One LLM call per relevant tweet. Must answer “is this an explicit, falsifiable call?” — past-move reports, news, charts "
+             "without opinion, generic macro talk → <code>is_call=false</code>. Per asset it returns direction (BUY/SELL/NEUTRAL), horizon, "
+             "confidence, price target in USD, and an <b>exact quote</b> from the tweet that justifies the label (auditable). "
+             "Two modes with the same schema: <code>ANTHROPIC_API_KEY</code> for the cron, or export-JSONL → label interactively → import "
+             "(tagged in <code>calls.model</code>).</p>"
+             "<table><tr><th>horizon</th><th>meaning (spec)</th><th>evaluated after</th><th>inferred when unstated</th></tr>"
+             f"<tr><td>SHORT</td><td>0–3 months</td><td>{MATURITY_DAYS['SHORT']} d</td><td>technical / level talk, swing</td></tr>"
+             f"<tr><td>MEDIUM</td><td>3–12 months</td><td>{MATURITY_DAYS['MEDIUM']} d</td><td>default</td></tr>"
+             f"<tr><td>LONG</td><td>1–5 years</td><td>{MATURITY_DAYS['LONG']} d</td><td>macro / structural / cycle thesis</td></tr></table>")
+
+    B.append("<h2>Evaluation, trust, matrix</h2><ul>"
+             "<li><b>Prices</b>: Yahoo daily close — BTC-USD, GC=F (COMEX front month), ^GSPC — stored in <code>prices</code> from 2020.</li>"
+             "<li><b>Outcome</b>: return from entry close to exit close at maturity vs a flat band of 0.5σ·√days (trailing-1y daily vol). "
+             "CORRECT=1, PARTIAL (predicted move, market flat)=0.5, WRONG=0. Price target: +0.25 if any close touched it within the horizon, −0.25 if not.</li>"
+             "<li><b>Trust</b> = (Σhits + 5) / (n + 10) per (account, asset, horizon); fallbacks specific → asset → overall → 0.5 prior. "
+             "Point-in-time: only outcomes matured by the as-of date count, so history never sees the future.</li>"
+             "<li><b>Matrix</b>: per cell, each call in the window weighs trust × confidence × 2<sup>−age/(window/3)</sup>; "
+             "net = (buy−sell)/total → BUY &gt; +0.15, SELL &lt; −0.15, else NEUTRAL; N/A when total weight &lt; 0.3. "
+             "Everyone contributes; noisy accounts are outweighed, not filtered.</li>"
+             "<li><b>Schools</b> (accounts.school) get their own sub-label per cell, shown on <a href='/matrix' style='color:#9ecbff'>Matrix</a>.</li></ul>")
+
+    B.append("<h2>Known weak spots</h2><ul>"
+             "<li>Stage 1 can't catch calls that name no asset (“this is the top” under a chart image).</li>"
+             "<li>Horizon inference on terse Turkish tweets is the least reliable field.</li>"
+             "<li>Stage 2 API path is untested at scale; only the interactive labels exist so far.</li>"
+             "<li>Sampled accounts (&gt;1,000 orig/yr) see ~10% of their tweets — evenly spread, but sparse.</li></ul>")
+
+    B.append("<h2>Files</h2><table><tr><th>file</th><th>role</th></tr>"
+             "<tr><td class=mono>roster.yaml</td><td>accounts, school, language</td></tr>"
+             "<tr><td class=mono>src/db.py</td><td>SQLite schema (accounts, tweets, calls, outcomes, prices, trust), log()</td></tr>"
+             "<tr><td class=mono>src/fetch.py</td><td>twitterapi.io: since_id incremental, 3y backfill, monthly sampling windows</td></tr>"
+             "<tr><td class=mono>src/prefilter.py</td><td>stage 1</td></tr><tr><td class=mono>src/classify.py</td><td>stage 2</td></tr>"
+             "<tr><td class=mono>src/prices.py · evaluate.py · score.py · matrix.py</td><td>outcomes → trust → 3×3</td></tr>"
+             "<tr><td class=mono>src/audit.py · admin.py · pine.py</td><td>verification page, this site, TradingView script</td></tr>"
+             "<tr><td class=mono>src/run.py</td><td>weekly: fetch → classify → prices → evaluate → score → matrix → audit → pine</td></tr>"
+             "<tr><td class=mono>scripts/backfill.py</td><td>parallel 3y backfill (8 workers)</td></tr></table>")
+    return _page("architecture", "".join(B), "/architecture")
+
+
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, format, *args):  # noqa: A002 — quiet
         pass
@@ -267,6 +344,8 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(page_matrix(conn))
             elif path == "/accounts":
                 self._send(page_accounts(conn))
+            elif path == "/architecture":
+                self._send(page_architecture(conn))
             elif path == "/audit":
                 self._send(audit.render())
             elif path == "/api/log":
