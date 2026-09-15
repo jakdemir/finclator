@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-15T17:12:15.899810+00:00",
+ "generated_at": "2026-09-15T17:14:54.843620+00:00",
  "cells": {
   "BTC:SHORT": {
    "asset": "BTC",
@@ -17,16 +17,16 @@
    "asset": "BTC",
    "horizon": "MEDIUM",
    "label": "N/A",
-   "net": 0.061,
-   "buy": 0.126,
-   "sell": 0.108,
-   "neutral": 0.052,
+   "net": 0.076,
+   "buy": 0.124,
+   "sell": 0.103,
+   "neutral": 0.049,
    "n_calls": 5,
    "schools": {
     "Technical": {
      "buy": 0.0,
-     "sell": 0.108,
-     "neutral": 0.052,
+     "sell": 0.103,
+     "neutral": 0.049,
      "label": "N/A"
     },
     "Crypto": {
@@ -36,7 +36,7 @@
      "label": "N/A"
     },
     "Macro": {
-     "buy": 0.065,
+     "buy": 0.063,
      "sell": 0.0,
      "neutral": 0.0,
      "label": "N/A"
@@ -47,7 +47,7 @@
      "handle": "laplace2011",
      "direction": "NEUTRAL",
      "date": "2025-11-25",
-     "weight": 0.052,
+     "weight": 0.049,
      "quote": "#Mstr batınca haber verin bolca #Bitcoin alıcam",
      "tweet_id": "1993321767079686545"
     },
@@ -63,7 +63,7 @@
      "handle": "laplace2011",
      "direction": "SELL",
      "date": "2025-11-04",
-     "weight": 0.056,
+     "weight": 0.053,
      "quote": "Çok uyardım… hala da uyarıyorum…  Bunlar girdikleri yeri kuruturlar!",
      "tweet_id": "1985690052538638467"
     },
@@ -71,7 +71,7 @@
      "handle": "santmanukyan",
      "direction": "BUY",
      "date": "2025-10-22",
-     "weight": 0.065,
+     "weight": 0.063,
      "quote": "Bitcoin’i (ki yükseliş devam edecek)",
      "tweet_id": "1980976116920705079"
     },
@@ -79,7 +79,7 @@
      "handle": "laplace2011",
      "direction": "SELL",
      "date": "2025-09-22",
-     "weight": 0.052,
+     "weight": 0.049,
      "quote": "#bitcoin &amp; #kriptopara larda kuvvetli riskler aşağı yönlü devam ediyor bence!",
      "tweet_id": "1970009660477649009"
     }
@@ -89,9 +89,9 @@
    "asset": "BTC",
    "horizon": "LONG",
    "label": "BUY",
-   "net": 0.502,
+   "net": 0.52,
    "buy": 0.364,
-   "sell": 0.121,
+   "sell": 0.115,
    "neutral": 0.0,
    "n_calls": 4,
    "schools": {
@@ -103,7 +103,7 @@
     },
     "Technical": {
      "buy": 0.0,
-     "sell": 0.121,
+     "sell": 0.115,
      "neutral": 0.0,
      "label": "N/A"
     }
@@ -137,7 +137,7 @@
      "handle": "laplace2011",
      "direction": "SELL",
      "date": "2025-08-26",
-     "weight": 0.121,
+     "weight": 0.115,
      "quote": "Bir dönem komple kapandı gibime geliyor…",
      "tweet_id": "1960086430983545297"
     }
@@ -160,17 +160,11 @@
    "horizon": "MEDIUM",
    "label": "N/A",
    "net": 1.0,
-   "buy": 0.111,
+   "buy": 0.045,
    "sell": 0.0,
    "neutral": 0.0,
-   "n_calls": 2,
+   "n_calls": 1,
    "schools": {
-    "Macro": {
-     "buy": 0.066,
-     "sell": 0.0,
-     "neutral": 0.0,
-     "label": "N/A"
-    },
     "Technical": {
      "buy": 0.045,
      "sell": 0.0,
@@ -179,14 +173,6 @@
     }
    },
    "contributors": [
-    {
-     "handle": "santmanukyan",
-     "direction": "BUY",
-     "date": "2025-10-24",
-     "weight": 0.066,
-     "quote": "altın da yükselir, bu bir düzeltme gibi duruyor",
-     "tweet_id": "1981605121692713156"
-    },
     {
      "handle": "laplace2011",
      "direction": "BUY",
@@ -202,13 +188,13 @@
    "horizon": "LONG",
    "label": "BUY",
    "net": 1.0,
-   "buy": 1.087,
+   "buy": 1.146,
    "sell": 0.0,
    "neutral": 0.0,
    "n_calls": 9,
    "schools": {
     "Technical": {
-     "buy": 0.836,
+     "buy": 0.896,
      "sell": 0.0,
      "neutral": 0.0,
      "label": "BUY"
@@ -225,7 +211,7 @@
      "handle": "laplace2011",
      "direction": "BUY",
      "date": "2025-11-23",
-     "weight": 0.142,
+     "weight": 0.152,
      "quote": "Neden Altın? Çünkü Kimsenin Borcu  Değil!",
      "tweet_id": "1992565888059646015"
     },
@@ -233,7 +219,7 @@
      "handle": "laplace2011",
      "direction": "BUY",
      "date": "2025-10-22",
-     "weight": 0.153,
+     "weight": 0.164,
      "quote": "teknik bir düzeltmeden ibaret olur. Orta uzun vade trendi değiştirmez!",
      "tweet_id": "1981003923550093782"
     },
@@ -249,7 +235,7 @@
      "handle": "laplace2011",
      "direction": "BUY",
      "date": "2025-10-22",
-     "weight": 0.153,
+     "weight": 0.164,
      "quote": "orta uzun vade trendler kolay kolay değişmez",
      "tweet_id": "1980913045527224823"
     },
@@ -257,7 +243,7 @@
      "handle": "laplace2011",
      "direction": "BUY",
      "date": "2025-10-06",
-     "weight": 0.113,
+     "weight": 0.121,
      "quote": "Altın kalır siz gidersiniz!",
      "tweet_id": "1975116255284904358"
     },
@@ -265,7 +251,7 @@
      "handle": "laplace2011",
      "direction": "BUY",
      "date": "2025-09-18",
-     "weight": 0.15,
+     "weight": 0.16,
      "quote": "Uzun vadeciler içinse artırma fırsat dönemi başladı",
      "tweet_id": "1968568099663233036"
     },
@@ -273,7 +259,7 @@
      "handle": "laplace2011",
      "direction": "BUY",
      "date": "2025-09-10",
-     "weight": 0.125,
+     "weight": 0.134,
      "quote": "Fiziki için yol uzun benim için",
      "tweet_id": "1965735661463609365"
     },
@@ -311,21 +297,15 @@
    "asset": "SPX",
    "horizon": "MEDIUM",
    "label": "N/A",
-   "net": -0.29,
-   "buy": 0.068,
+   "net": -1.0,
+   "buy": 0.0,
    "sell": 0.123,
    "neutral": 0.0,
-   "n_calls": 4,
+   "n_calls": 3,
    "schools": {
     "Technical": {
      "buy": 0.0,
      "sell": 0.123,
-     "neutral": 0.0,
-     "label": "N/A"
-    },
-    "Macro": {
-     "buy": 0.068,
-     "sell": 0.0,
      "neutral": 0.0,
      "label": "N/A"
     }
@@ -354,14 +334,6 @@
      "weight": 0.036,
      "quote": "ABD’de Balona Üflemeye Devam!",
      "tweet_id": "1982382319651750023"
-    },
-    {
-     "handle": "santmanukyan",
-     "direction": "BUY",
-     "date": "2025-10-24",
-     "weight": 0.068,
-     "quote": "S&amp;P yükseliği sürece, ki bence hala yolu var",
-     "tweet_id": "1981605121692713156"
     }
    ]
   },
@@ -371,13 +343,13 @@
    "label": "SELL",
    "net": -1.0,
    "buy": 0.0,
-   "sell": 0.307,
+   "sell": 0.304,
    "neutral": 0.0,
    "n_calls": 4,
    "schools": {
     "Technical": {
      "buy": 0.0,
-     "sell": 0.307,
+     "sell": 0.304,
      "neutral": 0.0,
      "label": "SELL"
     }
@@ -387,7 +359,7 @@
      "handle": "laplace2011",
      "direction": "SELL",
      "date": "2025-10-09",
-     "weight": 0.075,
+     "weight": 0.074,
      "quote": "ABD Borsası’nın altı inanılmaz boş yükselişinin tatlı şeması",
      "tweet_id": "1976197748107169835"
     },
@@ -395,7 +367,7 @@
      "handle": "laplace2011",
      "direction": "SELL",
      "date": "2025-10-03",
-     "weight": 0.074,
+     "weight": 0.073,
      "quote": "ABD Nasdaq balonu hakkında benden daha da acımasız düşünen analistler de var!",
      "tweet_id": "1974189319612141596"
     },
@@ -403,7 +375,7 @@
      "handle": "laplace2011",
      "direction": "SELL",
      "date": "2025-09-23",
-     "weight": 0.086,
+     "weight": 0.085,
      "quote": "ABD Borsaları’ndaki Balonlaşma istatistiklerine bir yenisi daha",
      "tweet_id": "1970397162359156993"
     },
@@ -411,7 +383,7 @@
      "handle": "laplace2011",
      "direction": "SELL",
      "date": "2025-08-27",
-     "weight": 0.073,
+     "weight": 0.072,
      "quote": "ABD Borsaları pahalı değil pornografik dercede aşırı değerli!",
      "tweet_id": "1960604603986120870"
     }

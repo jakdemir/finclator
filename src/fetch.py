@@ -42,7 +42,9 @@ def sync_roster(conn: sqlite3.Connection) -> list[dict]:
 def _insert(conn: sqlite3.Connection, rows: list[dict]) -> int:
     n = 0
     for r in rows:
-        rel, assets = is_relevant(r["text"], r["is_reply"])
+        if r["is_reply"] or r["text"].startswith("RT @"):
+            continue  # originals only — enforced here regardless of source
+        rel, assets = is_relevant(r["text"], False)
         cur = conn.execute(
             """INSERT OR IGNORE INTO tweets(id, handle, created_at, text, is_reply, lang, source, assets_hint, relevant)
                VALUES(?,?,?,?,?,?,?,?,?)""",

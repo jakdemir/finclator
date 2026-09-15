@@ -24,19 +24,19 @@ rows.forEach(r=>tb.appendChild(r));tbl.dataset.sc=col+(asc?'a':'d');}
 document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('table.sortable th').forEach((th,i)=>th.onclick=()=>sortTable(th.closest('table'),i));
 ['f-acc','f-asset','f-hz','f-res','f-dir'].forEach(id=>document.getElementById(id).onchange=filt);document.getElementById('f-q').oninput=filt;filt();});
 </script>
-<h1>Finclator verification &amp; debug</h1><small>generated 2026-09-15 17:12 UTC · prices: BTC=Yahoo BTC-USD (UTC close), GOLD=COMEX GC=F front month, SPX=^GSPC · flat band = 0.5σ·√days (trailing-1y daily vol at entry)</small>
+<h1>Finclator verification &amp; debug</h1><small>generated 2026-09-15 17:14 UTC · prices: BTC=Yahoo BTC-USD (UTC close), GOLD=COMEX GC=F front month, SPX=^GSPC · flat band = 0.5σ·√days (trailing-1y daily vol at entry)</small>
 <h2>Matrix</h2><table class=grid><tr><th></th><th>SHORT<br><small>0–3 mo</small></th><th>MEDIUM<br><small>3–12 mo</small></th><th>LONG<br><small>1–5 y</small></th></tr>
-<tr><th>BTC</th><td class=NA>N/A<br><small>n=0 net=+0.00</small></td><td class=NA>N/A<br><small>n=5 net=+0.06</small></td><td class=BUY>BUY<br><small>n=4 net=+0.50</small></td></tr>
-<tr><th>GOLD</th><td class=NA>N/A<br><small>n=0 net=+0.00</small></td><td class=NA>N/A<br><small>n=2 net=+1.00</small></td><td class=BUY>BUY<br><small>n=9 net=+1.00</small></td></tr>
-<tr><th>SPX</th><td class=NA>N/A<br><small>n=0 net=+0.00</small></td><td class=NA>N/A<br><small>n=4 net=-0.29</small></td><td class=SELL>SELL<br><small>n=4 net=-1.00</small></td></tr>
+<tr><th>BTC</th><td class=NA>N/A<br><small>n=0 net=+0.00</small></td><td class=NA>N/A<br><small>n=5 net=+0.08</small></td><td class=BUY>BUY<br><small>n=4 net=+0.52</small></td></tr>
+<tr><th>GOLD</th><td class=NA>N/A<br><small>n=0 net=+0.00</small></td><td class=NA>N/A<br><small>n=1 net=+1.00</small></td><td class=BUY>BUY<br><small>n=9 net=+1.00</small></td></tr>
+<tr><th>SPX</th><td class=NA>N/A<br><small>n=0 net=+0.00</small></td><td class=NA>N/A<br><small>n=3 net=-1.00</small></td><td class=SELL>SELL<br><small>n=4 net=-1.00</small></td></tr>
 </table>
 <h2>Pipeline funnel</h2><div class=bar>
-<span class=pill>tweets stored: <b>2,914</b></span> →
-<span class=pill>asset-mentioning (prefilter): <b>580</b></span> →
-<span class=pill>classified: <b>334</b></span> →
-<span class=pill>tweets with calls: <b>74</b> (89 calls)</span> →
-<span class=pill>matured &amp; evaluated: <b>61</b></span></div>
-<p><b>246</b> tweets await classification.</p>
+<span class=pill>tweets stored: <b>2,403</b></span> →
+<span class=pill>asset-mentioning (prefilter): <b>673</b></span> →
+<span class=pill>classified: <b>297</b></span> →
+<span class=pill>tweets with calls: <b>65</b> (74 calls)</span> →
+<span class=pill>matured &amp; evaluated: <b>48</b></span></div>
+<p><b>376</b> tweets await classification.</p>
 <h2>Accounts</h2><table class=sortable><thead><tr><th>account</th><th>tier</th><th>school</th><th>lang</th><th>followers</th><th>orig/yr</th><th>sampling</th><th>tweets</th><th>relevant</th><th>calls</th><th>evaluated</th><th>hits</th><th>trust</th><th>BTC</th><th>GOLD</th><th>SPX</th><th>first</th><th>last</th></tr></thead><tbody>
 <tr><td><a href='https://x.com/100trillionusd'>@100trillionusd</a></td><td>A</td><td>Quant</td><td>en</td><td class=num>2,163,710</td><td class=num></td><td>full</td><td class=num>100</td><td class=num>78</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
@@ -70,9 +70,9 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/laplace2011'>@laplace2011</a></td><td>A</td><td>Technical</td><td>tr</td><td class=num>245,411</td><td class=num>574</td><td>full</td><td class=num>1490</td><td class=num>318</td><td class=num>45</td>
-<td class=num>27</td><td class=num>16.5</td><td class=num data-v='0.581081081081081'><b>0.581</b></td>
-<td class=num data-v='0.7222222222222222'>0.72<br><small>n=8</small></td><td class=num data-v='0.6'>0.60<br><small>n=5</small></td><td class=num data-v='0.3958333333333333'>0.40<br><small>n=14</small></td>
+<tr><td><a href='https://x.com/laplace2011'>@laplace2011</a></td><td>A</td><td>Technical</td><td>tr</td><td class=num>245,411</td><td class=num>574</td><td>full</td><td class=num>1508</td><td class=num>439</td><td class=num>41</td>
+<td class=num>23</td><td class=num>14.0</td><td class=num data-v='0.5757575757575758'><b>0.576</b></td>
+<td class=num data-v='0.6875'>0.69<br><small>n=6</small></td><td class=num data-v='0.6428571428571429'>0.64<br><small>n=4</small></td><td class=num data-v='0.391304347826087'>0.39<br><small>n=13</small></td>
 <td><small>2022-06-02</small></td><td><small>2026-09-14</small></td></tr>
 <tr><td><a href='https://x.com/lynaldencontact'>@lynaldencontact</a></td><td>A</td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
@@ -102,9 +102,9 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/santmanukyan'>@santmanukyan</a></td><td>A</td><td>Macro</td><td>tr</td><td class=num>589,414</td><td class=num>48</td><td>full</td><td class=num>1015</td><td class=num>151</td><td class=num>40</td>
-<td class=num>34</td><td class=num>31.5</td><td class=num data-v='0.8295454545454546'><b>0.830</b></td>
-<td class=num data-v='0.7291666666666666'>0.73<br><small>n=14</small></td><td class=num data-v='0.6842105263157895'>0.68<br><small>n=9</small></td><td class=num data-v='0.7619047619047619'>0.76<br><small>n=11</small></td>
+<tr><td><a href='https://x.com/santmanukyan'>@santmanukyan</a></td><td>A</td><td>Macro</td><td>tr</td><td class=num>589,414</td><td class=num>48</td><td>full</td><td class=num>630</td><td class=num>129</td><td class=num>29</td>
+<td class=num>25</td><td class=num>23.0</td><td class=num data-v='0.8'><b>0.800</b></td>
+<td class=num data-v='0.7142857142857143'>0.71<br><small>n=11</small></td><td class=num data-v='0.6'>0.60<br><small>n=5</small></td><td class=num data-v='0.7368421052631579'>0.74<br><small>n=9</small></td>
 <td><small>2021-03-12</small></td><td><small>2026-08-18</small></td></tr>
 <tr><td><a href='https://x.com/tavicosta'>@tavicosta</a></td><td>A</td><td>Macro</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>0</td><td class=num>0</td><td class=num>0</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small></small></td><td><small></small></td></tr>
-<tr><td><a href='https://x.com/apompliano'>@apompliano</a></td><td>B</td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>309</td><td class=num>33</td><td class=num>4</td>
+<tr><td><a href='https://x.com/apompliano'>@apompliano</a></td><td>B</td><td>Crypto</td><td>en</td><td class=num></td><td class=num></td><td>full</td><td class=num>165</td><td class=num>27</td><td class=num>4</td>
 <td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 (prior)</small></td>
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small>2025-11-10</small></td><td><small>2025-11-30</small></td></tr>
@@ -431,7 +431,7 @@ document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('tab
 <td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td><td class=num data-v=0><small>–</small></td>
 <td><small></small></td><td><small></small></td></tr>
 </tbody></table>
-<h2>Calls (89)</h2><div class=bar>
+<h2>Calls (74)</h2><div class=bar>
 <select id=f-acc><option value="">all accounts</option><option>apompliano</option><option>laplace2011</option><option>santmanukyan</option></select>
 <select id=f-asset><option value="">all assets</option><option>BTC</option><option>GOLD</option><option>SPX</option></select>
 <select id=f-hz><option value="">all horizons</option><option>SHORT</option><option>MEDIUM</option><option>LONG</option></select>
@@ -515,27 +515,6 @@ Umarım faydalanmışsınızdr
 The perfect asset for young people to protect their purchasing power over their lifetime</mark>.</td><td>BTC</td><td class=BUY>BUY</td>
 <td>LONG<br><small>1–5 y · eval 730d</small></td><td class=num>0.60</td><td class=num><small>–</small></td>
 <td class=num></td><td class=num></td><td class=num data-v='0'></td><td></td><td><small>matures 2027-11-14</small></td><td><a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
-<tr class="WRONG" data-acc="laplace2011" data-asset="GOLD" data-hz="SHORT" data-res="WRONG" data-dir="SELL">
-<td data-v=81>81</td><td>@laplace2011<br><small>2025-11-13</small><br><a href='https://x.com/laplace2011/status/1989044022615187567'>tweet ↗</a></td>
-<td class=tweet>RT @undefined: <mark>#xauusd ve #nasdaq gecikmeli şekilde son yolcularını aldı bence</mark>. 4200 üstü ilk zirvede de biraz gecikmeli olmuştu twitim. Son twitimde öyle oldu gibi ama sonuç değişmeyecektir diye tahmin ediyorum.
-
-Özellikle #nasdaq tarafında @laplace2011 mevsimi başladı diye tahmin ediyorum.
-Elalemin @burrytracker Michael&#x27;i varsa bizimde Devrimimiz var 😁😁</td><td>GOLD</td><td class=SELL>SELL</td>
-<td>SHORT<br><small>0–3 mo · eval 90d</small></td><td class=num>0.50</td><td class=num><small>–</small></td>
-<td class=num>2025-11-13<br>4,194.50</td><td class=num>2026-02-11<br>5,098.50</td><td class=num data-v='21.55203242341161'>+21.6%<br><small>flat ±5.1%</small></td><td><span class=BUY>BUY</span></td><td>WRONG</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1762560000&period2=1763424000'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1770336000&period2=1771200000'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
-<tr class="PARTIAL" data-acc="laplace2011" data-asset="SPX" data-hz="SHORT" data-res="PARTIAL" data-dir="SELL">
-<td data-v=82>82</td><td>@laplace2011<br><small>2025-11-13</small><br><a href='https://x.com/laplace2011/status/1989044022615187567'>tweet ↗</a></td>
-<td class=tweet>RT @undefined: <mark>#xauusd ve #nasdaq gecikmeli şekilde son yolcularını aldı bence</mark>. 4200 üstü ilk zirvede de biraz gecikmeli olmuştu twitim. Son twitimde öyle oldu gibi ama sonuç değişmeyecektir diye tahmin ediyorum.
-
-Özellikle #nasdaq tarafında @laplace2011 mevsimi başladı diye tahmin ediyorum.
-Elalemin @burrytracker Michael&#x27;i varsa bizimde Devrimimiz var 😁😁</td><td>SPX</td><td class=SELL>SELL</td>
-<td>SHORT<br><small>0–3 mo · eval 90d</small></td><td class=num>0.55</td><td class=num><small>–</small></td>
-<td class=num>2025-11-13<br>6,737.49</td><td class=num>2026-02-11<br>6,941.47</td><td class=num data-v='3.0275365658867197'>+3.0%<br><small>flat ±4.7%</small></td><td><span class=NEUTRAL>NEUTRAL</span></td><td>PARTIAL</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1762560000&period2=1763424000'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1770336000&period2=1771200000'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="laplace2011" data-asset="BTC" data-hz="SHORT" data-res="CORRECT" data-dir="SELL">
-<td data-v=80>80</td><td>@laplace2011<br><small>2025-11-11</small><br><a href='https://x.com/laplace2011/status/1987993783187780060'>tweet ↗</a></td>
-<td class=tweet>@vanavucuvudu8 Btc verdiğim seviyeleri dikkat etmezseniz böyle yorumlar yaparsınız. <mark>Btc aşağı devam edecek zaten</mark></td><td>BTC</td><td class=SELL>SELL</td>
-<td>SHORT<br><small>0–3 mo · eval 90d</small></td><td class=num>0.85</td><td class=num><small>–</small></td>
-<td class=num>2025-11-11<br>102,997.47</td><td class=num>2026-02-09<br>70,120.78</td><td class=num data-v='-31.919898516923507'>-31.9%<br><small>flat ±10.6%</small></td><td><span class=SELL>SELL</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1762387200&period2=1763251200'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1770163200&period2=1771027200'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
 <tr class="" data-acc="laplace2011" data-asset="SPX" data-hz="MEDIUM" data-res="PENDING" data-dir="SELL">
 <td data-v=79>79</td><td>@laplace2011<br><small>2025-11-05</small><br><a href='https://x.com/laplace2011/status/1986006077453070601'>tweet ↗</a></td>
 <td class=tweet><mark>Nasdaq’da #Nvidia üzerinden dönen ‘finansal mühendislik’ &amp;amp; ‘yapay zeka’ balonlarını</mark> aylardır yayınlar boyu anlattım. 
@@ -559,16 +538,6 @@ Yazık…. <mark>Çok uyardım… hala da uyarıyorum…  Bunlar girdikleri yeri
 #Bitcoin #nasdaq #sp500 #borsa #Nvidia #Merck #Moderna #Pfizer #Google #Microsoft #Meta #Baba #Tesla #TLT #Amazon $btc $Amzn $Baba $tlt</td><td>SPX</td><td class=SELL>SELL</td>
 <td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.50</td><td class=num><small>–</small></td>
 <td class=num></td><td class=num></td><td class=num data-v='0'></td><td></td><td><small>matures 2026-10-26</small></td><td><a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
-<tr class="" data-acc="santmanukyan" data-asset="SPX" data-hz="MEDIUM" data-res="PENDING" data-dir="BUY">
-<td data-v=75>75</td><td>@santmanukyan<br><small>2025-10-24</small><br><a href='https://x.com/santmanukyan/status/1981605121692713156'>tweet ↗</a></td>
-<td class=tweet>@yatirimyorum <mark>S&amp;amp;P yükseliği sürece, ki bence hala yolu var</mark> , altın da yükselir, bu bir düzeltme gibi duruyor.</td><td>SPX</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.60</td><td class=num><small>–</small></td>
-<td class=num></td><td class=num></td><td class=num data-v='0'></td><td></td><td><small>matures 2026-10-24</small></td><td><a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
-<tr class="" data-acc="santmanukyan" data-asset="GOLD" data-hz="MEDIUM" data-res="PENDING" data-dir="BUY">
-<td data-v=76>76</td><td>@santmanukyan<br><small>2025-10-24</small><br><a href='https://x.com/santmanukyan/status/1981605121692713156'>tweet ↗</a></td>
-<td class=tweet>@yatirimyorum S&amp;amp;P yükseliği sürece, ki bence hala yolu var , <mark>altın da yükselir, bu bir düzeltme gibi duruyor</mark>.</td><td>GOLD</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.60</td><td class=num><small>–</small></td>
-<td class=num></td><td class=num></td><td class=num data-v='0'></td><td></td><td><small>matures 2026-10-24</small></td><td><a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
 <tr class="" data-acc="laplace2011" data-asset="GOLD" data-hz="LONG" data-res="PENDING" data-dir="BUY">
 <td data-v=74>74</td><td>@laplace2011<br><small>2025-10-22</small><br><a href='https://x.com/laplace2011/status/1981003923550093782'>tweet ↗</a></td>
 <td class=tweet>Değerli Metaller’de koparılan tüm bu tantana Altın/Gümüş oranı  85.54 aşağısında kaldığı sürece <mark>teknik bir düzeltmeden ibaret olur. Orta uzun vade trendi değiştirmez!</mark> 
@@ -686,11 +655,6 @@ hedef: açık! https://t.co/4nnMIegPDw</td><td>SPX</td><td class=SELL>SELL</td>
 <td class=tweet>#Altın &amp;amp; Gümüş için Vadenize bağlı elbette. Bugün ABD Enflasyonu kısa vade ekran tradei için oynaklık yaratabilir, KISMİ kar(dövizde kalmak kaydıyla) her zaman cebe yakışır ama <mark>Fiziki için yol uzun benim için</mark>.</td><td>GOLD</td><td class=BUY>BUY</td>
 <td>LONG<br><small>1–5 y · eval 730d</small></td><td class=num>0.60</td><td class=num><small>–</small></td>
 <td class=num></td><td class=num></td><td class=num data-v='0'></td><td></td><td><small>matures 2027-09-10</small></td><td><a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="laplace2011" data-asset="BTC" data-hz="MEDIUM" data-res="CORRECT" data-dir="SELL">
-<td data-v=55>55</td><td>@laplace2011<br><small>2025-09-06</small><br><a href='https://x.com/laplace2011/status/1964268480292622576'>tweet ↗</a></td>
-<td class=tweet>@Mustafazaydn16 Maalesef hiç sanmıyorum… <mark>çok karamsarım #Bitcoin için</mark>. Tam teyidi gelmemişse de…</td><td>BTC</td><td class=SELL>SELL</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.65</td><td class=num><small>–</small></td>
-<td class=num>2025-09-06<br>110,224.70</td><td class=num>2026-09-06<br>80,350.05</td><td class=num data-v='-27.103407591921076'>-27.1%<br><small>flat ±22.2%</small></td><td><span class=SELL>SELL</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1756684800&period2=1757548800'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1788220800&period2=1789084800'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
 <tr class="PARTIAL" data-acc="laplace2011" data-asset="SPX" data-hz="SHORT" data-res="PARTIAL" data-dir="SELL">
 <td data-v=54>54</td><td>@laplace2011<br><small>2025-08-27</small><br><a href='https://x.com/laplace2011/status/1960740718000976228'>tweet ↗</a></td>
 <td class=tweet>#nasdaq spot <mark>alçak sağ omuzla aşağı dönerse yıkım olasılığı yükselir</mark>… Hayırlısı… https://t.co/KlkO4e6tTK</td><td>SPX</td><td class=SELL>SELL</td>
@@ -824,26 +788,11 @@ Bu gözle baktığınızda, yani sıradan yatırımcılar değil finansal mimar�
 https://t.co/V4roHLwnCj twitimde demek istediğim belki şimdi biraz daha anlaşılır hale gelmiştir. Altın tamamen kendi özelliklerinden dolayı yükseliyor. Ancak aranızda , seviyeyi atıyorum , 10000 gibi bir altın fiyatı bekleyen varsa onun nedeni de bambaşka bir dinamik olacak (para altına bağlanmayacak). Biraz daha sabır.</td><td>GOLD</td><td class=BUY>BUY</td>
 <td>LONG<br><small>1–5 y · eval 730d</small></td><td class=num>0.65</td><td class=num><small>–</small></td>
 <td class=num></td><td class=num></td><td class=num data-v='0'></td><td></td><td><small>matures 2027-04-21</small></td><td><a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="GOLD" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=35>35</td><td>@santmanukyan<br><small>2025-02-03</small><br><a href='https://x.com/santmanukyan/status/1886344177341878409'>tweet ↗</a></td>
-<td class=tweet>@CCwear3 Benzer bir durumu altında da yaşıyorum, <mark>ben de pozitifim</mark> ama kasada altın kalmadı hikayesi ile uzaktan yakından alakası yok bunun. Selamlar.</td><td>GOLD</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.60</td><td class=num><small>–</small></td>
-<td class=num>2025-02-03<br>2,857.10</td><td class=num>2026-02-03<br>4,935.00</td><td class=num data-v='72.72758501000027'>+72.7%<br><small>flat ±7.8%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1738108800&period2=1738972800'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1769644800&period2=1770508800'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
 <tr class="" data-acc="santmanukyan" data-asset="GOLD" data-hz="LONG" data-res="PENDING" data-dir="BUY">
 <td data-v=34>34</td><td>@santmanukyan<br><small>2025-01-31</small><br><a href='https://x.com/santmanukyan/status/1885194001482960988'>tweet ↗</a></td>
 <td class=tweet>Günaydın, ve altın yeni bir zirve kaydetti... Genelde geldiğini bu kadar net göremezsiniz ama arada sırada piyasa merhametli olur. Tekrarlamam gerekirse bu altının finansal/ekonomik yükselişi değil , daha önce örneklerle açıkladığım jepoplitik yükselişi. <mark>Diğerine yani ana yükselişine daha vakit var</mark>.</td><td>GOLD</td><td class=BUY>BUY</td>
 <td>LONG<br><small>1–5 y · eval 730d</small></td><td class=num>0.60</td><td class=num><small>–</small></td>
 <td class=num></td><td class=num></td><td class=num data-v='0'></td><td></td><td><small>matures 2027-01-31</small></td><td><a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="GOLD" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=33>33</td><td>@santmanukyan<br><small>2025-01-29</small><br><a href='https://x.com/santmanukyan/status/1884490117559079095'>tweet ↗</a></td>
-<td class=tweet>@ata_lay_ca Günaydın, bir değişiklik yok, <mark>Fed ile veya Fed&#x27;siz her ikisi de yükselecek</mark>. Zaten altın dolar dışında tüm para birimlerinde yeni zirve yaptı bile.  Tek sorun bu yükselişte jeopolitik kaygılar nedeni ile altın liderlik ediyor.</td><td>GOLD</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
-<td class=num>2025-01-29<br>2,769.80</td><td class=num>2026-01-29<br>5,318.40</td><td class=num data-v='92.01385690616593'>+92.0%<br><small>flat ±7.7%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1737676800&period2=1738540800'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1769212800&period2=1770076800'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
-<tr class="PARTIAL" data-acc="santmanukyan" data-asset="BTC" data-hz="MEDIUM" data-res="PARTIAL" data-dir="BUY">
-<td data-v=32>32</td><td>@santmanukyan<br><small>2024-12-11</small><br><a href='https://x.com/santmanukyan/status/1866740705827361005'>tweet ↗</a></td>
-<td class=tweet>@Yz_5609 Bu yil olur mu bilmiyorum,BTC 200 gunlukten cok koptu biraz gidip gelebilir ama <mark>ana trendde bir degisiklik yok</mark>,ETH de yukari.</td><td>BTC</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.65</td><td class=num><small>–</small></td>
-<td class=num>2024-12-11<br>101,173.03</td><td class=num>2025-12-11<br>92,511.34</td><td class=num data-v='-8.561268952293055'>-8.6%<br><small>flat ±26.4%</small></td><td><span class=NEUTRAL>NEUTRAL</span></td><td>PARTIAL</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1733443200&period2=1734307200'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1764979200&period2=1765843200'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
 <tr class="PARTIAL" data-acc="santmanukyan" data-asset="BTC" data-hz="MEDIUM" data-res="PARTIAL" data-dir="BUY">
 <td data-v=31>31</td><td>@santmanukyan<br><small>2024-11-12</small><br><a href='https://x.com/santmanukyan/status/1856159745570418725'>tweet ↗</a></td>
 <td class=tweet>Günaydın, S&amp;P 6000, Russell yeni zirve yapmak üzere, BTC 88600 dolar. Dün yaşanan hareketle beraber Bitcoin &#x27;in piyasa değeri gümüşün üstüne (altın ve gümüşte de stresslenmeyin)  çıkmış oldu. Buralarda biraz takılabilir ama S&amp;P&#x27;nin hareketine baktığımda <mark>henüz BTC&#x27;nin de ana zirvede olduğunu düşünmüyorum</mark>.</td><td>BTC</td><td class=BUY>BUY</td>
@@ -864,21 +813,6 @@ https://t.co/V4roHLwnCj twitimde demek istediğim belki şimdi biraz daha anlaş
 <td class=tweet>Petrol 4.5% aşağıda. Altın ise 2. notta yazdığım gibi zaten İran saldırısını da ciddiye almamıştı, düşüş çok daha sınırlı. <mark>S&amp;amp;P,altın,gümüş, BTC vs hepsinde daha yüksek seviyeler görülecek</mark>.</td><td>BTC</td><td class=BUY>BUY</td>
 <td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
 <td class=num>2024-10-28<br>69,907.76</td><td class=num>2025-10-28<br>112,956.16</td><td class=num data-v='61.57886849333715'>+61.6%<br><small>flat ±25.7%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1729641600&period2=1730505600'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1761177600&period2=1762041600'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=25>25</td><td>@santmanukyan<br><small>2024-10-17</small><br><a href='https://x.com/santmanukyan/status/1846817176239427780'>tweet ↗</a></td>
-<td class=tweet>@mucahit_akyel Henüz değil bence, <mark>önce her şeyde bir tur daha yükseliş göreceğiz, S&amp;amp;P , altın, btc</mark>..</td><td>SPX</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
-<td class=num>2024-10-17<br>5,841.47</td><td class=num>2025-10-17<br>6,664.01</td><td class=num data-v='14.081036460497497'>+14.1%<br><small>flat ±6.2%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1728691200&period2=1729555200'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1760227200&period2=1761091200'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="GOLD" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=26>26</td><td>@santmanukyan<br><small>2024-10-17</small><br><a href='https://x.com/santmanukyan/status/1846817176239427780'>tweet ↗</a></td>
-<td class=tweet>@mucahit_akyel Henüz değil bence, <mark>önce her şeyde bir tur daha yükseliş göreceğiz, S&amp;amp;P , altın, btc</mark>..</td><td>GOLD</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
-<td class=num>2024-10-17<br>2,707.50</td><td class=num>2025-10-17<br>4,213.30</td><td class=num data-v='55.61587459602955'>+55.6%<br><small>flat ±7.2%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1728691200&period2=1729555200'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1760227200&period2=1761091200'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="BTC" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=27>27</td><td>@santmanukyan<br><small>2024-10-17</small><br><a href='https://x.com/santmanukyan/status/1846817176239427780'>tweet ↗</a></td>
-<td class=tweet>@mucahit_akyel Henüz değil bence, <mark>önce her şeyde bir tur daha yükseliş göreceğiz, S&amp;amp;P , altın, btc</mark>..</td><td>BTC</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
-<td class=num>2024-10-17<br>67,399.84</td><td class=num>2025-10-17<br>106,467.79</td><td class=num data-v='57.964463238794515'>+58.0%<br><small>flat ±26.1%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1728691200&period2=1729555200'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1760227200&period2=1761091200'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
 <tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
 <td data-v=22>22</td><td>@santmanukyan<br><small>2024-10-15</small><br><a href='https://x.com/santmanukyan/status/1846035664107622715'>tweet ↗</a></td>
 <td class=tweet>İran İsrail&#x27;i vurduktan sonra ekteki yorumu yazmıştım. Şimdi bir iyi bir de kötü haberim var. İyi haber İsrail İran&#x27;da petrol veya nuke tesislerini değil sadece askeri tesisleri vuracağını açıkladı (veya mış)  https://t.co/m3rB3ZxrQ2 . Bu sadece ABD&#x27;nin secim öncesi bir petrol krizi istememesi kaynaklı değil. Bilin bakalım İran petrollerini, bazen 90%&#x27;a varan oranlarda, kim alıyor?... Kötü haber ise ABD&#x27;nin İsrail&#x27;e hem Thaad füzeleri hem de asker gönderiyor olması. Taraflar karşılıklı askeri tesisleri vururken Amerikalı askerlerin de hedef olması ABD&#x27;nin konuya bu kez doğrudan müdahil olmasına neden olacaktır, risk artıyor. Her neyse, yukarıdaki tezime Altın&#x27;ın hareketini şahit göstermiştim (2. ek). Altın ve BTC&#x27;de yavaş hareketin yatırımcı nezdinde tedirgin edici olduğunu gelen DM sayılarından anlıyorum. Merak etmeyin, <mark>S&amp;P dalgası her şeyi yükseltecek</mark>. Yükselişin temelini anlamak sonrasında yaşanacakları anlamak için de çok önemli.</td><td>SPX</td><td class=BUY>BUY</td>
@@ -987,140 +921,142 @@ Pazartesi günü &quot;ouvvv İran Amerika&#x27;yı vurmuş dünya karışacak ,
 <td class=tweet>Nominal bir veri olan perakende satışlar hem Eylülde kuvvetli hem de önceki ay revizyonları yukarı yönlü. Doğal olarak Fed tartışmaları ve getiri yükselişi görüyoruz. S&amp;P vadeli kontratlarda da 0.52% kayıp var. <mark>Geçici bir satış olacağını düşünüyorum, yeni zirve hedefi değişmedi</mark>. Sanırım 3DS beklemediğim de bellidir:)</td><td>SPX</td><td class=BUY>BUY</td>
 <td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.75</td><td class=num><small>–</small></td>
 <td class=num>2023-10-17<br>4,373.20</td><td class=num>2024-10-16<br>5,842.47</td><td class=num data-v='33.597136053961485'>+33.6%<br><small>flat ±7.9%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1697068800&period2=1697932800'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1728604800&period2=1729468800'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="SPX" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=1>1</td><td>@santmanukyan<br><small>2023-08-29</small><br><a href='https://x.com/santmanukyan/status/1696567001718681945'>tweet ↗</a></td>
-<td class=tweet>@Mina9292Sevki <mark>Hisse ve degerli metaller icin gercek bir rally</mark>, btc icin fiyat yukselisi diyelum simdilik, kervan yola ciksin da hele😊</td><td>SPX</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.55</td><td class=num><small>–</small></td>
-<td class=num>2023-08-29<br>4,497.63</td><td class=num>2024-08-28<br>5,592.18</td><td class=num data-v='24.33615752046488'>+24.3%<br><small>flat ±9.1%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1692835200&period2=1693699200'>entry</a> · <a href='https://finance.yahoo.com/quote/%5EGSPC/history/?period1=1724371200&period2=1725235200'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=SP:SPX'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="GOLD" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=2>2</td><td>@santmanukyan<br><small>2023-08-29</small><br><a href='https://x.com/santmanukyan/status/1696567001718681945'>tweet ↗</a></td>
-<td class=tweet>@Mina9292Sevki <mark>Hisse ve degerli metaller icin gercek bir rally</mark>, btc icin fiyat yukselisi diyelum simdilik, kervan yola ciksin da hele😊</td><td>GOLD</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.55</td><td class=num><small>–</small></td>
-<td class=num>2023-08-29<br>1,965.10</td><td class=num>2024-08-28<br>2,537.80</td><td class=num data-v='29.143559124589803'>+29.1%<br><small>flat ±7.3%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1692835200&period2=1693699200'>entry</a> · <a href='https://finance.yahoo.com/quote/GC=F/history/?period1=1724371200&period2=1725235200'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=COMEX:GC1!'>TV</a></td></tr>
-<tr class="CORRECT" data-acc="santmanukyan" data-asset="BTC" data-hz="MEDIUM" data-res="CORRECT" data-dir="BUY">
-<td data-v=3>3</td><td>@santmanukyan<br><small>2023-08-29</small><br><a href='https://x.com/santmanukyan/status/1696567001718681945'>tweet ↗</a></td>
-<td class=tweet>@Mina9292Sevki Hisse ve degerli metaller icin gercek bir rally, <mark>btc icin fiyat yukselisi diyelum simdilik</mark>, kervan yola ciksin da hele😊</td><td>BTC</td><td class=BUY>BUY</td>
-<td>MEDIUM<br><small>3–12 mo · eval 365d</small></td><td class=num>0.50</td><td class=num><small>–</small></td>
-<td class=num>2023-08-29<br>27,727.39</td><td class=num>2024-08-28<br>59,027.62</td><td class=num data-v='112.88559619763426'>+112.9%<br><small>flat ±24.3%</small></td><td><span class=BUY>BUY</span></td><td>CORRECT</td><td><a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1692835200&period2=1693699200'>entry</a> · <a href='https://finance.yahoo.com/quote/BTC-USD/history/?period1=1724371200&period2=1725235200'>exit</a> · <a href='https://www.tradingview.com/chart/?symbol=BITSTAMP:BTCUSD'>TV</a></td></tr>
 </tbody></table>
 <h2>Debug</h2>
 <details><summary>Sample of asset-mentioning tweets the classifier judged <b>not a call</b> (30 random) — check for missed calls</summary><table>
-<tr><td>@santmanukyan<br><small>2024-01-15 · BTC</small></td><td class=tweet>Bitcoin satışı gerçekten Grayscale çıkışları kaynaklı mı tartışılır (nette etflere giriş var ama işlemlerin otc vs borsa üzerinden gerçekleşiyor olması etkisini biraz değiştirebilir) ancak eklerde gördüğünüz üzere GBTC fonu bu maliyetlerle yatırımcıların tercihi olmaz. https://t.co/VgWIvpvDid</td></tr>
-<tr><td>@santmanukyan<br><small>2024-09-23 · GOLD</small></td><td class=tweet>CFTC pozisyonlarına baktığımızda ise fonların altın pozisyonu yüksek gümüşte ise ortalamaya yakın diyebiliriz. https://t.co/H9gOpELMoc</td></tr>
-<tr><td>@santmanukyan<br><small>2024-02-28 · BTC</small></td><td class=tweet>CryptoQuant sitesinden aldığım aslında ilişkili 2 grafik paylaşıyorum. 1- Neredeyse herkes karda (supply in profit indikatörü). Bunun doğal sonucu olarak 2- Borsalara BTC gelmeye başladı. Şimdi bir trader için en zor kısma geldiniz, kendinizle mücadeleye. 7/24 ekrana baktığınız için korkunuz sat , hırsınız bekle diyor. Benim görüşüm değişmedi ama ben sadece ufak bir detayım.</td></tr>
-<tr><td>@laplace2011<br><small>2025-08-03 · GOLD</small></td><td class=tweet>Zor Zamanlarda Altın Sakin Sakin… https://t.co/A6jomoNGdV @YouTube aracılığıyla 
+<tr><td>@apompliano<br><small>2025-11-14 · BTC</small></td><td class=tweet>From the Desk of Anthony Pompliano
 
-#altın #para #ekonomi #dolar #euro  #gümüş #borsa #devrimakyıl #us10y #eurusd #buğday #brent #petrol #platin #natgas #Wheat #weat #usdjpy $Xauusd $Xagusd $Xptusd #staglasyon #enflasyon</td></tr>
-<tr><td>@apompliano<br><small>2025-11-18 · BTC</small></td><td class=tweet>Here are 5 charts to explain what is happening with bitcoin. https://t.co/kH1FT1eKW0</td></tr>
-<tr><td>@apompliano<br><small>2025-11-21 · BTC</small></td><td class=tweet>Bitcoin is going down because there are more sellers than buyers.</td></tr>
-<tr><td>@santmanukyan<br><small>2024-10-15 · SPX</small></td><td class=tweet>Günaydın, Nvidia yeni zirve yaparken 2. ekte gördüğünüz üzere S&amp;P eşit ağırlıklı endeksi de (yani her hissenin 0.2% ağırlığı var) yeni zirve yapıyor. Sabah akşam ve her şeye balon deyince kelimenin bir ağırlığı da kalmıyor. S&amp;P&#x27;nin M-8 dışı değerlemesi pahalı olarak nitelendirilebilir ama (henüz) balon değil.</td></tr>
-<tr><td>@santmanukyan<br><small>2025-04-15 · SPX</small></td><td class=tweet>Apple’ın CEO’su Tim Cook’un yıllar önce bir panelde söylediği “Çin’de olma nedenimiz sanıldığı gibi ucuz işçilik değil ekspertiz” babında açıklaması sosyal medyada tur dönüyor. Söylediği elbette çok doğru, zaten Çin’de ücretlerin düşük olmadığını herkes de biliyor. Ancak Cook gerçeğin tamamını söylemiyor. Gerçek , WSJ’den Greg Ip’nin dikkat çektiği gibi çok daha farklı. Cook 1998 yılında operasyonların başına geldiğinde Apple’ın ABD’deki fabrikalarını kapatıp Çin’e taşıdı. Yani Cook’un bahsettiği uzmanlık ABD’de vardı ancak Apple bunun yerine daha ucuz iş gücü olan bir bölgeye fabrika kurarak bu uzmanlığı da oraya taşımayı yeğledi ve Çinli iş gücünün kalitesini de yükseltti. Tıpkı diğer ABD şirketleri gibi. Bu nedenle aşağıda da paylaştığım üzere ticaret savaşları veya globalizasyon aslında bir sınıf savaşı. ABD’de orta sınıf daha yüksek karlar ve Wall Street için çökertilirken Çin’de düşük gelirli kesim fakirlikten kurtarıldı ancak yine de zenginleşmeden alması gereken payı alamadı. Sosyal medyada var olan “basit anlatıyorum” ilkesi “eksik anlatıyorum” ile kol kola gidiyor. Trump orta sınıfı düşünecek olan kurtarıcı mı elbette tartışılır ancak ortada bir sorun olduğu net. Buffet’ın tek cümlelik öz deyişlerini paylaşmak yerine felsefesi ve görüşlerini çalışmak daha faydalı olabilir. 2016 yılında ticaret açığına yönelik makalesini paylaşıyorum : https://t.co/uzYob0nlqH.</td></tr>
-<tr><td>@santmanukyan<br><small>2024-12-16 · BTC,SPX</small></td><td class=tweet>Günaydın,
+0:00 Panic In The markets - Is The Bull market Over?
+3:20 Chicago Treasurer Boycotts US Treasuries
+4:29 Is $100k Bitcoin The New Base?
 
-Bitcoin yeni rekorlar kırarken Microstrategy&#x27;nin (tek değil ama en önemlisi) Nasdaq 100 endeksine dahil edilmesi kısa/kaba bir analizi hak ediyor. Önce endekse girmek için gerekli belli başlı standartlara bakalım:
+7:12 Blue Origin Lands Their Reusable Rocket
 
-1- Şirketin finans sektöründe faaliyet göstermemesi gerekiyor.
-2- Şirket finans dışı sektörde piyasa değeri itibarı ile ilk 100&#x27;e girecek büyüklükte olmalı.
-3- Likidite koşullarını yerine getirmeli.
+Enjoy! https://t.co/R5bEaILiN2</td></tr>
+<tr><td>@santmanukyan<br><small>2023-11-10 · BTC</small></td><td class=tweet>ETH günü öncesinde evren bize bir mesaj mı veriyor?  BlackRock ETH için de devreye girdi https://t.co/8mflwP0Uf0 . Ethereum&#x27;un BTC ile olan paritesi biraz kaygı yaratıyordu, bu toparlanma yeterli olmasa da umut verici.</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-06 · GOLD</small></td><td class=tweet>Sevgili @simgefstk ‘na konuk oldum. İzlenir
 
-Bu noktalarda bir sorun elbette yok ancak Bloom haberinde de paylaşıldığı üzere MSTR tuttuğu bitcoin ve gelecekte bir bitcoin bankası olmayı da planladığı için her an bir finansal kuruma dönüşerek endeksten çıkabilir.
+Asıl Kriz Başlamadı! Altın ve Borsada Büyük Şok Kapıda! Devrim Akyıl Uyardı https://t.co/RGf5gfItyg @YouTube aracılığıyla</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-15 · GOLD</small></td><td class=tweet>Sıkıntı Derinleşiyor! https://t.co/dQlnIHAqEU @YouTube aracılığıyla
 
-Endeks girmesi neden önemli? Önemli çünkü bir anda pasif fonları taşıyan tüm hesaplar, sıradan bir yatırımcı veya bir emekli, dolaylı olarak BTC pozisyonu almış olacak. BTC etfleri pozisyon almak için olanak sağlıyordu. Bu vakada ise pasif sigara içicisi misali otomatik olarak BTC almış olacaksınız.
+#dolar #altın #borsa #ekonomi #para #gümüş #bist100</td></tr>
+<tr><td>@santmanukyan<br><small>2024-08-15 · BTC</small></td><td class=tweet>Dün akşam açıklanan 13F&#x27;lere göre GS (ve MS ama onlar zaten GBTC tutuyorlardı) bitcoin etflerine pek soğuk değilmiş. Sayı daha fazla ben sadece ilk sayfayı paylaştım. Link isteyenler için https://t.co/QT6BaLJeUP https://t.co/q5SIo7e6UJ</td></tr>
+<tr><td>@apompliano<br><small>2025-11-19 · BTC,GOLD</small></td><td class=tweet>Too many people want to sit at the gambling table and not enough investors want to chill in the Long Term Lounge.
 
-MSTR ilginç bir olanağa kavuşmuş durumda. Net varlık değerini (aslında tuttuğu bitcoinler) şirketin değeri ile karşılaştırdığınızda *2.5 gibi bir rakam karşımıza çıkıyor. BTC&#x27;ye yönelik beklentiler artıkca yatırımcılar MSTR alıyor ve NAV makası açılıyor. Bunu gören yönetim hisse satışında  bulunarak veya (convertible) tahvil ihraç ederek daha fazla BTC alıyor. Hisse fiyatı yükseliyor ve başa dönüyoruz. Teoride makas kapanana kadar devam etmeli.  Ekte piyasadaki hisse sayısını görüyorsunuz. Taze para gelmeyi durdurduğunda veya MSTR bilançosu tartışılırken artık tamamen göz ardı edilen ancak borç servisinde hala kaçınılmaz öneme sahip kar/nakit akışı kesildiğinde (MSTR aslında bir yazılım şirketi)bu döngü sona erecek.
+I explained to @JohnPompliano what the difference is, along with how I think about buying assets, selling assets, and what is going on with bitcoin right now.
 
-Ancak Saylor&#x27;un dehasını piyasada uzun süre devam etse de eninde sonunda duvara çarpacak bu stratejide görmekten ziyade devletleri/merkez bankalarını eleştirdiği konuda hiç çekinmeden aynı davranışı sergilerken büyük takdir toplamasında görüyorum. Saylor fiat parayı yani kamunun sınırsız para basarak enflasyon yaratmasını eleştiriyor. Ve aynısını limitsiz hisse piyasaya sürerek gerçekleştiriyor. İlki paranın değerini düşürürken ikincisinin hissenin değerini artırdığını görüyoruz. Şu anda değer taşınan varlığın 2.5 katı. Ve muhtemelen önce çok daha yükselecek.
+Enjoy!
 
-MSTR&#x27;yi shortlamak veya put almak gibi tavsiyelerde bulunmak niyetinde değilim. Saylor&#x27;un stratejisi benim de portföyümün değer kazanmasını sağlıyor. Ancak dönüş başladığınızda elinizde MSTR hissesi değil BTC bulundurmak daha az hasar verecektir. Pasif fonların yatırım evreninde yarattığı sorunu kitabımın 193-195. sayfalarında değinmiştim. Nasdaq100&#x27;ü takip eden bir fon ör. QQQM 23 Aralıkta ister istemez tuttuğu BTC nedeni ile bir değer taşıyan ancak taşıdığı değer BTC stokunun 2.5 katı olan MSTR almak zorunda kalacak. Aktif yönetilen bir fon bir süre için spekülatif olarak bu yatırımı bilinçli bir şekilde tercih edebilir ancak finansal olarak tercihi BTC fonu olacaktır.  Aynısı demek doğru olmaz ama kripto dünyasında da Thorchain(Rune) benzer bir işleyişe sahip. 
+YouTube: https://t.co/xA0oYA2ynR
+Apple: https://t.co/3gpeh9Mrqq
+Spotify: https://t.co/AhfIlZanXE
 
-Bitcoin&#x27;de 109K hedefine geldik sayılır, ara bir zirve gibi duruyor.</td></tr>
-<tr><td>@santmanukyan<br><small>2025-08-13 · SPX</small></td><td class=tweet>Gunaydin,
+TIMESTAMPS:
+0:00 - Intro
+0:23 – Bitcoin: what is going on?
+7:37 - Comparing past cycles &amp; long-term lounge mindset
+12:31 - Thinking though macro, liquidity, &amp; gold
+17:24 - How average investors should think about bitcoin
+29:44 - Thinking through volatility &amp; investing strategies
+35:57 - Will bitcoin be above or below $90K at end of the year?</td></tr>
+<tr><td>@laplace2011<br><small>2025-09-16 · GOLD</small></td><td class=tweet>🙏🙏🙏👍 Teneke diyenler şimdi Altın videosu çekip methiyeler düzüyor! Allah biraz izan versin! Edep versin, bigiye görgüye saygı versin!🙏😅</td></tr>
+<tr><td>@santmanukyan<br><small>2024-04-15 · GOLD</small></td><td class=tweet>Günaydın, altın/petrol/S&amp;amp;P. Şimdilik kitaba uygun, hatta fazlası ile uygun.... https://t.co/5OmVmtuATz</td></tr>
+<tr><td>@laplace2011<br><small>2025-10-25 · GOLD</small></td><td class=tweet>Dolar &amp;amp; Altın’da  Riskler Bitti Mi? https://t.co/0PDAoNzWGu @YouTube aracılığıyla
 
-Yeni kitap bu olsun. Piyasa yorumu yazmıyorsun diyenlere de Jesse Livermore ile cevap vermek isterim:Trend. Ve tam burada bir şey söyleyeyim: Wall Street&#x27;te uzun yıllar geçirdikten ve milyonlarca dolar kazanıp kaybettikten sonra size şunu söylemek istiyorum: Benim için büyük parayı kazandıran hiçbir zaman düşüncelerim olmadı. Her zaman sabrım oldu. Anladınız mı? Sabrım! Piyasada haklı çıkmak hiç de kolay değil. Boğa piyasalarında her zaman birçok erken boğa, ayı piyasalarında da erken ayı bulursunuz. Tam doğru zamanda haklı çıkan ve fiyatlar en büyük kârı göstermesi gereken seviyedeyken hisse senedi alıp satmaya başlayan birçok adam tanıdım. Ve deneyimleri her zaman benimkiyle örtüşüyordu; yani bundan gerçek bir para kazanamadılar. Hem haklı hem de sabırlı olabilen adamlar nadirdir. Bunu öğrenmesi en zor şeylerden biri olarak buldum. Bir borsacı ancak bunu tam olarak kavradıktan sonra büyük para kazanabilir. Bir yatırımcının, nasıl işlem yapılacağını öğrendikten sonra milyonlar kazanması, cahillik günlerindeki yüzlerce işlemden daha kolay olduğu gerçekten doğrudur. (çeviri Google, sittingi oturuş olarak çevirdiği için ben sabır olarak düzelttim)</td></tr>
-<tr><td>@laplace2011<br><small>2025-11-14 · BTC,SPX</small></td><td class=tweet>RT @undefined: @laplace2011 Hocam btc de dediginiz seviyeleri takip ettim 103k dan short actim iyi kâr aldim. amerikan borsasi ve kripto ucacak kacacak diyen ekonomistler simdi ozur videolari atiyor😂. Emeginize saglik🙏</td></tr>
-<tr><td>@laplace2011<br><small>2025-07-16 · GOLD</small></td><td class=tweet>Bu haber doğal olarak Altın’ı coşturdu!🙏🤑🧿</td></tr>
-<tr><td>@laplace2011<br><small>2025-09-10 · GOLD</small></td><td class=tweet>RT @undefined: @laplace2011 Devrim hocam ben sizi 2022 yılında  tanıdığımda de gram altın 1100 civarı gremse altın 17 bin civarındaydı o zamandan beri fiziki biriktiriyorum artık bir ev parası çıkana kadar bekleyeceğim iyiki tanımışım sizi  iyi güzel insan ,iyiki varsınız sayğılar..</td></tr>
+#dolar #altın #borsa #enflasyon #GRAMALTIN #gümüş #bist100</td></tr>
+<tr><td>@santmanukyan<br><small>2024-10-30 · GOLD</small></td><td class=tweet>Altın konusu ağırlıklı korku pornosuna dönüştürüldüğü için aklı başında tartışılamıyor. Ekteki grafikte burada değinmeyeceğim sorunlar ve hikayeler var ama tıpkı daha önce paylaştığım enfasyonla düzeltilmiş altın fiyatı gibi önemli bir grafik: Dow/altın. https://t.co/5VAYhjrZia</td></tr>
+<tr><td>@laplace2011<br><small>2025-09-13 · GOLD</small></td><td class=tweet>Veeee Dolar &amp;amp; Altın’da Karar Anı! https://t.co/qyAvzzhy82 @YouTube aracılığıyla
+
+#dolar #altın #borsa #enflasyon #GRAMALTIN #gümüş #bist100</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-21 · BTC,SPX</small></td><td class=tweet>😂🙏🧿 Kıbrıs Kampı Btc &amp;amp; Nasdaq shortlamak için mükemmel &amp;amp; eğlenceli olmuştu…</td></tr>
+<tr><td>@laplace2011<br><small>2025-07-27 · GOLD</small></td><td class=tweet>Altın’da Kritik Nokta! https://t.co/TEAh71Qu3k @YouTube aracılığıyla
+
+#altın #para #ekonomi #dolar #euro  #gümüş #borsa #devrimakyıl #eurusd #buğday #brent #petrol #platin #paladyum #natgas #Wheat #weat #rice #coffee #usdjpy $Xauusd $Xagusd $Xptusd $Xpdusd #staglasyon #enflasyon</td></tr>
+<tr><td>@santmanukyan<br><small>2024-06-17 · GOLD</small></td><td class=tweet>Gelişmekte olan ülkelerde dolar kuvvetlenmesi, nedeni carry veya başka bir şey olabilir, rezerv satışı gerektiriyor ve bu rezerv BRICS gazı ile alınan altın ise son dönmede gördüğümüz zayıflık çok şaşırtıcı olmamalı. X&#x27;te tatlı tatlı dolar çöküyor hikayeleri dinlerken para ABD&#x27;ye akıyor : https://t.co/JDF4ISUa6e</td></tr>
 <tr><td>@santmanukyan<br><small>2025-07-17 · BTC</small></td><td class=tweet>11 Temmuz notundan : &quot;Eth’nin ise 3000 doları zorlamaya başladığını görüyoruz. Circle’ın 46 bn dolar piyasa değeri olduğu göz önüne alınırsa defi ve stabilcoin alanında baskın (2.ekte) zincir olan ETH 355 bn dolarlık piyasa değerinin çok daha üzerine çıkabilir. Bu hareketin başlayıp başlamadığını bir kez daha ETH/BTC paritesinden anlayacağız. Çekirdek kriptocuların hoşuna gitmese de OFAC uyumlu Eth ana systemin içine alınan kriptolar arasında aslında daha avantajlı. 3. Ekte son durumu görebilirsiniz. Özetle ETH, SOL vb varlıklarda yaşanan rally alt coin mevsimi olarak değerlendirildiğinde hareketin farklı bir nedenle yaşandığını bilmemizde fayda var.&quot;
 
 Stabilcoinlerin regule edilmesi ile beraber BTC ile diğer kriptolar arasındaki ilişki değişiyor. BTC&#x27;nin portföylerde rolü ile diğerlerinin rolü çok daha farklı olacak.  İyi akşamlar.</td></tr>
-<tr><td>@santmanukyan<br><small>2024-02-15 · SPX</small></td><td class=tweet>Nasdaq Russell oranını 2000 hareketi ile karşılaştırarak balon tanımlamasını yapmak zaman faktörünü göz ardı etmek demek. Ancak bu grafik rotasyon açısından çok önemli bir grafik. https://t.co/aX8ggply3l</td></tr>
-<tr><td>@laplace2011<br><small>2025-08-30 · GOLD</small></td><td class=tweet>Dolar &amp;amp; Altın’da Eylül Sıkıntısı! https://t.co/iDBL1FZTkQ @YouTube aracılığıyla
+<tr><td>@laplace2011<br><small>2025-11-16 · GOLD</small></td><td class=tweet>Altın &amp;amp; Gümüş’te Dalgalarda Az Daha Surf! https://t.co/czTNuqVPiu @YouTube aracılığıyla
 
-#dolar #altın #borsa #enflasyon #GRAMALTIN #gümüş #bist100</td></tr>
-<tr><td>@santmanukyan<br><small>2024-02-22 · BTC</small></td><td class=tweet>Seri faiz artışları ECB bilançosunda kendisini net faiz gelirinden net faiz giderine ve zarara dönüşerek kendisini gösterdi. (Hayır ECB batıyor,bitcoin alın demedim :) https://t.co/FTmIKgM2h3</td></tr>
-<tr><td>@santmanukyan<br><small>2024-09-19 · SPX</small></td><td class=tweet>Sanırım artık ZH&#x27;in sitesinde Fed para bastığı/yaktığı için Altında&amp;S&amp;P&#x27;de bla bla oldu analizleri olmadığından sadece faiz kararı konuşuldu, QT konusu arada kaynıyor. Fed bilançosu gördüğünüz üzere Covid şoku sonrası (+sonrası) genişlemeyi geri vermiş durumda. Sarı çizgi ise rezervlerin seyri. 2019 krizi sonrası gerekli önlemler alınmış olsa da rezervlerde yeterli seviye Fed (ve piyasa) açısından hala kritik bir konu. Meraklıları için rezervlerin seviyesine yönelik Ağustos ayında yayınlanan 2 analiz paylaşıyorum https://t.co/LYchYPOcio  ve    https://t.co/qDyGtXpqom</td></tr>
-<tr><td>@apompliano<br><small>2025-11-19 · BTC</small></td><td class=tweet>From the Desk of Anthony Pompliano
+#altın #para #ekonomi #dolar #euro  #gümüş #borsa #devrimakyıl #eurusd #buğday #brent #petrol #platin  #natgas #Wheat #weat #rice $Xauusd $Xagusd $Xptusd #staglasyon #enflasyon</td></tr>
+<tr><td>@santmanukyan<br><small>2024-09-25 · BTC,GOLD</small></td><td class=tweet>Günaydın,
 
-0:00 Bitcoin Crashes Below $90k
-3:19 Investor Sentiment Is Tanking, Assets Are Following
-7:31 America Needs To Be The World’s Dominant Tech Power
+Bloomda çıkan haber aşağıda . Henüz uzakta olsak da BTC veya tokenize edilmiş bir varlığın geniş çapta teminata konu olması ve rahatca hareket ettirilebilmesi çok büyük bir adım olacaktır. Bitcoin dijital altın olabilir ancak altın rezervinizi piyasaya sokarak teminat olarak değerlendirebilirken (varsa) BTC rezervinizle bunu yapamıyorsunuz https://t.co/g0vfINOSHj &quot;Once certified, the gold could eventually be used as collateral to obtain financing, according to one of the people, who asked not to be identified discussing private information.&quot; 
 
-Enjoy! https://t.co/rF4jgtczT2</td></tr>
-<tr><td>@laplace2011<br><small>2025-11-20 · SPX</small></td><td class=tweet>Ponzinomics detaylandırılmış… #Nvidia #Nasdaq</td></tr>
-<tr><td>@laplace2011<br><small>2025-11-19 · BTC</small></td><td class=tweet>Bunu sabah kaçırmışım… Ne Hoş..😂 
+Tokenized money-market funds like the ones offered by BlackRock and Franklin Templeton are a bit of a novelty, designed to appeal to the diehard crypto user. In many cases, there’s not much more you can do with them than you can with a traditional one. That may soon be changing.
 
-#Eth Kurucusu Vitalik Butterin, Quantum Bilgisayarların 2028&#x27;e kadar #Ethereum &amp;amp; #Bitcoin’in kodunu çözebileceğini söylemiş!</td></tr>
-<tr><td>@laplace2011<br><small>2025-09-14 · GOLD</small></td><td class=tweet>Rekora Doymayanlar: Altın Gümüş Kardeşler! https://t.co/tEwnzF7kBB @YouTube aracılığıyla
+By the end of the year, a subcommittee of the CFTC’s Global Markets Advisory Committee — whose members include Citadel, BlackRock and even Bloomberg LP — intends to make recommendations to the full committee on how registered firms can use distributed ledger technology for holding and transferring non-cash collateral. These recommendations are likely to provide a legal and regulatory framework for how market participants can apply existing policies and procedures to support the use of blockchain for non-cash collateral in a manner consistent with the margin requirements of the agency, other US regulators and derivatives clearing organizations.&quot;</td></tr>
+<tr><td>@laplace2011<br><small>2025-07-15 · BTC</small></td><td class=tweet>#bitcoin Pazar sabahki yorumum şöyleydi, bir göz atıp güncel durumu değerlendirelim: https://t.co/xeshADYsov</td></tr>
+<tr><td>@santmanukyan<br><small>2024-03-26 · GOLD</small></td><td class=tweet>Altın yükselişinin jeopolitik olduğunu düşündüren işaretler artıyor. Reel faizle ilişkisi koptuğu gibi sadece gümüş değil altın madencileri de Altın hareketine eşlik edemiyor. Oysa spekülatif bir yükselişte hem gümüş hem madenciler önde koşmalı. https://t.co/ceqcqcgFP4</td></tr>
+<tr><td>@apompliano<br><small>2025-11-21 · BTC</small></td><td class=tweet>What if the bitcoin bull market is not actually over?
 
-#altın #para #ekonomi #dolar #euro  #gümüş #borsa #devrimakyıl #eurusd #buğday #brent #petrol #platin #natgas #Wheat #weat #corn #coffee #usdjpy $Xauusd $Xagusd $Xptusd  #staglasyon</td></tr>
-<tr><td>@santmanukyan<br><small>2024-08-15 · BTC</small></td><td class=tweet>Dün akşam açıklanan 13F&#x27;lere göre GS (ve MS ama onlar zaten GBTC tutuyorlardı) bitcoin etflerine pek soğuk değilmiş. Sayı daha fazla ben sadece ilk sayfayı paylaştım. Link isteyenler için https://t.co/QT6BaLJeUP https://t.co/q5SIo7e6UJ</td></tr>
-<tr><td>@santmanukyan<br><small>2024-01-02 · BTC</small></td><td class=tweet>Günaydın,
-SEC&#x27;nin Bitcoin ETF&#x27;ine yönelik kararını yarın veya Çarşamba günü ilgili şirketlere bildireceği haberi ile (ki hafta sonu vardı ) BTC 45K seviyesinde. Option piyasasına baktığımızda açık pozisyonların (Cuma büyük bir itfa vardı) yüksek (1) , kararın açıklanacağı tarihte put ve calların dengeli (2) gönüllerin ise 50K seviyesinde olduğunu görüyoruz (3) .</td></tr>
-<tr><td>@santmanukyan<br><small>2024-07-03 · BTC,GOLD</small></td><td class=tweet>Günaydın, son IMF verisine göre 1Ç sonunda USD ve Euro rezervler içinde payını korumuş, yuan biraz gerilemiş, Yen hafif artırmış. Dolardaki gerileme önce 1- sıfır faiz  ve büyüyen servet fonları nedeni ile getirisi daha yüksek para birimlerinde risk alma isteği  2- Sanırım paylaştığım NY Fed çalışmasında belirtildiği gibi bizim de içinde bulunduğumuz 5 ülkenin rezervlerinde yaşanan değişiklik kaynaklı. Ancak asıl çarpıcı gelişme, hesap yönteminize bağlı olarak, Altın&#x27;ın Euroyu geçerek 2. sıraya oturması veya 3. sırada 15% ile hemen arkasında bulunması. Burada da başta Çin olmak üzere az sayıda ülke ve bu kez 1. maddenin aksine yüksek alternatif getiriye rağmen  jeopolitika  etkili. İleride karşılaşabileceğimiz bir sorun ise BTC&#x27;de MtGox haberleri ile gördüğümüze (9 bn dolar çekirdek parası ama sert düşüşe neden oldu) benzer bir şekilde inelestikiyet nedeni ile satış gerektiğinde piyasada aşağı yönlü hareketin abartılması olacak.</td></tr>
-<tr><td>@laplace2011<br><small>2025-08-09 · GOLD</small></td><td class=tweet>Sahte Kurla Sahte Zenginlik! https://t.co/RZqpewfsVN @YouTube aracılığıyla
+Not saying we can avoid a bear market, but I always wonder if the opposite is true once the market reaches consensus on where we are headed.
 
-#dolar #altın #borsa #enflasyon #GRAMALTIN #gümüş #bist100</td></tr>
-<tr><td>@santmanukyan<br><small>2024-03-28 · BTC</small></td><td class=tweet>Gunaydin, SEC vs Coinbase davasinda mahkeme SEC&#x27;nin BTC haric alay menkul kiymet gorusune yakin bir goruste. Stake konusundaki gorus de SEC&#x27;ye yakin. Ama bu karar degil. https://t.co/OG1XH4Cg6L</td></tr>
-<tr><td>@laplace2011<br><small>2025-08-16 · GOLD</small></td><td class=tweet>Ekonomide Hayaller Alemi! https://t.co/BeBQuiwXQI @YouTube aracılığıyla
+Time will tell.</td></tr>
+<tr><td>@apompliano<br><small>2025-11-21 · BTC</small></td><td class=tweet>Retweet if you don&#x27;t care how low bitcoin&#x27;s price goes because you are holding forever.</td></tr>
+<tr><td>@laplace2011<br><small>2025-08-22 · GOLD</small></td><td class=tweet>#Altın candır gerisi heyecandır! https://t.co/f4QnNbmD2z</td></tr>
+<tr><td>@santmanukyan<br><small>2023-10-02 · GOLD</small></td><td class=tweet>Covid ile beraber altın fonlarına olan girişin tamamı geri verildi: https://t.co/zQsY0xFQRy</td></tr>
+<tr><td>@laplace2011<br><small>2025-09-11 · SPX</small></td><td class=tweet>Pair trade’in anası babası…!🤑🤣🧿 #baba  vs #nvidia #nasdaq https://t.co/vXSPgMhP5T</td></tr>
+<tr><td>@santmanukyan<br><small>2023-09-22 · GOLD</small></td><td class=tweet>Paladyumu biraz daha yakından mı takip etsek? Pall (1280) ve gümüş FOMC öncesi seviyesinin üzerinde, plat ve altın ise altında.</td></tr>
+<tr><td>@laplace2011<br><small>2025-11-09 · BTC,SPX</small></td><td class=tweet>Nasdaq’ta İlk Tokat Geldi! Devamı? https://t.co/5iRbJEvQZh @YouTube aracılığıyla
 
-#dolar #altın #borsa #enflasyon #GRAMALTIN #gümüş #bist100</td></tr>
-<tr><td>@santmanukyan<br><small>2025-03-17 · SPX</small></td><td class=tweet>Günaydın,
+Bitcoin #nasdaq #sp500 #borsa #dowjones #Nvidia #Meta #Microsoft #Apple #PSQ #Merck #Pfizer $pfe $nvda $Meta  $btc</td></tr>
+<tr><td>@santmanukyan<br><small>2025-04-15 · SPX</small></td><td class=tweet>Apple’ın CEO’su Tim Cook’un yıllar önce bir panelde söylediği “Çin’de olma nedenimiz sanıldığı gibi ucuz işçilik değil ekspertiz” babında açıklaması sosyal medyada tur dönüyor. Söylediği elbette çok doğru, zaten Çin’de ücretlerin düşük olmadığını herkes de biliyor. Ancak Cook gerçeğin tamamını söylemiyor. Gerçek , WSJ’den Greg Ip’nin dikkat çektiği gibi çok daha farklı. Cook 1998 yılında operasyonların başına geldiğinde Apple’ın ABD’deki fabrikalarını kapatıp Çin’e taşıdı. Yani Cook’un bahsettiği uzmanlık ABD’de vardı ancak Apple bunun yerine daha ucuz iş gücü olan bir bölgeye fabrika kurarak bu uzmanlığı da oraya taşımayı yeğledi ve Çinli iş gücünün kalitesini de yükseltti. Tıpkı diğer ABD şirketleri gibi. Bu nedenle aşağıda da paylaştığım üzere ticaret savaşları veya globalizasyon aslında bir sınıf savaşı. ABD’de orta sınıf daha yüksek karlar ve Wall Street için çökertilirken Çin’de düşük gelirli kesim fakirlikten kurtarıldı ancak yine de zenginleşmeden alması gereken payı alamadı. Sosyal medyada var olan “basit anlatıyorum” ilkesi “eksik anlatıyorum” ile kol kola gidiyor. Trump orta sınıfı düşünecek olan kurtarıcı mı elbette tartışılır ancak ortada bir sorun olduğu net. Buffet’ın tek cümlelik öz deyişlerini paylaşmak yerine felsefesi ve görüşlerini çalışmak daha faydalı olabilir. 2016 yılında ticaret açığına yönelik makalesini paylaşıyorum : https://t.co/uzYob0nlqH.</td></tr>
+<tr><td>@laplace2011<br><small>2025-08-01 · SPX</small></td><td class=tweet>ABD Borsaları için 5/10/15 yıllık döngüsel analizlerde Ağustos ortasından Eylül sonuna olan dönem yılın en zayıf dönemi!
+Sadece istatistik… 😜</td></tr>
+<tr><td>@apompliano<br><small>2025-11-24 · BTC</small></td><td class=tweet>From the Desk of Anthony Pompliano
 
-Grafik ABD&#x27;nin çevirmesi gereken borcun vadelerini gösteriyor. 2025 yılı 9 trilyon dolar ile doğrudan öne çıkıyor. Bir süredir (hisse piyasası için) artık Fed put yok ama (tahvil piyasası için) Bessent Put var söylemi buradan kaynaklanıyor. ABD endekslerin düşmesini göze alabilir ama getirilerin yükselmesini alamaz anlamına gelen bir söylem bu. Bu tabloya baktığımızda aslında yıllara yayılmış bir hikayenin özetini görüyoruz. Fed varlık alımlarına (QE) başladığında yapmaya çalıştığı piyasanın durasyonunu (https://t.co/lWS7Ki4ji3) düşürmek . Bunu yaptığında uzun vadeli tahvilleri alarak yerine para benzeri diyebileceğimiz getirisi çok daha düşük rezerv tipi varlıkları sisteme sokuyor. Böylece getirilerin düşmesini, yatırımcıların örneğin şirket tahvillerine , orada da getiriler çekiciliğini kaybettiğinde, hisselere gitmesine yani risk algısının/portföy yapılarının  değişmesine yardımcı oluyor. Zamanı geldiğinde ve bilançosunu küçülttüğünde ise (QE’de aktif olarak alıyordu burada satmak yerine sadece itfa ediyor) Hazine’nin yeni borçlanmalarını yeniden uzun vadeli yaparak durasyonun geri getirmesini bekliyor.
+0:00 The Federal Reserve Is In Crisis
+9:09 The Poverty Line Should Be At $130,000?
+14:18 Will Bitcoin’s Drawdown Get Worse?
 
-Bazı yorumcu ve yatırımcılar Fed’i (daha doğrusu Hazineyi) faizler sıfıra gerilediğinde uzun vadeli borçlanmamakla suçluyor. Oysa strateji zaten yukarıda bahsettiğim gibi durasyonu düşürmek, bu açıdan yapılan doğru. Ancak Hazine (Yellen) Covid sonrası dönemde de faizler enflasyon nedeni ile yükseldiği için kısa vadeli yani T-bill ağırlıklı borçlanmaya devam etti. Normal bir yılda borçlanma yapısı kabaca 20% kısa vadeli 80% uzun vadeli şeklinde olurken son yıllarda 80% civarında kısa vadeli olmaya başladı (bu nedenle piyasa Hazinenin çeyreklik borçlanma açıklamalarına çok hassas hale geldi) . Yellen faizler düşeceği için kısa vadeli roll ediyoruz diyerek Hazine’nin çıkarını gözettiğini iddia ederken Fed terste kaldı ve QT’ye rağmen durasyon istendiği gibi artmadı. Bu nedenle Miran ve benzerleri para politikasının Fed’de değil Hazinede olduğunu iddia ediyor.  Dikkat ederseniz QT sürecinde 2.5 tr dolara kadar yükselen ters repo penceresi bugün sadece 126 bn dolarda ama asıl azaltılması gereken banka rezervleri 2023’ten bu yana yatay. Fed QT’yi hemen sonlandırırsa hata yapmış olur.  Ve terste kalan Fed yükselttiği faizlerin ima ettiği kadar sıkı bir para politikası izleyemedi. Neticede enflasyonun geri dönüşü korkuları (hemen dönmeyecek) arttı.
-
-Bessent ve ekibi bu durumdan şikâyetçi ancak onlar da hemen müdahale edebilmiş değil. Mar-a-Lago spekülasyonunun bir bacağında , daha önce paylaşmıştım, işte bu var. Rezervlerde kalan tahvilleri 100 yıllık yeni tahvillerle swaplayarak hem piyasayı bozmadan durasyonu uzatmak hem de önceki adımlarla doları zayıf tutmak. Bessent put kavramı gerçek mi değil mi henüz test edilmedi. Yani getiriler yükselirse müdahale gelecek mi bilmiyoruz. Ancak öncelik kesinlikle tahvil getirilerini düşürmek. Trump geçtiğimiz hafta resesyondan bahsettiğinde bunun bilinçli bir söylem olduğu ve ekonomiyi yavaşlatarak getirileri düşürmek istediği speküle edildi. Almanya’nın açıkladığı paketin ardından Fransa ve İtalya tahvilleri de artık yükselişe hassas tahvil sınıfında. Ve gerçekten de merkez bankaları açısından da , varsa, önceliğin hisseden tahvillere geçtiğini söylemek hatalı olmaz. Hissede ise henüz bir ayı piyasasına girdiğimiz görüşünde değilim. Ancak elbette ayıları kendime yakın, stopumu ise daha yakın tutuyorum.</td></tr>
-<tr><td>@santmanukyan<br><small>2023-08-30 · BTC</small></td><td class=tweet>GBTC 17% primle günü kapattı ve alt panelde gördüğünüz üzere ıskonto oranı da sert geriledi. Karar bir ETF ihtimalini yükseltmiş olsa da SEC&#x27;ye fonu ETF&#x27;e cevir demiyor. Temelde 2 adet vadeli BTC üzerine kurulu ETP&#x27;ye onay verirken kullandığın argümanlarla spot ETF&#x27;e karşı kullandığın argümanlar tutarsız, rastgele ve fevri (hakikaten bu kelimelerle) diyor. Ve gerçekten de SEC bir regülasyon oluşturmak yerine tek tek saldırılarla ilerliyor. Bu karara 45 gün içinde itiraz edebilir veya bugünlerde göreceğimiz üzere ETF&#x27;i onaylar (erteler) veya farklı bir gerçekçe uydurup yine ret eder.</td></tr>
+Enjoy! https://t.co/bODc1RW9Ew</td></tr>
+<tr><td>@santmanukyan<br><small>2023-11-21 · SPX</small></td><td class=tweet>Gunaydin, Nasdaq-100 Temmuz tepesini asti (biliyorum 3-5 hisse ile yukseliyor, obo veya cift tepe var, ustad dedi ki buyuk cokus vs vs) . Bu arada OPEC uretimde daha derin bir kisintiya giderse petrol daha da dusecek. Ama Kasim ayinda yayinladiklari rapora gore hersey yolunda, talep kuvvetli indirime gerek yok zaten😊.</td></tr>
 </table></details>
 <details><summary>Sample of tweets the <b>prefilter dropped</b> (no asset keyword; 30 random) — check for missed asset mentions</summary><table>
-<tr><td>@santmanukyan<br><small>2023-10-06</small></td><td class=tweet>Günaydın, Fed bilançosu zirvesine oranla 1tr dolar daraldı ve 8tr doların hemen altına geriledi. Banka krizine yönelik kalemlerde büyük bir değişiklik yok. Iskonto penceresi sabit, BTFP 107.7 bn dolarda, FDIC satış yaptıkca Fed kredisini kapatıyor (-10bn dolar ile 64 bn dolarda) . ECB bilançosu ise 1.8tr euro daralarak 7 tr euro seviyesinde. Kolay kısmı yani banka kredileri halledildi (1. ek). Klasik anlamda QE yani tahvil alımları kaynaklı büyüklük ise henüz işin başında. Bu açıdan Fed çok daha fazla mesafe kaydetmiş durumda.</td></tr>
-<tr><td>@santmanukyan<br><small>2023-09-09</small></td><td class=tweet>G20 toplantıları genelde sıkıcıdır ama bu kez SA, BAE,Israil (bölgeden gelen barışma haberlerini boşa mı sandınız) ve Hindistan arasında ABD&#x27;nin önderliğinde yeni bir ticaret yolu oluşturulması haberi bekleniyor. Genişletilmiş bir &quot;Hicaz Demiryolu&quot; misali Hindistan&#x27;dan yüklenen malların İsrail ve Yunanistan limanları üzerinden Avrupa&#x27;ya daha hızlı gönderilmesi. Avrupa çıkışı Pakistan ve Çin tarafından büyük ölçüde kapalı Hindistan alternatif bir üretim merkezi olacaksa İpek Yoluna da bir alternatif gerek. Muhtelif haritalar dolaşıyor ki bu gerçek bir girişimse bizi de yakından ilgilendirir.</td></tr>
-<tr><td>@laplace2011<br><small>2026-02-23</small></td><td class=tweet>ABD Teknoloji hisselerinin sırası gelen çöküyor! Şimdi
-Sibergüvenlik hisseleri çakılıyor!</td></tr>
-<tr><td>@laplace2011<br><small>2025-09-25</small></td><td class=tweet>Canlı Yayın’da hareketli gündemi değerlendiriyoruz. Bekleriz!</td></tr>
-<tr><td>@santmanukyan<br><small>2024-06-04</small></td><td class=tweet>Carry kelimesini kullanıyorsan BOJ&#x27;u da takip edeceksin. https://t.co/9nE8TCJhBU</td></tr>
-<tr><td>@santmanukyan<br><small>2024-09-14</small></td><td class=tweet>Diğer yandan Ağustosta 5.1%&#x27;den 4.7%&#x27;ye gerilemesi beklenen end. üretim 4.5%&#x27;e gerilemiş. Ancak chip, endüstriyel  AI ve elektrikli araçlarda artış çift haneli. Yani Çin&#x27;in katma değeri yüksek sektörlere yüklenme stratejisine uygun bir veri . Yavaşlama Batı ile olan aşırı üretim gerginliği açısından da iyi haber diyebilirsiniz. Ama diyemiyorsunuz çünkü 2.7%&#x27;den 2.5%&#x27;e gerileyen perakende satışlar 2.1% olmuş. Ekteki tablo olması gereken ve olanı net bir şekilde gösteriyor. Çin büyümeye müdahale edecek adımlar atacak. Ancak sorunu çözecek adımlar atması çok zor.</td></tr>
-<tr><td>@santmanukyan<br><small>2023-11-10</small></td><td class=tweet>Bahsettiğiniz altını banka çalışanları aldı, ben banka çalışanı değilim. İmanızda da çok çirkin, bu nedenle doğrudan bloklandınız.</td></tr>
-<tr><td>@100trillionusd<br><small>2026-06-04</small></td><td class=tweet>✅ below 200w moving average (black line)
-🔳 below realized price (grey line $53k) ...</td></tr>
-<tr><td>@santmanukyan<br><small>2025-10-26</small></td><td class=tweet>Bir yandan Buzatti kitaplarini eritirken diger yandan da  Cin okumaya devam etmek gerekir dedim. https://t.co/2zOf86qMv3</td></tr>
-<tr><td>@laplace2011<br><small>2025-07-24</small></td><td class=tweet>Bu ÖTV artışının anlamı şu arkadaşlar: Ekonomi Yönetimi diyor ki 2 milyon₺ aşağısında eli yüzü düzgün araba alabileniniz kaldıysa size de çökerim! Orta sınıf diye bir şey benim bakanlığım döneminde olmaz, olamaz! %97’yi yoksullukta eşitleyene kadar durmak yok yola devam!</td></tr>
-<tr><td>@laplace2011<br><small>2026-09-14</small></td><td class=tweet>Batı Tech Şirketleri’nin   yalanlarını saklama hikayesi ‘güvenlik sebebiyle yavaşlama veya halka arzı erteleme’  geyiğiyle aylardır uyardığım kendi balonunu kendin patlat kampanyasına dönmüş! 
-Güzel Özet👇🏻z</td></tr>
-<tr><td>@laplace2011<br><small>2026-03-06</small></td><td class=tweet>Arkadaşlar #bist sert satışlarla gerilerken #SAHOL de %3+daha eridi bugün.Acelem yok ama bu tarihi iskontonun çok da uzun süreceğini sanmıyorum.Haftaya eklemeye devam edeceğim! 2026’da çok olumlu senaryoları göreceğimizi düşünüyrm.Kaldı ki enerji savaş zamanı da sığınma limandr👇🏻</td></tr>
-<tr><td>@laplace2011<br><small>2025-09-06</small></td><td class=tweet>🙏🙏🙏👍🧿</td></tr>
-<tr><td>@santmanukyan<br><small>2023-12-13</small></td><td class=tweet>Bu hafta ve sanirim bu yil icin son : https://t.co/XHWGNRFy8g</td></tr>
-<tr><td>@laplace2011<br><small>2025-07-11</small></td><td class=tweet>Ekonomide Deha statüsünde sayılabilecek Donald Trump, gümrük vergi oranlarını nasıl belirlediğini açıklıyor!👇🏻🙈😱😂</td></tr>
-<tr><td>@laplace2011<br><small>2026-06-02</small></td><td class=tweet>#kriptopara’cılar  güvendiğiniz dağlara… maalesef…</td></tr>
-<tr><td>@laplace2011<br><small>2025-11-17</small></td><td class=tweet>Umarım TUİK ölçmüyordur?</td></tr>
-<tr><td>@santmanukyan<br><small>2024-02-05</small></td><td class=tweet>Daha önce de paylaşmıştım, Çinli yatırımcılardaki rahatsızlığı gösteren en net örneklerden biri son zamanlarda varlık değerine oranla primli işlem gören Japonya etf&#x27;leri. Misal: https://t.co/JGxG9bcZCf</td></tr>
-<tr><td>@laplace2011<br><small>2026-03-09</small></td><td class=tweet>#bist100 tepki vermesi gereken bölgeden güzel toparladı!  Bu bölge güzel dip olacak gibi!👍🙏🧿 https://t.co/U3wXS1nFTS</td></tr>
-<tr><td>@apompliano<br><small>2025-11-17</small></td><td class=tweet>Good morning. Today is going to be a great day. Let’s get after it relentlessly.</td></tr>
-<tr><td>@laplace2011<br><small>2025-10-10</small></td><td class=tweet>Arkadaşlar #onsGümüş’e olan ilgimi, sevgimi ve dünya ekonomik sistemini uzun zamandır gümüş üzerinden anlatımımı bilmeyen yoktur pek😅🧿
-Geldik aylardır beklediğimiz kritik $51 direncine. Çok önemli bölge! Üzerinde çok uçuk gelişmeler olabilir. Bence eninde sonunda geçilecek ancak bir kerede geçilecek mi açıkçası bunu bilemem izleyip göreceğiz! 
-Ben fizikilerimi satmam hiçbir şekilde bu fiyattan ama ekran işlemi için buradan satılır mı alınır mı sorularına trend takip seviyelerimi takip edin ve vadenize göre her zaman kademeli işlem yapın derim!🙏🧿</td></tr>
-<tr><td>@laplace2011<br><small>2026-03-04</small></td><td class=tweet>🙏👍❤️🧿 #Sahol</td></tr>
-<tr><td>@santmanukyan<br><small>2024-11-26</small></td><td class=tweet>Dow yeni zirve kaydederken Russell zirvesinin 0.7 puan altında kapanış yaptı (ilk grafik) zira faiz ve vergi indirimlerine en hassas endeks. Ama benim takip ettiğim bir başka endeks var ; GS&#x27;nin kar etmeyen teknoloji endeksi. Bana sorarsanız ortamın nasıl olduğunu en iyi yansıtan endekslerin başında geliyor.</td></tr>
-<tr><td>@santmanukyan<br><small>2024-02-15</small></td><td class=tweet>Japonya büyüme verisinde bir kaç olumsuzluk var: 3Ç daralmasından sonra toparlanma bekleniyordu, daralma devam etmiş. 3Ç verisi negatif revize edilmiş. Hem hane halkında hem de şirketlerde zayıflık sürmüş. Nisan Kararı zor bir karar olacak. https://t.co/Fik12YTjHc</td></tr>
-<tr><td>@santmanukyan<br><small>2024-11-06</small></td><td class=tweet>Çok şükür Trump kazanınca Simsonlar bazlı derin analizlere maruz kalmadık :)) Bir de HRC kazanacak çünkü magazinin kapağına çıktı vardı... https://t.co/ao8bmHXD71</td></tr>
-<tr><td>@santmanukyan<br><small>2024-06-27</small></td><td class=tweet>Günaydın, Yen-Yuan ilişkisini daha önce tartışmıştık. Her ikisi birbirini besleyerek dolar karşısında zayıflıyor. Asya dolar endeksinin hali grafikteki gibi. MoF yarın açıklanacak PCE öncesi doğal olarak müdahale etmek istemiyor. Veri zayıf gelirse ne ala, Yen&#x27;e müdahale ihtimali artar. Yok Kanada ve Avustralya&#x27;da olduğu gibi yükseliş gösterirse müdahale bir işe yaramayacağı için rafa kalkar. Daha sert bir alternatif, nükleer opsiyon olarak erken bir BOJ faiz artırımı gündeme gelir ki o da her şeyi dalgalandırır. Ama tabii Lozan&#x27;ın gizli maddeleri misali sadece dayınızın askerlik arkadaşının kayınbiraderinin gördüğü ultrasüpergizli 50 yıllık petrodolar anlaşmasının bitişine falan güveniyorsanız sorun yok.</td></tr>
-<tr><td>@santmanukyan<br><small>2024-04-08</small></td><td class=tweet>Günaydın,
+<tr><td>@laplace2011<br><small>2026-01-27</small></td><td class=tweet>🙏🧿👍❤️</td></tr>
+<tr><td>@santmanukyan<br><small>2024-04-16</small></td><td class=tweet>JPY hareketi büyük ihtimalle MoF (BOJ) müdahalesi değil ama dikkat çekti. https://t.co/S4AbEQCRA4</td></tr>
+<tr><td>@laplace2011<br><small>2026-06-10</small></td><td class=tweet>Palyaço seçersen…</td></tr>
+<tr><td>@laplace2011<br><small>2025-06-25</small></td><td class=tweet>Trump Powell’a yine “Çok salaksın” dedi!😫🙈</td></tr>
+<tr><td>@apompliano<br><small>2025-11-14</small></td><td class=tweet>This has to be the most insane rationale behind an investment decision I have ever seen… https://t.co/ze7V15sHYh</td></tr>
+<tr><td>@laplace2011<br><small>2026-03-14</small></td><td class=tweet>Andersen veya La Fontaine bu Trump’la tanışsa mesleği bırakır oduncu filan olurlardı…
+Sabah kalk masal anlat, akşam başka masal…</td></tr>
+<tr><td>@laplace2011<br><small>2026-07-21</small></td><td class=tweet>Biraz erken bir deneme olmakla beraber uzun zaman sonra #onsaltın ‘da ilk kez düşen trendi kırdığımız öncü boğa sinyali aldık! Sağlıklı olması için $4100 üzeri gün kapanışları gerekli olsa da destek bölgesinden hareketle en kısa vade düşen üçgeni yukarı kırmamız olumlu!👍🙏🧿 https://t.co/EruxYGNTgi</td></tr>
+<tr><td>@santmanukyan<br><small>2023-10-31</small></td><td class=tweet>Makas 63 cente, WTI fiyatı 82.5 dolara geriledi. Petrolün hakkı çok daha düşük seviyeler (83 dolar önemli bir seviye), İran&#x27;ın işin içine girmesini bekliyorsanız durum farklı tabii (beklemediğimi daha önce de yazmıştım) . https://t.co/O7jeoOpRN6</td></tr>
+<tr><td>@laplace2011<br><small>2025-06-12</small></td><td class=tweet>Fed faizleri düşürünce tahvil fazileri otonatik düşüyor muymuş????
+😂😂😂  Faizi yapay enflasyon rakamlarıyla  ve dünyadaki finansörlerin tahvilini bu faizden dahi satarken düşürenlerin akıbetini tarih pek de hoş yazmayacaktır!</td></tr>
+<tr><td>@laplace2011<br><small>2026-06-24</small></td><td class=tweet>Uzun zaman sonra #Brent petrol alış yönlü işlem açtım bugün. Buralardan %5 yukarı atıp gün kapanışı yapabilirse poz eklerim! https://t.co/UjKN6WI5ep</td></tr>
+<tr><td>@laplace2011<br><small>2026-01-30</small></td><td class=tweet>#OnsAltın $900 düştü! $4682’den sekti! $ 25 şaşırdık🙏👍❤️😅 
+Bu fiyattan fizikimi isterim! Vereni bulursak!😂😂 https://t.co/b1Iyd9HaVN</td></tr>
+<tr><td>@santmanukyan<br><small>2025-10-29</small></td><td class=tweet>Cumhuriyet bayramimiz kutlu olsun. Uretim ve sosyal iliskilerin degistigi, finasal sistemin yeniden yapilandirildigi bir cagda bizden sonraki nesillerin bizi de sevgi ile anabilmesi icin daha cok calisacagiz. https://t.co/LbvMO515GM</td></tr>
+<tr><td>@apompliano<br><small>2025-11-11</small></td><td class=tweet>We saw @cfosilvia grow another 13% last week.
 
-Yen ve Yuan arasında bağın kuvvetlenmesinden daha önce bahsetmiştim. Asya tarafından önemli gelişmeler yaşanmaya devam ediyor. İlki Çin&#x27;e yönelik doğrudan yatırımların son 23 yılın en düşük seviyesine gerilemesi. İkinci nokta ise Yuan&#x27;da büyük bir kayıp olmasa da son 2 günde kurun 2%lik bandın tepesini test ediyor olması (2.ek beyaz fixing/mavi kurun bant içinde hareketi) . Kamu bankalarının sınırlı dolar satışında bulunduğunu okuyoruz. 3. ekte ise kaldıraçlı fonların JPY&#x27;de son yılların en büyük short pozisyonunu açarak 152&#x27;nin kırılmasını beklediğini görüyoruz.</td></tr>
-<tr><td>@santmanukyan<br><small>2023-09-04</small></td><td class=tweet>Sevenleri için; Japonya&#x27;da para tabanı bir yıl aradan sonra YoY büyümeye başladı. https://t.co/1XWagwea0P</td></tr>
-<tr><td>@laplace2011<br><small>2025-08-27</small></td><td class=tweet>Yeterince uyarı yapmıştım. Umarım faydalı olmuştur. Hayırlısı.., #bist30 🙏🧿 https://t.co/ddmlcKX3Np</td></tr>
-<tr><td>@laplace2011<br><small>2026-08-04</small></td><td class=tweet>#onsgümüş hsonu emtia yayınımda verdiğim kısa vade desteği $57.50 üzerinde kapanış yaptı. Bugün haftalıktaki $59.19 kritik direnci zorluyor! Üzerinde pozitif resim kuvvetlenir!🙏🧿 https://t.co/IRz2sXAZiU</td></tr>
+It is clear that people want to use AI to replace humans, especially when software is smarter, faster, and cheaper.
+
+Silvia is an automated CFO for your personal finances.
+
+Sign up for free here: https://t.co/587F3GzJzR</td></tr>
+<tr><td>@santmanukyan<br><small>2023-10-01</small></td><td class=tweet>Günaydın, ABD&#x27;de iki parti anlaştı ve bir kez daha, bir süre için, kamu hizmetlerinde aksama riski ortadan kalktı. Yani haftaya veriler açıklanacak. Harcamalarda belirgin bir kesinti de söz konusu değil (Ukrayna pakette yok ama önümüzdeki günler ayrı olarak görüşülecek). Cumhuriyetçiler pek istediklerini alabilmiş değiller, içerisi karışacaktır.</td></tr>
+<tr><td>@laplace2011<br><small>2025-06-13</small></td><td class=tweet>Canlı Yayındayız</td></tr>
+<tr><td>@laplace2011<br><small>2025-07-08</small></td><td class=tweet>Günün Özlü Sözü!👇🏻🤥🥕 
+Zırvalıkları daha soğuk kanlı söyleyebilen varsa beri gelsin!</td></tr>
+<tr><td>@laplace2011<br><small>2025-07-11</small></td><td class=tweet>Ekonomide Deha statüsünde sayılabilecek Donald Trump, gümrük vergi oranlarını nasıl belirlediğini açıklıyor!👇🏻🙈😱😂</td></tr>
+<tr><td>@apompliano<br><small>2025-11-14</small></td><td class=tweet>Volatility is essential for a portfolio to avoid death by debasement.</td></tr>
+<tr><td>@laplace2011<br><small>2025-06-20</small></td><td class=tweet>Günaydın! Para Poltika’ya Canlı Yayın’a  bekleriz!</td></tr>
+<tr><td>@laplace2011<br><small>2025-07-01</small></td><td class=tweet>#onsaltın hsonu yayınımla birebir paralellikte poztif iki gün geçridi! $3250 desteği çalıştı. $3300 kritik seviye üzerine attı $3,350’ler geldi bugün. Hala baz senaryom kısa vade Yeni yükseliş dalgasıın başlamış olması. Ancak teyit için hala $3370 üzeri günlük kapanşlar lazım🙏🧿</td></tr>
+<tr><td>@santmanukyan<br><small>2025-11-16</small></td><td class=tweet>Once bir kitap (bir yandan da Buzzati devam ediyor). Sonra gumruk vergilerinin enflasyonist olmadigina dair SF Fed&#x27;den bir calisma https://t.co/He8j7qYZGA ve son olarak Cin alimlarinin ( aslinda toplam rezerv de yanlis biliniyor) gorunenden cok daha yuksek oldugu iddiasi( ki iddia sayilmaz, gumruk ve SGE verilerinden bunu gorebiliyoruz zaten) : https://t.co/4FizpclK7J</td></tr>
+<tr><td>@laplace2011<br><small>2025-09-29</small></td><td class=tweet>Ekonomi Yönetimi’nin Mükemmel ‘Çalışan Programı’ sayesinde üretimin neredeyse her sektörü her aşamasında her şehriyle bitti Maşallah!</td></tr>
+<tr><td>@laplace2011<br><small>2025-06-19</small></td><td class=tweet>14:30’da Canlı Yayına sorularınızla bekleriz! 🙏</td></tr>
+<tr><td>@laplace2011<br><small>2026-04-20</small></td><td class=tweet>İyi Haftalar! 
+Haftaya Şöyle bir gazete manşetiyle başladık: https://t.co/CgxfQYVg1c</td></tr>
+<tr><td>@santmanukyan<br><small>2023-12-13</small></td><td class=tweet>Aslında bir süredir Fed&#x27;in piyasa üzerinde bir etkisi yok. Ama çoğunluk olduğunu sandığı için ve hayatımızda heyecana gerek olduğundan FOMC&#x27;yi takip ediyoruz. Özetle Fed (rengi sanırım) mor  olan çizgiyi (yani piyasa faiz beklentilerini) yukarı çekmek istiyor. https://t.co/Kq31FdCrOG</td></tr>
+<tr><td>@apompliano<br><small>2025-11-25</small></td><td class=tweet>https://t.co/3AIJN4G4Ek</td></tr>
+<tr><td>@santmanukyan<br><small>2023-11-28</small></td><td class=tweet>Günaydın,
+
+ABD ile uzlaşmanın hemen ardından Binance&#x27;nin Tornado Cash&#x27;i (konuyu bilmeyenler için https://t.co/ZFuflDzZMg ve  https://t.co/sybRa0UrfK.  ) kottan çıkartmasına sembolik bir anlam yükleyelim mi? https://t.co/V4UftXAWuA</td></tr>
+<tr><td>@laplace2011<br><small>2026-04-18</small></td><td class=tweet>İşin detayı şöyle anladığım kadarıyla👇🏻:</td></tr>
+<tr><td>@laplace2011<br><small>2025-05-20</small></td><td class=tweet>Japonya ve borç sarmalının içinden çıkılamaza evrilişi gün be gün hızlanıyordu…</td></tr>
+<tr><td>@laplace2011<br><small>2025-06-24</small></td><td class=tweet>#onsgümüş $35 haftalık trend takip seviyem!🙏👍</td></tr>
 </table></details>
 <details><summary>Price coverage</summary><table><tr><th>asset</th><th>from</th><th>to</th><th>rows</th><th>last close</th></tr>
 <tr><td>BTC</td><td>2020-01-01</td><td>2026-09-15</td><td class=num>2450</td><td class=num>75,898.48</td></tr>
