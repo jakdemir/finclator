@@ -115,25 +115,40 @@ def _page(title: str, body: str, active: str) -> str:
 
 
 def status(conn) -> dict:
-    f = _one(conn, """SELECT count(*) t, coalesce(sum(relevant),0) rel, coalesce(sum(relevant AND classified),0) cls,
+    model = active_model()
+    f = _one(conn, """SELECT count(*) t, coalesce(sum(relevant),0) rel,
                        coalesce(sum(is_reply),0) replies, coalesce(sum(text LIKE 'RT @%'),0) rts,
-                       (SELECT count(*) FROM calls) calls, (SELECT count(*) FROM outcomes) outs,
-                       (SELECT count(*) FROM trust WHERE asset='*' AND horizon='*') scored,
+                       (SELECT count(*) FROM classified_by b JOIN tweets x ON x.id=b.tweet_id WHERE b.model=? AND x.relevant=1) cls,
+                       (SELECT count(*) FROM calls WHERE model=?) calls,
+                       (SELECT count(*) FROM outcomes o JOIN calls c ON c.id=o.call_id WHERE c.model=?) outs,
+                       (SELECT count(*) FROM trust WHERE model=? AND asset='*' AND horizon='*') scored,
                        (SELECT count(*) FROM accounts) accounts,
                        (SELECT count(*) FROM accounts WHERE active) active,
-                       (SELECT count(DISTINCT handle) FROM tweets) fetched FROM tweets""")
+                       (SELECT count(DISTINCT handle) FROM tweets) fetched FROM tweets""", model, model, model, model)
+    # classification throughput for the active model over the last 10 minutes (classified_by.at is UTC)
+    recent = _one(conn, "SELECT count(*) n, min(at) a FROM classified_by WHERE model=? AND at >= datetime('now','-10 minutes')", model)
+    rate = None
+    if recent and recent["n"] >= 20:
+        span = (datetime.now(timezone.utc) - datetime.fromisoformat(recent["a"]).replace(tzinfo=timezone.utc)).total_seconds()
+        rate = recent["n"] / span * 60 if span > 30 else None
+    pending = f["rel"] - f["cls"]
     prices = {r["asset"]: dict(r) for r in _q(conn, "SELECT asset, min(date) a, max(date) b, count(*) n FROM prices GROUP BY asset")}
     matrix_p = ROOT / "data" / "matrix.json"
     matrix = json.loads(matrix_p.read_text()) if matrix_p.exists() else {}
     return {
         "time": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "model": model,
+        "models": [r[0] for r in _q(conn, "SELECT model FROM classified_by GROUP BY model")],
         "backfill_running": _proc_running("scripts/backfill.py"),
+        "classify_running": _proc_running("scripts/classify_run.py"),
         "run_running": _proc_running("src.run"),
-        "tweets": f["t"], "relevant": f["rel"], "classified": f["cls"], "pending_classification": f["rel"] - f["cls"],
+        "tweets": f["t"], "relevant": f["rel"], "classified": f["cls"], "pending_classification": pending,
+        "classify_rate_per_min": round(rate, 1) if rate else None,
+        "classify_eta_hours": round(pending / rate / 60, 2) if rate else None,
         "replies_in_db": f["replies"], "retweets_in_db": f["rts"],
         "calls": f["calls"], "outcomes": f["outs"], "accounts": f["accounts"], "accounts_active": f["active"],
         "accounts_fetched": f["fetched"], "accounts_scored": f["scored"],
-        "prices": prices, "matrix_generated_at": matrix.get("generated_at"),
+        "prices": prices, "matrix_generated_at": matrix.get("generated_at"), "matrix_model": matrix.get("model"),
         "matrix": {k: v.get("label") for k, v in matrix.get("cells", {}).items()},
     }
 
@@ -143,26 +158,33 @@ def page_progress(conn) -> str:
     e = html.escape
     pct = lambda a, b: (100 * a / b) if b else 0  # noqa: E731
     run_state = ("<span class=ok>running</span>" if s["backfill_running"] else "<span class=warn>idle</span>")
+    cls_state = ("<span class=ok>running</span>" if s["classify_running"] else "<span class=warn>idle</span>")
+    eta = (f"{s['classify_rate_per_min']:.0f}/min · ETA {s['classify_eta_hours']:.1f} h" if s["classify_rate_per_min"]
+           else ("no throughput in last 10 min" if s["pending_classification"] else "done"))
     cards = [
-        ("backfill", run_state, "scripts/backfill.py"),
+        ("backfill", run_state, "scripts/backfill.py (twitterapi.io fetch)"),
+        ("classifier", cls_state, f"{e(s['model'])}<br>{eta}"),
         ("accounts fetched", f"{s['accounts_fetched']} / {s['accounts']}", f"{s['accounts_active']} active"),
         ("tweets", f"{s['tweets']:,}", f"replies {s['replies_in_db']} · RTs {s['retweets_in_db']} (must be 0)"),
         ("asset-mentioning", f"{s['relevant']:,}", f"{pct(s['relevant'], s['tweets']):.0f}% of tweets"),
-        ("classified", f"{s['classified']:,}", f"<span class='{'warn' if s['pending_classification'] else 'ok'}'>{s['pending_classification']:,} pending</span>"),
+        ("classified by this model", f"{s['classified']:,}", f"<span class='{'warn' if s['pending_classification'] else 'ok'}'>{s['pending_classification']:,} pending</span>"),
         ("calls", f"{s['calls']:,}", f"{s['outcomes']:,} matured & evaluated"),
         ("accounts scored", f"{s['accounts_scored']}", "have ≥1 matured outcome"),
     ]
     cr = _credits()
     if cr is not None:
-        cards.append(("twitterapi.io", f"${cr:.2f}", f"≈ {int(cr * 100_000 / 15):,} tweets left"))
-    B = ["<h2>Pipeline</h2><div class=cards>"]
+        cards.append(("twitterapi.io", f"${cr:.2f}", f"$0.15 / 1K tweets + $0.15 / 1K requests → ≈ {int(cr / 0.15 * 1000):,} tweets if every request were full"))
+    B = [f"<h2>Pipeline <small>· active model {e(s['model'])} · models in DB: {e(', '.join(s['models']) or '—')}</small></h2><div class=cards>"]
     for t, v, sub in cards:
         B.append(f"<div class=card><small>{t}</small><b>{v}</b><small>{sub}</small></div>")
     B.append("</div>")
     B.append(f"<h2>Fetch coverage <small>({pct(s['accounts_fetched'], s['accounts']):.0f}%)</small></h2>"
              f"<div class=bar><i style='width:{pct(s['accounts_fetched'], s['accounts']):.1f}%'></i></div>")
-    B.append(f"<h2>Classification <small>({pct(s['classified'], s['relevant']):.0f}%)</small></h2>"
+    B.append(f"<h2>Classification by {e(s['model'])} <small>({pct(s['classified'], s['relevant']):.1f}% of asset-mentioning tweets · newest first)</small></h2>"
              f"<div class=bar><i style='width:{pct(s['classified'], s['relevant']):.1f}%'></i></div>")
+    cov = _one(conn, "SELECT min(x.created_at) a, max(x.created_at) b FROM classified_by y JOIN tweets x ON x.id=y.tweet_id WHERE y.model=?", s["model"])
+    if cov and cov["a"]:
+        B.append(f"<p><small>tweets labeled by this model span {cov['a'][:10]} → {cov['b'][:10]}; trust needs calls older than 90 d (SHORT) / 365 d (MEDIUM) / 730 d (LONG).</small></p>")
 
     B.append("<h2>Prices</h2><table><tr><th>asset</th><th>from</th><th>to</th><th>rows</th><th>last close</th><th>age</th></tr>")
     today = datetime.now(timezone.utc).date()
@@ -178,16 +200,17 @@ def page_progress(conn) -> str:
                  f"<td class=num>{last:,.2f}</td><td class={cls}>{age}d</td></tr>")
     B.append("</table>")
 
-    B.append("<h2>Per-account fetch</h2><table class=sortable><thead><tr><th>account</th><th>school</th><th>sampling</th>"
-             "<th>orig/yr</th><th>tweets</th><th>relevant</th><th>classified</th><th>calls</th><th>first</th><th>last</th></tr></thead><tbody>")
+    B.append("<h2>Per-account fetch <small>· classified / calls are for the active model</small></h2><table class=sortable><thead><tr><th>account</th><th>school</th><th>sampling</th>"
+             "<th title='measured originals per year at backfill (rate estimate)'>orig/yr</th><th title='original tweets stored'>tweets</th>"
+             "<th title='passed the asset-mention prefilter'>relevant</th><th title='labeled by the active model'>classified</th><th title='calls by the active model'>calls</th><th>first</th><th>last</th></tr></thead><tbody>")
     for r in _q(conn, """SELECT a.handle, a.school, a.sampling, a.rate_per_year, a.active,
                 (SELECT count(*) FROM tweets t WHERE t.handle=a.handle) n,
                 (SELECT coalesce(sum(relevant),0) FROM tweets t WHERE t.handle=a.handle) rel,
-                (SELECT coalesce(sum(relevant AND classified),0) FROM tweets t WHERE t.handle=a.handle) cls,
-                (SELECT count(*) FROM calls c WHERE c.handle=a.handle) calls,
+                (SELECT count(*) FROM classified_by b JOIN tweets t ON t.id=b.tweet_id WHERE t.handle=a.handle AND b.model=?) cls,
+                (SELECT count(*) FROM calls c WHERE c.handle=a.handle AND c.model=?) calls,
                 (SELECT min(created_at) FROM tweets t WHERE t.handle=a.handle) f,
                 (SELECT max(created_at) FROM tweets t WHERE t.handle=a.handle) l
-                FROM accounts a ORDER BY n DESC"""):
+                FROM accounts a ORDER BY n DESC""", s["model"], s["model"]):
         cls = "" if r["n"] else " class=warn"
         B.append(f"<tr><td{cls}>@{e(r['handle'])}{'' if r['active'] else ' <small>(inactive)</small>'}</td><td>{e(r['school'] or '')}</td>"
                  f"<td>{e(r['sampling'] or 'full')}</td><td class=num>{r['rate_per_year'] or ''}</td>"
@@ -244,27 +267,93 @@ def page_matrix(conn) -> str:
 
 
 def page_accounts(conn) -> str:
+    """One 3×3 trust grid per account (asset × horizon) — trust is cell-level, a flat table hides that."""
     e = html.escape
     model = active_model()
     trust = {(r["handle"], r["asset"], r["horizon"]): r for r in _q(conn, "SELECT * FROM trust WHERE model=?", model)}
+    # matured calls behind every cell, so the grid can be verified without leaving the page
+    cell_calls: dict[tuple[str, str, str], list] = {}
+    for r in _q(conn, """SELECT c.handle, c.asset, c.horizon, c.direction, c.tweet_id, c.called_at, c.quote, c.price_target,
+                                o.result, o.return_pct, o.target_hit
+                         FROM calls c JOIN outcomes o ON o.call_id=c.id WHERE c.model=? ORDER BY c.called_at DESC""", model):
+        cell_calls.setdefault((r["handle"], r["asset"], r["horizon"]), []).append(r)
+    n_calls = {r["handle"]: r["n"] for r in _q(conn, "SELECT handle, count(*) n FROM calls WHERE model=? GROUP BY handle", model)}
+    accounts = _q(conn, "SELECT handle, school FROM accounts")
+    HZ = ("SHORT", "MEDIUM", "LONG")
 
-    def tc(h, a, hz="*"):
+    def shade(s: float | None) -> str:
+        if s is None:
+            return "background:#1a1d24;color:#666"
+        t = max(0.0, min(1.0, (s - 0.3) / 0.4))  # 0.3 → red, 0.5 → neutral, 0.7 → green
+        r, g = int(120 * (1 - t) + 30), int(30 + 90 * t)
+        return f"background:rgb({r},{g},45)"
+
+    def cell(h, a, hz):
         r = trust.get((h, a, hz))
-        return f"<td class=num data-v={r['score'] if r else 0.5}>{r['score']:.2f}<small> n={r['n']}</small></td>" if r else "<td class=num data-v=0.5><small>–</small></td>"
+        if not r:
+            return f"<td style='{shade(None)}' title='no matured outcomes → 0.5 prior'>–</td>"
+        return (f"<td style='{shade(r['score'])}' title='n={r['n']} matured calls, hits={r['correct']:.1f} (CORRECT=1, PARTIAL=0.5, ±0.25 target)'>"
+                f"<b>{r['score']:.2f}</b><br><small>{r['correct']:.1f}/{r['n']}</small></td>")
 
-    B = [f"<h2>Trust scores <small>(shrunk toward 0.5; n = matured outcomes) · model {e(model)}</small></h2>",
-         "<table class=sortable><thead><tr><th>account</th><th>school</th><th>calls</th><th>n</th><th>hits</th><th>overall</th>",
-         "<th>BTC</th><th>GOLD</th><th>SPX</th><th>SHORT</th><th>MEDIUM</th><th>LONG</th></tr></thead><tbody>"]
-    for r in _q(conn, """SELECT a.handle, a.school, (SELECT count(*) FROM calls c WHERE c.handle=a.handle AND c.model=?) calls FROM accounts a""", model):
-        ov = trust.get((r["handle"], "*", "*"))
-        B.append(f"<tr><td><a href='https://x.com/{e(r['handle'])}' style='color:#9ecbff'>@{e(r['handle'])}</a></td><td>{e(r['school'] or '')}</td><td class=num>{r['calls']}</td>")
+    def margin(h, a, hz):  # asset-only / horizon-only aggregates in the margins
+        r = trust.get((h, a, hz))
+        return f"<td class=agg>{r['score']:.2f}<br><small>n={r['n']}</small></td>" if r else "<td class=agg>–</td>"
+
+    def calls_list(h):
+        rows = []
+        for a in ASSETS:
+            for hz in HZ:
+                for c in cell_calls.get((h, a, hz), []):
+                    tgt = f" · target {c['price_target']:,.0f} {'HIT' if c['target_hit'] else 'miss'}" if c["price_target"] else ""
+                    rows.append(f"<tr><td>{a} {hz}</td><td class={c['direction']}>{c['direction']}</td><td>{c['called_at'][:10]}</td>"
+                                f"<td class=num>{c['return_pct']:+.1f}%</td><td class={'ok' if c['result']=='CORRECT' else 'err' if c['result']=='WRONG' else 'warn'}>{c['result']}{tgt}</td>"
+                                f"<td><small>{e(c['quote'] or '')}</small></td>"
+                                f"<td><a href='https://x.com/{e(h)}/status/{c['tweet_id']}' style='color:#9ecbff'>↗</a></td></tr>")
+        if not rows:
+            return ""
+        return ("<details><summary><small>matured calls behind this grid</small></summary><table><thead><tr><th>cell</th><th>dir</th>"
+                "<th>called</th><th>return</th><th>result</th><th>quote</th><th></th></tr></thead><tbody>" + "".join(rows) + "</tbody></table></details>")
+
+    scored = [(a, trust.get((a["handle"], "*", "*"))) for a in accounts]
+    scored.sort(key=lambda x: (-(x[1]["n"] if x[1] else 0), x[0]["handle"]))
+
+    B = [f"<h2>Trust per account × asset × horizon <small>· model {e(model)}</small></h2>",
+         "<p><small>Each account's trust is a 3×3 grid, one score per (asset, horizon) — the matrix weights a call by the cell it lands in, "
+         "never by a single number. Cell = shrunk hit rate <b>(hits + 5) / (n + 10)</b> over matured calls (SHORT 90d, MEDIUM 365d, LONG 730d); "
+         "hits: CORRECT=1, PARTIAL=0.5, WRONG=0, ±0.25 when a stated price target hit/missed. Margins: per-asset and per-horizon aggregates; "
+         "corner: overall. Grey = no matured outcome → the 0.5 prior is used, and the matrix falls back specific → asset → overall → 0.5. "
+         "Colour: red ≤0.3 · neutral 0.5 · green ≥0.7.</small></p>",
+         "<style>.tg{display:inline-block;vertical-align:top;margin:0 18px 18px 0;background:#181b22;border:1px solid #2a2f3a;border-radius:8px;padding:10px 12px;min-width:330px}"
+         ".tg table{font-size:12px}.tg td,.tg th{text-align:center;width:66px;height:40px;padding:2px 4px}.tg th{background:#1d2129;cursor:default}"
+         ".tg td.agg{background:#22262f;color:#bbb}.tg .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}"
+         ".tg details{margin-top:6px}.tg details table{font-size:11px}.tg details td{text-align:left;width:auto;height:auto}</style>"]
+
+    B.append("<h3>Ranking <small>(overall = all cells pooled; sortable)</small></h3><table class=sortable><thead><tr><th>account</th><th>school</th>"
+             "<th title='calls by this model, matured or not'>calls</th><th title='matured calls'>n</th><th>hits</th><th>overall</th>"
+             "<th title='cells with ≥1 matured outcome, of 9'>cells</th></tr></thead><tbody>")
+    for a, ov in scored:
+        h = a["handle"]
+        cells = sum(1 for x in ASSETS for hz in HZ if (h, x, hz) in trust)
+        B.append(f"<tr><td><a href='#acc-{e(h)}' style='color:#9ecbff'>@{e(h)}</a></td><td>{e(a['school'] or '')}</td><td class=num>{n_calls.get(h, 0)}</td>")
         if ov:
             B.append(f"<td class=num>{ov['n']}</td><td class=num>{ov['correct']:.1f}</td><td class=num data-v={ov['score']}><b>{ov['score']:.3f}</b></td>")
         else:
-            B.append("<td class=num>0</td><td></td><td class=num data-v=0.5><small>0.500 prior</small></td>")
-        B.append(tc(r["handle"], "BTC") + tc(r["handle"], "GOLD") + tc(r["handle"], "SPX")
-                 + tc(r["handle"], "*", "SHORT") + tc(r["handle"], "*", "MEDIUM") + tc(r["handle"], "*", "LONG") + "</tr>")
+            B.append("<td class=num>0</td><td class=num>0</td><td class=num data-v=0.5><small>0.500 prior</small></td>")
+        B.append(f"<td class=num>{cells}/9</td></tr>")
     B.append("</tbody></table>")
+
+    B.append("<h3>Grids <small>(accounts with matured outcomes first)</small></h3><div>")
+    for a, ov in scored:
+        h = a["handle"]
+        ovs = f"overall <b>{ov['score']:.3f}</b> · n={ov['n']}" if ov else "<span style='color:#888'>no matured outcomes · prior 0.5</span>"
+        B.append(f"<div class=tg id='acc-{e(h)}'><div class=hd><a href='https://x.com/{e(h)}' style='color:#9ecbff'><b>@{e(h)}</b></a>"
+                 f"<small>{e(a['school'] or '')} · {n_calls.get(h, 0)} calls</small></div>"
+                 f"<table><thead><tr><th></th><th>SHORT<br><small>0–3m</small></th><th>MEDIUM<br><small>3–12m</small></th><th>LONG<br><small>1–5y</small></th><th class=agg>asset</th></tr></thead><tbody>")
+        for x in ASSETS:
+            B.append(f"<tr><th>{x}</th>" + "".join(cell(h, x, hz) for hz in HZ) + margin(h, x, "*") + "</tr>")
+        B.append("<tr><th class=agg>horizon</th>" + "".join(margin(h, "*", hz) for hz in HZ) + f"<td class=agg><small>{ovs}</small></td></tr>")
+        B.append("</tbody></table>" + calls_list(h) + "</div>")
+    B.append("</div>")
     return _page("accounts", "".join(B), "/accounts")
 
 

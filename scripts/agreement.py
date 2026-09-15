@@ -1,5 +1,6 @@
-"""Agreement test: re-classify the interactively-labeled backfill tweets with the configured model and compare.
-Usage: FINCLATOR_MODEL_BASE_URL=http://localhost:11434/v1 FINCLATOR_MODEL=qwen3:... PYTHONPATH=. .venv/bin/python scripts/agreement.py [N]
+"""Agreement test: re-classify frontier-labeled tweets with the configured model and compare.
+Usage: FINCLATOR_MODEL_BASE_URL=http://localhost:11434/v1 FINCLATOR_MODEL=qwen3:... PYTHONPATH=. .venv/bin/python scripts/agreement.py [N] [gold.jsonl]
+Default gold = data/labels_backfill.jsonl (the prompt-tuning set); pass data/labels_holdout.jsonl for the out-of-sample check.
 """
 import json
 import sys
@@ -10,8 +11,9 @@ from src.classify import make_classifier
 from src.db import connect
 
 limit = int(sys.argv[1]) if len(sys.argv) > 1 else 10**9
+gold_path = sys.argv[2] if len(sys.argv) > 2 else "data/labels_backfill.jsonl"
 gold = {}
-for line in open("data/labels_backfill.jsonl"):
+for line in open(gold_path):
     r = json.loads(line)
     gold[r["id"]] = r
 conn = connect()
@@ -25,9 +27,12 @@ c = Counter()
 per_asset_dir = Counter()
 horizon = Counter()
 disagreements = []
+out = open("data/agreement_preds.jsonl", "w")  # every prediction next to gold, for offline prompt-tuning
 for i, t in enumerate(rows, 1):
     g = gold[t["id"]]
     p = run(t)
+    out.write(json.dumps({"id": t["id"], "text": t["text"], "assets_hint": t["assets_hint"], "gold": g, "pred": p},
+                         ensure_ascii=False) + "\n")
     c["n"] += 1
     c["is_call_agree"] += int(bool(p.get("is_call")) == bool(g["is_call"]))
     gcalls = {x["asset"]: x for x in g.get("calls", [])}

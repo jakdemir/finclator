@@ -3,7 +3,8 @@
 score = (hits + PRIOR_N * 0.5) / (n + PRIOR_N), hits = CORRECT + 0.5*PARTIAL, then ±TARGET_BONUS if the
 call carried an explicit price target that was hit / missed (a stated level is a stronger, more falsifiable claim).
 With PRIOR_N=10, one lucky call moves you from 0.50 to 0.545, not to 1.0.
-Computed per (model, handle, asset, horizon), per (model, handle, asset, *), and (model, handle, *, *).
+Computed per (model, handle, asset, horizon), plus margins (handle, asset, *), (handle, *, horizon) and (handle, *, *).
+The matrix falls back specific → asset → overall (never horizon-only; that margin is for display).
 
 Point-in-time: `as_of` restricts to outcomes whose exit_date <= as_of, so historical matrices have no lookahead.
 """
@@ -42,7 +43,8 @@ def compute(conn: sqlite3.Connection, model: str, as_of: date | None = None) -> 
     agg: dict[tuple[str, str, str], list[float]] = {}
     for r in conn.execute(q, args):
         h = _hit(r["result"], r["target_hit"])
-        for key in ((r["handle"], r["asset"], r["horizon"]), (r["handle"], r["asset"], "*"), (r["handle"], "*", "*")):
+        for key in ((r["handle"], r["asset"], r["horizon"]), (r["handle"], r["asset"], "*"),
+                    (r["handle"], "*", r["horizon"]), (r["handle"], "*", "*")):
             agg.setdefault(key, []).append(h)
     return {k: (len(v), sum(v), _score(len(v), sum(v))) for k, v in agg.items()}
 

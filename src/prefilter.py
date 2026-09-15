@@ -23,7 +23,7 @@ def _alt(*terms: str) -> str:
 _ASSET_PATTERNS = {
     "BTC": re.compile(
         _B0 + "(" + _alt(
-            r"btc", r"bitcoin\w*", r"bitcoi̇n\w*", r"xbt", r"sats?", r"satoshi",
+            r"btc", r"bitcoin\w*", r"bitcoi̇n\w*", r"xbt", r"sats", r"satoshi",  # bare "sat" = Turkish "sell"
             # TR: kripto / koin (crypto in general → BTC proxy), bitcoin'in etc. covered by \w*
             r"kripto\w*", r"koin\w*", r"coin\w*",
         ) + ")" + _B1, re.IGNORECASE),
