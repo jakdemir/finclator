@@ -65,6 +65,32 @@ def _proc_running(pattern: str) -> bool:
     return bool(out.strip())
 
 
+_credits_cache: dict = {"t": 0.0, "v": None}
+
+
+def _credits() -> float | None:
+    """twitterapi.io balance in USD, cached 5 min (1 USD = 100,000 credits)."""
+    import os
+    import time
+    import urllib.request
+    if time.time() - _credits_cache["t"] < 300:
+        return _credits_cache["v"]
+    key = os.environ.get("TWITTERAPI_IO_KEY")
+    if not key and (ROOT / ".env").exists():
+        key = next((ln.split("=", 1)[1].strip() for ln in (ROOT / ".env").read_text().splitlines()
+                    if ln.startswith("TWITTERAPI_IO_KEY=")), None)
+    v = None
+    if key:
+        try:
+            req = urllib.request.Request("https://api.twitterapi.io/oapi/my/info", headers={"X-API-Key": key})
+            info = json.load(urllib.request.urlopen(req, timeout=10))
+            v = (info.get("recharge_credits", 0) + info.get("bonus_credits", 0)) / 100_000
+        except Exception:  # noqa: BLE001
+            v = None
+    _credits_cache.update(t=time.time(), v=v)
+    return v
+
+
 def _log_tail(n=200) -> str:
     """Tail of data/pipeline.log; the legacy backfill.log (no timestamps) is shown until it disappears."""
     out = []
@@ -125,6 +151,9 @@ def page_progress(conn) -> str:
         ("calls", f"{s['calls']:,}", f"{s['outcomes']:,} matured & evaluated"),
         ("accounts scored", f"{s['accounts_scored']}", "have ≥1 matured outcome"),
     ]
+    cr = _credits()
+    if cr is not None:
+        cards.append(("twitterapi.io", f"${cr:.2f}", f"≈ {int(cr * 100_000 / 15):,} tweets left"))
     B = ["<h2>Pipeline</h2><div class=cards>"]
     for t, v, sub in cards:
         B.append(f"<div class=card><small>{t}</small><b>{v}</b><small>{sub}</small></div>")
