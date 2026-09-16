@@ -102,3 +102,4 @@ dmypy.json
 .ruff_cache/
 
 .env.keys
+data/*.out
