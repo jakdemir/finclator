@@ -48,9 +48,10 @@ def build(conn: sqlite3.Connection, today: date | None = None, write: bool = Tru
             window = MATURITY_DAYS[horizon]
             half_life = window / 3
             since = (today - timedelta(days=window)).isoformat()
+            until = (today + timedelta(days=1)).isoformat()  # point-in-time: no calls from after `today` (Pine history)
             rows = conn.execute("""SELECT handle, direction, confidence, called_at, quote, tweet_id FROM calls
-                                   WHERE model=? AND asset=? AND horizon=? AND called_at>=? ORDER BY called_at DESC""",
-                                (model, asset, horizon, since)).fetchall()
+                                   WHERE model=? AND asset=? AND horizon=? AND called_at>=? AND called_at<? ORDER BY called_at DESC""",
+                                (model, asset, horizon, since, until)).fetchall()
             # latest call per account dominates; older ones from the same account decay
             per_school: dict[str, dict] = {}
             contributors = []
