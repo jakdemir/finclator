@@ -3,8 +3,8 @@
 @font-face{font-family:"JetBrains Mono";src:url(/fonts/JetBrainsMono-Medium.woff2) format("woff2");font-weight:500;font-display:swap}
 
 :root{
-  --paper:#f5f2ec;--paper-2:#ede9e1;--ink:#171512;--ink-2:#4a463f;--ink-3:#7d786f;--line:#d9d4ca;--line-2:#c6c0b4;
-  --buy:#1f6f43;--buy-bg:#dcecdf;--sell:#a8352c;--sell-bg:#f1dcd8;--flat:#6d6860;--flat-bg:#e6e2da;
+  --paper:#f5f2ec;--paper-2:#ede9e1;--ink:#171512;--ink-2:#4a463f;--ink-3:#6b665d;--line:#d9d4ca;--line-2:#c6c0b4;
+  --buy:#1f6f43;--buy-bg:#dcecdf;--sell:#a8352c;--sell-bg:#f1dcd8;--flat:#5c5750;--flat-bg:#e6e2da;
   --accent:#2f4c9c;--accent-ink:#22397a;
   --sans:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   --measure:64ch;
