@@ -12,9 +12,8 @@ Surfaces: **finclator.com** (public landing + method page, gated admin panel), `
   67 accounts scored). Frontier labels (`claude-fable-5.1/interactive`, 297 + 120 holdout) coexist as a second model.
 - **Database is Postgres (Neon, Vercel team Protocogni Labs)** via `DATABASE_URL` in `.env`; `data/finclator.db` is an
   untracked cold backup of the pre-migration state. `db.connect()` falls back to SQLite only when `DATABASE_URL` is unset.
-- Site live at finclator.vercel.app; `finclator.com` attached but **DNS at Cloudflare not yet set** (A 76.76.21.21,
-  CNAME www → cname.vercel-dns.com, grey cloud). Resend key set (`admin@finclator.com`); domain verification in Resend
-  depends on the same Cloudflare records.
+- Site live at **https://finclator.com** (DNS at Cloudflare, cert issued, www → apex). Resend mail from
+  `admin@finclator.com` verified end-to-end (sign-in links deliver). No open infra items.
 
 ## Dev environment
 - Python ≥3.11 (venv is 3.14 at `.venv`); `.venv/bin/pip install -e ".[dev]"` (or `scripts/bootstrap.sh`, which also
