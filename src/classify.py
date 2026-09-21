@@ -14,10 +14,11 @@ import os
 import sqlite3
 from pathlib import Path
 
+from . import models
 from .db import connect, log
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL = os.environ.get("FINCLATOR_MODEL", "claude-sonnet-4-5")
+MODEL = models.classifier_model()
 DIRECTIONS = ("BUY", "SELL", "NEUTRAL")
 HORIZONS = ("SHORT", "MEDIUM", "LONG")  # same three keys as evaluate.MATURITY_DAYS
 
@@ -38,7 +39,9 @@ NOT a call (is_call=false):
   adopting it. Only the author's own stance counts.
 - Sentiment/positioning/indicator observations (fear & greed, ETF flows, volume, open interest, gold/silver
   ratio) with no explicit price prediction attached.
-- Macro/news commentary, explanations of why a move happened, tautologies ("going down because more sellers").
+- Macro/news commentary, explanations of why a move happened, tautologies ("going down because more sellers"),
+  and commentary about OTHER people's forecasts or mood ("çöküş geliyor timi", "the bears are loud") — that is
+  a stance on the crowd, not on the price.
 - Sarcasm or irony you cannot resolve.
 - A bare caption for an image/chart with no words of opinion: "Bitcoin https://…", "Current Bitcoin Chart",
   "We are here (orange circle), we will be there (green circle)" — the claim lives in an image you cannot see.
@@ -60,7 +63,10 @@ IS a call even when idiomatic — read the author's stance, not the vocabulary:
   BUY; "yol uzun" (long way to go) → BUY; "bir dönem kapandı" (an era is over) → SELL; "köprü korkuluklarına
   yanaşmaca" (heading for the bridge railing) → SELL; "kaygıya gerek yok, henüz zirve yapmadı" → BUY.
 - "Bears will never win", "anyone bearish doesn't understand", "daha yüksek seviyeler görülecek" → BUY.
-- The author's stance may sit inside a video title or hashtag list; that still counts.
+- The author's stance may sit inside a video title or hashtag list; that still counts — but only when the title
+  itself names the asset and a direction ("Altın Pat-la-ya-cak!"). A mood-only title with an asset hashtag list
+  ("Sıkıntı Derinleşiyor!", "Kasırga Çok Yakın!", "Eylül Sıcaktı, Ekim Ateşşş!" + #altın #dolar #borsa) is NOT
+  a call: which asset, which way is unknowable from the text.
 
 Direction rules:
 - Two-sided level conditionals ("above X positive, below X negative", "üzeri pozitif aşağısı negatifim",
@@ -155,7 +161,7 @@ def store_result(conn: sqlite3.Connection, tweet: sqlite3.Row | dict, result: di
 
 # ---------- API mode ----------
 
-BASE_URL = os.environ.get("FINCLATOR_MODEL_BASE_URL")  # e.g. http://localhost:11434/v1 → OpenAI-compatible (Ollama)
+BASE_URL = models.classifier_base_url()  # Ollama by default; None → Anthropic (claude-* models)
 NUM_CTX = int(os.environ.get("FINCLATOR_NUM_CTX", "6144"))      # Ollama context per slot (default 262K → 32 GB KV). Keep ONE
 # value for every request: a different num_ctx reloads the model and drops the prefix cache (2 s vs 0.15 s prefill).
 WORKERS = int(os.environ.get("FINCLATOR_WORKERS", "1"))         # match OLLAMA_NUM_PARALLEL for the local path
@@ -191,7 +197,7 @@ def _ollama_chat(user: str, num_predict: int, num_ctx: int | None = None, json_m
 
     url = BASE_URL.split("/v1")[0].rstrip("/") + "/api/chat"
     body = {
-        "model": MODEL, "stream": False, "keep_alive": "1h",
+        "model": MODEL, "stream": False, "keep_alive": "1h", "think": False,  # Qwen3.5+/3.6 ignore the /no_think tag
         "options": {"temperature": 0, "num_ctx": num_ctx or NUM_CTX, "num_predict": num_predict},
         "messages": [{"role": "system", "content": SYSTEM + (TERSE_SUFFIX if TERSE else "") + "\n/no_think"},
                      {"role": "user", "content": user}],

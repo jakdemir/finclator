@@ -5,7 +5,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 
 os.environ.setdefault("FINCLATOR_MODEL_BASE_URL", "http://localhost:11434/v1")
-os.environ.setdefault("FINCLATOR_MODEL", "qwen3:30b-a3b-instruct-2507-q4_K_M")
+os.environ.setdefault("FINCLATOR_MODEL", "qwen3.6-local:35b-a3b-q4_K_M")
 from src.classify import make_classifier, pending
 from src.db import connect
 

@@ -37,10 +37,10 @@ CREATE TABLE IF NOT EXISTS accounts (
     school        TEXT NOT NULL,
     language      TEXT NOT NULL DEFAULT 'en',
     active        INTEGER NOT NULL DEFAULT 1,
-    last_tweet_id TEXT,                       -- watermark for incremental fetch
+    last_tweet_id TEXT,                       -- legacy since_id watermark (unused; see last_fetch_at)
     followers     INTEGER,
     rate_per_year INTEGER,                    -- measured originals/yr at backfill
-    sampling      TEXT,                       -- NULL = full timeline; e.g. 'days1-3/month'
+    sampling      TEXT,                       -- NULL = full timeline; 'keyword' = asset keywords in the search query
     updated_at    TEXT
 );
 
@@ -126,6 +126,7 @@ CONFLICT_KEYS = {
     "trust": ("model", "handle", "asset", "horizon"),
 }
 MIGRATIONS = (("accounts", "rate_per_year", "INTEGER"), ("accounts", "sampling", "TEXT"), ("accounts", "tier", "TEXT"),
+              ("accounts", "last_fetch_at", "TEXT"),
               ("calls", "price_target", "REAL"), ("outcomes", "target_hit", "INTEGER"), ("outcomes", "extreme", "REAL"))
 
 

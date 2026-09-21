@@ -1,7 +1,6 @@
 """Long-running, resumable classification of the pending backlog with the local model.
 
-Usage (from repo root):
-  FINCLATOR_MODEL_BASE_URL=http://localhost:11434/v1 FINCLATOR_MODEL=qwen3:30b-a3b-instruct-2507-q4_K_M \
+Usage (from repo root; model/endpoint default to src.models.DEFAULT_MODEL on local Ollama):
   FINCLATOR_WORKERS=8 PYTHONPATH=. nohup .venv/bin/python scripts/classify_run.py > /dev/null 2>&1 &
 
 Persistence: every labeled tweet is written to `classified_by` (+ `calls`) and committed every 50 tweets inside

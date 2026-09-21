@@ -15,12 +15,23 @@ import re
 import sys
 import time
 from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 
-from src.fetch import _client, _get, _keep, _rate_per_year
+from src.fetch import _client, _get, _keep
 from src.prefilter import detect_assets
 
 OUT = Path("data/candidates.csv")
+
+
+def _rate_per_year(tweets: list[dict]) -> float:
+    """Extrapolate originals/year from the span of a probe page (was fetch._rate_per_year; only used here)."""
+    if len(tweets) < 2:
+        return 0.0
+    a = parsedate_to_datetime(tweets[0]["createdAt"])
+    b = parsedate_to_datetime(tweets[-1]["createdAt"])
+    days = max(1.0, abs((a - b).total_seconds()) / 86400)
+    return len(tweets) / days * 365
 
 # (handle, school guess, lang)
 SEED = [

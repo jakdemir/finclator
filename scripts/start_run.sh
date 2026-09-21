@@ -4,7 +4,7 @@
 set -e
 cd "$(dirname "$0")/.."
 ROOT=$(pwd)
-MODEL=qwen3:30b-a3b-instruct-2507-q4_K_M
+MODEL=${FINCLATOR_MODEL:-qwen3.6-local:35b-a3b-q4_K_M}
 DOM="gui/$(id -u)"
 mkdir -p data
 

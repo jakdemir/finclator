@@ -203,8 +203,8 @@ def page_progress(conn) -> str:
 
     B.append("<h2>Per-account fetch <small>· classified / calls are for the active model</small></h2><table class=sortable><thead><tr><th>account</th><th>school</th><th>sampling</th>"
              "<th title='measured originals per year at backfill (rate estimate)'>orig/yr</th><th title='original tweets stored'>tweets</th>"
-             "<th title='passed the asset-mention prefilter'>relevant</th><th title='labeled by the active model'>classified</th><th title='calls by the active model'>calls</th><th>first</th><th>last</th></tr></thead><tbody>")
-    for r in _q(conn, """SELECT a.handle, a.school, a.sampling, a.rate_per_year, a.active,
+             "<th title='passed the asset-mention prefilter'>relevant</th><th title='labeled by the active model'>classified</th><th title='calls by the active model'>calls</th><th>first</th><th>last</th><th title='fetch watermark: the next run searches from here (minus a 6 h overlap)'>fetched</th></tr></thead><tbody>")
+    for r in _q(conn, """SELECT a.handle, a.school, a.sampling, a.rate_per_year, a.active, a.last_fetch_at,
                 (SELECT count(*) FROM tweets t WHERE t.handle=a.handle) n,
                 (SELECT coalesce(sum(relevant),0) FROM tweets t WHERE t.handle=a.handle) rel,
                 (SELECT count(*) FROM classified_by b JOIN tweets t ON t.id=b.tweet_id WHERE t.handle=a.handle AND b.model=?) cls,
@@ -216,7 +216,7 @@ def page_progress(conn) -> str:
         B.append(f"<tr><td{cls}>@{e(r['handle'])}{'' if r['active'] else ' <small>(inactive)</small>'}</td><td>{e(r['school'] or '')}</td>"
                  f"<td>{e(r['sampling'] or 'full')}</td><td class=num>{r['rate_per_year'] or ''}</td>"
                  f"<td class=num>{r['n']}</td><td class=num>{r['rel']}</td><td class=num>{r['cls']}</td><td class=num>{r['calls']}</td>"
-                 f"<td>{(r['f'] or '')[:10]}</td><td>{(r['l'] or '')[:10]}</td></tr>")
+                 f"<td>{(r['f'] or '')[:10]}</td><td>{(r['l'] or '')[:10]}</td><td>{(r['last_fetch_at'] or '')[:16].replace('T', ' ')}</td></tr>")
     B.append("</tbody></table>")
 
     B.append("<h2>pipeline.log <small>(live, last 200 lines, UTC) · <label><input type=checkbox id=follow checked> follow</label></small></h2>"
@@ -368,7 +368,7 @@ def page_architecture(conn) -> str:
     pct = lambda a, b: f"{100 * a / b:.0f}%" if b else "–"  # noqa: E731
     B = ["<h2>Data flow</h2><pre class=mono>"
          f"""twitterapi.io ──► fetch.py ──────────► tweets            {f['t']:>8,}  originals only (replies / RTs rejected at insert)
-                    {f['acc']} accounts, 3y   │                       full timeline ≤1,000 orig/yr, else days 1–3 of each month
+                    {f['acc']} accounts, 3y   │                       search since watermark; >1,000 orig/yr → asset keywords in query
                                     ▼
                      prefilter.py  regex, free ──► relevant=1    {f['rel']:>8,}  ({pct(f['rel'], f['t'])})  "mentions BTC / GOLD / SPX at all?"
                                     ▼
@@ -426,12 +426,12 @@ def page_architecture(conn) -> str:
     B.append("<h2>Files</h2><table><tr><th>file</th><th>role</th></tr>"
              "<tr><td class=mono>roster.yaml</td><td>accounts, school, language</td></tr>"
              "<tr><td class=mono>src/db.py</td><td>SQLite schema (accounts, tweets, calls, outcomes, prices, trust), log()</td></tr>"
-             "<tr><td class=mono>src/fetch.py</td><td>twitterapi.io: since_id incremental, 3y backfill, monthly sampling windows</td></tr>"
+             "<tr><td class=mono>src/fetch.py</td><td>twitterapi.io: advanced_search with exact since_time windows per account (last_fetch_at watermark), asset keywords in the query for heavy posters, credit floor</td></tr>"
              "<tr><td class=mono>src/prefilter.py</td><td>stage 1</td></tr><tr><td class=mono>src/classify.py</td><td>stage 2</td></tr>"
              "<tr><td class=mono>src/prices.py · evaluate.py · score.py · matrix.py</td><td>outcomes → trust → 3×3</td></tr>"
              "<tr><td class=mono>src/audit.py · admin.py · pine.py</td><td>verification page, this site, TradingView script</td></tr>"
-             "<tr><td class=mono>src/run.py</td><td>weekly: fetch → classify → prices → evaluate → score → matrix → audit → pine</td></tr>"
-             "<tr><td class=mono>scripts/backfill.py</td><td>parallel 3y backfill (8 workers)</td></tr></table>")
+             "<tr><td class=mono>src/run.py</td><td>daily: fetch → classify → prices → evaluate → score → matrix → audit → pine → site</td></tr>"
+             "<tr><td class=mono>scripts/backfill.py</td><td>parallel fetch of every account from its watermark (8 workers)</td></tr></table>")
     return _page("architecture", "".join(B), "/architecture")
 
 

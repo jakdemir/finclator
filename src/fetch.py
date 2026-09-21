@@ -1,4 +1,17 @@
-"""Tweet acquisition: roster sync, CSV backfill (TwExportly), and twitterapi.io incremental fetch."""
+"""Tweet acquisition: roster sync, CSV backfill (TwExportly), and twitterapi.io incremental fetch.
+
+Cost model (twitterapi.io): 15 credits per tweet RETURNED, 15-credit floor per call, 100,000 credits = $1. So the
+design goal is never to receive a tweet we already store or will discard:
+
+* one primitive — `advanced_search` with exact `since_time`/`until_time` epoch bounds — for every account, so a
+  quiet account costs the 15-credit floor instead of a full timeline page (`last_tweets` has no since parameter);
+* per-account watermark `accounts.last_fetch_at` (ISO UTC) with a small overlap for search-index lag, deduped by
+  the tweet-id primary key;
+* heavy posters (`rate_per_year` > SAMPLE_ABOVE_PER_YEAR, or `sampling` already set) get the asset keywords in the
+  query (server-side prefilter): we pay only for tweets that can reach the classifier. Once a month one unfiltered
+  timeline page keeps an eye on vocabulary the keyword clause misses;
+* a credit floor aborts the run before it can drain the balance.
+"""
 from __future__ import annotations
 
 import csv
@@ -18,6 +31,27 @@ from .prefilter import is_relevant
 ROOT = Path(__file__).resolve().parent.parent
 ROSTER = ROOT / "roster.yaml"
 API = "https://api.twitterapi.io"
+
+BACKFILL_YEARS = 3                # how far back a never-fetched account is pulled
+SAMPLE_ABOVE_PER_YEAR = 1000      # originals/yr; above this the search carries the asset keywords (server-side prefilter)
+WINDOW_DAYS = 30                  # long spans are split into windows so pagination stays bounded per call
+OVERLAP = timedelta(hours=6)      # re-query this much before the watermark: search index lag; PK dedups
+MAX_PAGES_PER_WINDOW = 100        # 20 tweets/page → ≤2,000 tweets ($0.30) per window, a hard cap on a runaway account
+MIN_CREDITS = int(os.environ.get("FINCLATOR_MIN_CREDITS", "100000"))  # 100k = $1; abort the run below this
+COVERAGE_DAY = 1                  # day of month: unfiltered timeline page for keyword accounts + followers refresh
+
+# Server-side keyword filter for heavy posters. X search has no wildcards/stemming, so Turkish suffix forms are listed
+# explicitly; mirrors the prefilter vocabulary (`_ASSET_PATTERNS`) as closely as the query syntax allows. A monthly
+# unfiltered coverage page per keyword account catches what this misses.
+_KW = ("bitcoin OR btc OR sats OR satoshi OR kripto OR koin OR coin OR "
+       "gold OR xau OR xauusd OR gld OR comex OR bullion OR \"precious metals\" OR "
+       "altın OR altin OR altının OR altına OR altında OR altındaki OR altınlar OR altını OR altınlar OR "
+       "\"ons altın\" OR \"gram altın\" OR onsaltın OR gramaltın OR \"değerli metal\" OR \"kıymetli metal\" OR "
+       "spx OR spy OR sp500 OR \"s&p\" OR \"s&p500\" OR es_f OR nasdaq OR ndx OR qqq OR dow OR djia OR russell OR "
+       "\"wall street\" OR wallstreet OR \"us stocks\" OR \"us equities\" OR us500 OR nvidia OR nvda OR \"mag 7\" OR "
+       "magnificent OR hisse OR hisseler OR hisseleri OR borsa OR borsalar OR borsaları OR borsada OR endeks OR endeksi")
+SAMPLE_QUERY = f"({_KW})"
+LAST_COST: dict[str, int] = {}     # per-handle credit estimate (15 × tweets received + requests) of the current process
 
 
 # ---------- roster ----------
@@ -91,17 +125,6 @@ def _dotenv(name: str) -> str | None:
     return None
 
 
-SAMPLE_ABOVE_PER_YEAR = 1000   # originals/yr; above this we use keyword-filtered search instead of full timeline
-SAMPLE_WINDOW_DAYS = 7         # one search window per week
-SAMPLE_MIN_PER_WINDOW = 21     # ≥ 3/day; if the keyword search returns fewer, top up with one unfiltered page
-NO_TOPUP_ABOVE_PER_YEAR = 4000  # news firehoses: keyword-only, the unfiltered page would be pure noise
-
-# Server-side keyword filter (same vocabulary as prefilter). X search handles Turkish terms.
-_KW = ("bitcoin OR btc OR kripto OR gold OR xau OR altın OR altin OR spx OR spy OR nasdaq OR nvidia OR dow OR "
-       "\"s&p\" OR sp500 OR hisse OR borsa OR endeks")
-SAMPLE_QUERY = f"({_KW})"
-
-
 def _get(c: httpx.Client, path: str, **params) -> dict:
     for attempt in range(5):
         r = c.get(path, params=params)
@@ -113,6 +136,13 @@ def _get(c: httpx.Client, path: str, **params) -> dict:
         r.raise_for_status()
         return r.json()
     raise RuntimeError(f"rate limited on {path}")
+
+
+def credits(c: httpx.Client | None = None) -> int:
+    """Remaining twitterapi.io credits (100,000 = $1)."""
+    with (c or _client()) as cc:
+        info = _get(cc, "/oapi/my/info")
+    return int(info.get("recharge_credits", 0)) + int(info.get("total_bonus_credits", 0))
 
 
 def _keep(t: dict) -> bool:
@@ -128,147 +158,112 @@ def _norm(t: dict, handle: str) -> dict:
     }
 
 
-def _rate_per_year(tweets: list[dict]) -> float:
-    """Extrapolate originals/year from a page span."""
-    if len(tweets) < 2:
-        return 0.0
-    a = parsedate_to_datetime(tweets[0]["createdAt"])
-    b = parsedate_to_datetime(tweets[-1]["createdAt"])
-    days = max(1.0, abs((a - b).total_seconds()) / 86400)
-    return len(tweets) / days * 365
-
-
-def _search_window(c: httpx.Client, handle: str, start: datetime, end: datetime, keywords: bool = True,
-                   max_pages: int = 30) -> list[dict]:
-    """Original tweets of `handle` in [start, end) via advanced search (epoch bounds), optionally keyword-filtered."""
+def _search_window(c: httpx.Client, handle: str, start: datetime, end: datetime, keywords: bool,
+                   max_pages: int = MAX_PAGES_PER_WINDOW) -> tuple[list[dict], int]:
+    """Original tweets of `handle` in [start, end) via advanced search (exact epoch bounds), optionally
+    keyword-filtered. Returns (rows, requests_made)."""
     q = f"from:{handle} -filter:replies -filter:retweets since_time:{int(start.timestamp())} until_time:{int(end.timestamp())}"
     if keywords:
         q += f" {SAMPLE_QUERY}"
-    out, cursor = [], ""
+    out, cursor, calls = [], "", 0
     for _ in range(max_pages):
         time.sleep(1.0)
         r = _get(c, "/twitter/tweet/advanced_search", query=q, queryType="Latest", cursor=cursor)
-        page = [t for t in (r.get("tweets") or []) if _keep(t)]
+        calls += 1
+        raw = r.get("tweets") or []
+        page = [t for t in raw if _keep(t)]
         out += [_norm(t, handle) for t in page]
-        if not page or not r.get("has_next_page") or not r.get("next_cursor"):
+        if not raw or not r.get("has_next_page") or not r.get("next_cursor"):  # `raw`, not `page`: a page of RTs is not the end
             break
         cursor = r["next_cursor"]
-    return out
+    return out, calls
 
 
-def _sample_window(c: httpx.Client, handle: str, start: datetime, end: datetime, topup: bool = True) -> list[dict]:
-    """Keyword-filtered tweets for the window; if below the floor, add one unfiltered page for baseline coverage."""
-    rows = _search_window(c, handle, start, end, keywords=True)
-    if topup and len(rows) < SAMPLE_MIN_PER_WINDOW:
-        seen = {r["id"] for r in rows}
-        rows += [r for r in _search_window(c, handle, start, end, keywords=False, max_pages=1) if r["id"] not in seen]
-    return rows
+def _is_keyword_account(row) -> bool:
+    return bool(row["sampling"]) or (row["rate_per_year"] or 0) > SAMPLE_ABOVE_PER_YEAR
 
 
-def fetch_sampled(conn: sqlite3.Connection, handle: str, until: str) -> int:
-    """Backfill a heavy poster: weekly keyword-filtered search windows from `until` to now (all asset-relevant tweets,
-    ≥ SAMPLE_MIN_PER_WINDOW per week). Cost ≈ 1–2 calls/week + only the tweets that matter."""
+def _since(conn: sqlite3.Connection, handle: str, row, now: datetime) -> datetime:
+    """Start of the span to fetch: watermark − overlap; seeded from the newest stored tweet; else BACKFILL_YEARS ago."""
+    wm = row["last_fetch_at"]
+    if not wm:
+        wm = conn.execute("SELECT max(created_at) FROM tweets WHERE handle=?", (handle,)).fetchone()[0]
+    if wm:
+        return datetime.fromisoformat(wm).astimezone(timezone.utc) - OVERLAP
+    return now - timedelta(days=365 * BACKFILL_YEARS)
+
+
+def fetch_account(conn: sqlite3.Connection, handle: str, since: datetime | None = None,
+                  coverage: bool = False) -> int:
+    """Fetch every original tweet of `handle` from `since` (default: its watermark) to now, in WINDOW_DAYS windows.
+    Keyword accounts get the asset vocabulary in the query. `coverage` adds one unfiltered timeline page (keyword
+    accounts) and refreshes followers. Advances `last_fetch_at` only after the whole span succeeded."""
     handle = handle.lower()
-    start = datetime.fromisoformat(until).replace(tzinfo=timezone.utc)
+    row = conn.execute("SELECT last_fetch_at, sampling, rate_per_year FROM accounts WHERE handle=?", (handle,)).fetchone()
+    if row is None:
+        raise ValueError(f"unknown account {handle}")
     now = datetime.now(timezone.utc)
-    rate = conn.execute("SELECT rate_per_year FROM accounts WHERE handle=?", (handle,)).fetchone()[0] or 0
-    topup = rate <= NO_TOPUP_ABOVE_PER_YEAR
-    inserted = 0
+    start = since or _since(conn, handle, row, now)
+    kw = _is_keyword_account(row)
+    inserted = received = calls = 0
+    long_span = (now - start) > timedelta(days=WINDOW_DAYS)
     with _client() as c:
         w = start
         while w < now:
-            w_end = min(w + timedelta(days=SAMPLE_WINDOW_DAYS), now)
-            rows = _sample_window(c, handle, w, w_end, topup=topup)
+            w_end = min(w + timedelta(days=WINDOW_DAYS), now)
+            rows, n_calls = _search_window(c, handle, w, w_end, keywords=kw)
+            received += len(rows)
+            calls += n_calls
             inserted += _insert(conn, rows)
+            if long_span:
+                log(f"  {handle}: window {w.date()}→{w_end.date()} {len(rows)} tweets, {n_calls} req "
+                    f"(running: {received} received, {inserted} new)")
             w = w_end
-        log(f"  {handle}: sampled {inserted} tweets in weekly keyword windows")
-    conn.execute("UPDATE accounts SET sampling=?, updated_at=? WHERE handle=?",
-                 ("keyword/weekly", now.isoformat(), handle))
+        if coverage:
+            time.sleep(1.0)
+            info = _get(c, "/twitter/user/info", userName=handle).get("data") or {}
+            if info.get("followers"):
+                conn.execute("UPDATE accounts SET followers=? WHERE handle=?", (info["followers"], handle))
+            if kw:
+                time.sleep(1.0)
+                resp = _get(c, "/twitter/user/last_tweets", userName=handle, cursor="", includeReplies="false")
+                page = [_norm(t, handle) for t in ((resp.get("data") or {}).get("tweets") or []) if _keep(t)]
+                extra = _insert(conn, page)
+                received += len(page)
+                calls += 1
+                if extra:
+                    log(f"  {handle}: coverage page found {extra} tweets the keyword query missed")
+                inserted += extra
+    conn.execute("UPDATE accounts SET last_fetch_at=?, sampling=?, updated_at=? WHERE handle=?",
+                 (now.isoformat(), "keyword" if kw else None, now.isoformat(), handle))
     conn.commit()
+    days = (now - start).total_seconds() / 86400
+    cost = 15 * (received + calls)
+    LAST_COST[handle] = cost
+    log(f"  {handle}: {'kw' if kw else 'full'} {days:.1f}d → {received} received, {inserted} new, "
+        f"{calls} req ≈ {cost} cr")
     return inserted
 
 
-def fetch_account(conn: sqlite3.Connection, handle: str, max_pages: int = 50, backfill: bool = False,
-                  until: str | None = None) -> int:
-    """Fetch original (non-reply) tweets newer than the watermark, or back to `until` if backfill.
-    Heavy posters (> SAMPLE_ABOVE_PER_YEAR originals, measured on the first 3 pages) are sampled instead."""
-    handle = handle.lower()
-    row = conn.execute("SELECT last_tweet_id, sampling FROM accounts WHERE handle=?", (handle,)).fetchone()
-    since = None if backfill else (row["last_tweet_id"] if row else None)
-    since_int = int(since) if since else 0
-
-    with _client() as c:
-        info = _get(c, "/twitter/user/info", userName=handle).get("data") or {}
-        if info.get("followers"):
-            conn.execute("UPDATE accounts SET followers=? WHERE handle=?", (info["followers"], handle))
-
-    if backfill and until:
-        known = conn.execute("SELECT rate_per_year FROM accounts WHERE handle=?", (handle,)).fetchone()[0]
-        if known and known > SAMPLE_ABOVE_PER_YEAR:
-            return fetch_sampled(conn, handle, until)  # rate already measured: skip the probe pages
-
-    with _client() as c:
-        cursor, pages, batch, newest, inserted, last_date = "", 0, [], since_int, 0, ""
-        done = False
-        probe: list[dict] = []
-        while pages < max_pages and not done:
-            time.sleep(1.0)
-            resp = _get(c, "/twitter/user/last_tweets", userName=handle, cursor=cursor, includeReplies="false")
-            data = resp.get("data") or {}
-            tweets = [t for t in (data.get("tweets") or []) if _keep(t)]
-            if not tweets:
-                break
-            if backfill and until and pages < 3:
-                probe.extend(tweets)
-                if pages == 2 or not resp.get("has_next_page"):
-                    rate = _rate_per_year(probe)
-                    conn.execute("UPDATE accounts SET rate_per_year=? WHERE handle=?", (round(rate), handle))
-                    conn.commit()
-                    if rate > SAMPLE_ABOVE_PER_YEAR:
-                        log(f"  {handle}: ~{rate:,.0f} originals/yr > {SAMPLE_ABOVE_PER_YEAR} → sampling")
-                        return fetch_sampled(conn, handle, until)
-            for t in tweets:
-                tid = int(t["id"])
-                if tid <= since_int:
-                    done = True
-                    break
-                n = _norm(t, handle)
-                if until and n["created_at"] < until:
-                    done = True
-                    break
-                newest = max(newest, tid)
-                batch.append(n)
-                last_date = n["created_at"][:10]
-            pages += 1
-            if len(batch) >= 500:
-                inserted += _insert(conn, batch)  # checkpoint long backfills
-                batch = []
-                log(f"  {handle}: {pages} pages, {inserted} inserted, at {last_date}")
-            if not resp.get("has_next_page") or not resp.get("next_cursor"):
-                break
-            cursor = resp["next_cursor"]
-
-    n = inserted + _insert(conn, batch)
-    if newest > since_int:
-        conn.execute("UPDATE accounts SET last_tweet_id=?, updated_at=? WHERE handle=?",
-                     (str(newest), datetime.now(timezone.utc).isoformat(), handle))
-        conn.commit()
-    return n
-
-
-def fetch_all(conn: sqlite3.Connection, max_pages: int = 500) -> dict[str, int]:
+def fetch_all(conn: sqlite3.Connection) -> dict[str, int]:
+    """Incremental fetch for every active account; aborts before spending if the balance is under MIN_CREDITS."""
+    before = credits()
+    LAST_COST.clear()
+    if before < MIN_CREDITS:
+        raise RuntimeError(f"twitterapi.io balance {before:,} credits < floor {MIN_CREDITS:,} — top up before fetching")
+    coverage = datetime.now(timezone.utc).day == COVERAGE_DAY
     out = {}
-    now = datetime.now(timezone.utc)
-    for a in conn.execute("SELECT handle, sampling FROM accounts WHERE active=1"):
+    for a in conn.execute("SELECT handle FROM accounts WHERE active=1 ORDER BY handle").fetchall():
         h = a["handle"]
-        if a["sampling"]:
-            # sampled account: keyword-filtered search for the past window, deduped by tweet id on insert
-            w_end = now
-            w = now - timedelta(days=SAMPLE_WINDOW_DAYS)
-            with _client() as c:
-                out[h] = _insert(conn, _sample_window(c, h, w, w_end))
-        else:
-            out[h] = fetch_account(conn, h, max_pages=max_pages)
+        try:
+            out[h] = fetch_account(conn, h, coverage=coverage)
+        except Exception as e:  # noqa: BLE001 — one account must not stop the run; watermark stays, retried next run
+            log(f"  {h}: ERROR {e}")
+            out[h] = -1
+    after = credits()
+    est = sum(LAST_COST.values())
+    log(f"fetch: {sum(v for v in out.values() if v > 0)} new tweets, ≈{est:,} credits (${est / 1e5:.3f}) by count; "
+        f"balance ${after / 1e5:.2f} (vendor balance updates lazily)")
     return out
 
 
@@ -280,6 +275,6 @@ if __name__ == "__main__":
         # python -m src.fetch csv data/file.csv handle
         print(import_csv(conn, Path(sys.argv[2]), sys.argv[3]), "inserted")
     elif len(sys.argv) > 1:
-        print(fetch_account(conn, sys.argv[1], backfill="--backfill" in sys.argv), "inserted")
+        print(fetch_account(conn, sys.argv[1], coverage="--coverage" in sys.argv), "inserted")
     else:
         print(fetch_all(conn))

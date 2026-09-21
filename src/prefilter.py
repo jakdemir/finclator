@@ -29,7 +29,7 @@ _ASSET_PATTERNS = {
         ) + ")" + _B1, re.IGNORECASE),
     "GOLD": re.compile(
         _B0 + "(" + _alt(
-            r"gold\w*", r"xau\w*", r"gld", r"gc1!?", r"gc=f", r"comex",
+            r"golds?", r"xau\w*", r"gld", r"gc1!?", r"gc=f", r"comex",  # not goldman/goldstein/golden cross
             # TR: altın (with suffixes: altının, altına, altında…), ons altın, gram altın, onsaltın, gramaltın
             r"alt[ıi]n\w*", r"ons ?alt[ıi]n\w*", r"gram ?alt[ıi]n\w*", r"ons",
             r"de[ğg]erli metal\w*", r"k[ıi]ymetli metal\w*", r"precious metals?", r"bullion",
@@ -37,7 +37,7 @@ _ASSET_PATTERNS = {
     "SPX": re.compile(
         _B0 + "(" + _alt(
             r"spx", r"spy", r"s&p ?500", r"s&p", r"s&amp;p ?500", r"s&amp;p", r"sp500", r"sp ?500", r"es_f", r"es1!?",
-            r"nasdaq\w*", r"ndx", r"qqq", r"nq_f", r"dow\w*", r"djia", r"russell\w*", r"wall ?street",
+            r"nasdaq\w*", r"ndx", r"qqq", r"nq_f", r"dow( ?jones)?", r"djia", r"russell\w*", r"wall ?street",  # not down/downside
             r"us ?stocks?", r"us ?equit\w*", r"us ?index(es)?", r"us500", r"nvidia", r"nvda", r"mag(nificent)? ?7",
             # TR: hisse (stock), borsa (exchange), endeks (index) — with suffixes; ABD/Amerikan borsaları
             r"hisse\w*", r"borsa\w*", r"endeks\w*", r"abd (borsa|endeks|hisse)\w*", r"amerikan (borsa|endeks|hisse)\w*",
@@ -48,7 +48,7 @@ _ASSET_PATTERNS = {
 # Turkish "borsa"/"hisse" alone often means BIST; only count them as SPX if a US cue is present in the tweet.
 _TR_LOCAL_ONLY = re.compile(_B0 + r"(hisse\w*|borsa\w*|endeks\w*)" + _B1, re.IGNORECASE)
 _US_CUE = re.compile(
-    _B0 + r"(abd|amerika\w*|us|usa|wall ?street|s&p|s&amp;p|spx|spy|nasdaq\w*|dow\w*|nvidia|nvda|fed|fomc|"
+    _B0 + r"(abd|amerika\w*|us|usa|wall ?street|s&p|s&amp;p|spx|spy|nasdaq\w*|dow( ?jones)?|nvidia|nvda|fed|fomc|"
     r"tesla|apple|microsoft|amazon|meta|google|alphabet|mag ?7|magnificent)" + _B1, re.IGNORECASE)
 _BIST_CUE = re.compile(_B0 + r"(bist\w*|xu100|borsa istanbul|thy|aselsan|t[üu]pra[şs]|ko[çc]|garanti|akbank|ykb|"
                        r"ere[ğg]li|sasa|hekts|astor)" + _B1, re.IGNORECASE)

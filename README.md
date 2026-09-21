@@ -10,7 +10,7 @@ The matrix is the trust × confidence × recency weighted vote of the roster's l
 ## Pipeline
 
 ```
-roster.yaml ─► fetch.py (twitterapi.io, since_id) ─► tweets ─► prefilter.py (asset regex, EN/TR)
+roster.yaml ─► fetch.py (twitterapi.io advanced_search, last_fetch_at watermark) ─► tweets ─► prefilter.py (asset regex, EN/TR)
    ─► classify.py (Claude, JSON calls + quote) ─► calls
 prices.py (Yahoo daily closes) ─► evaluate.py (vol-scaled threshold) ─► outcomes ─► score.py (shrinkage) ─► trust
    ─► matrix.py ─► data/matrix.json

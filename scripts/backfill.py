@@ -1,43 +1,33 @@
-"""3-year backfill for every roster account, N accounts in parallel. Resumable.
-Usage: PYTHONPATH=. .venv/bin/python scripts/backfill.py [--workers 8] [--pages N] [handle ...]
+"""Parallel fetch: every active account (or the handles given) from its watermark to now, N accounts at a time.
+Same primitive as the daily run (`fetch.fetch_account`); an account with no stored tweets is pulled back
+BACKFILL_YEARS. Resumable: the watermark only advances after an account's whole span succeeded.
+Usage: PYTHONPATH=. .venv/bin/python scripts/backfill.py [--workers 8] [handle ...]
 """
 import sys
 import threading
-from datetime import datetime, timedelta, timezone
 from queue import Queue
 
 from src.db import connect, log
-from src.fetch import fetch_account, sync_roster
-
-UNTIL = (datetime.now(timezone.utc) - timedelta(days=3 * 365)).date().isoformat()
+from src.fetch import LAST_COST, MIN_CREDITS, credits, fetch_account, sync_roster
 
 args = sys.argv[1:]
-workers, pages = 8, 2000
-for flag in ("--workers", "--pages"):
-    if flag in args:
-        i = args.index(flag)
-        val = int(args[i + 1])
-        del args[i:i + 2]
-        if flag == "--workers":
-            workers = val
-        else:
-            pages = val
+workers = 8
+if "--workers" in args:
+    i = args.index("--workers")
+    workers = int(args[i + 1])
+    del args[i:i + 2]
 
 conn0 = connect()
 sync_roster(conn0)
 handles = [h.lower() for h in args] or [r["handle"] for r in conn0.execute("SELECT handle FROM accounts WHERE active=1")]
+conn0.close()
 q: Queue = Queue()
 for h in handles:
-    oldest = conn0.execute("SELECT min(created_at) FROM tweets WHERE handle=? AND source='twitterapi'", (h,)).fetchone()[0]
-    done = conn0.execute("SELECT sampling, rate_per_year FROM accounts WHERE handle=?", (h,)).fetchone()
-    if (oldest and oldest[:10] <= UNTIL) or (done and done["sampling"]):
-        heavy = done and done["rate_per_year"] and done["rate_per_year"] > 1000
-        if not (heavy and not done["sampling"]):  # heavy accounts without keyword sampling still need redoing
-            log(f"{h}: already backfilled, skip")
-            continue
     q.put(h)
-conn0.close()
-log(f"{q.qsize()} accounts to fetch with {workers} workers, back to {UNTIL}")
+before = credits()
+if before < MIN_CREDITS:
+    sys.exit(f"balance {before:,} credits < floor {MIN_CREDITS:,}")
+log(f"backfill: {q.qsize()} accounts with {workers} workers; balance ${before / 1e5:.2f}")
 
 
 def worker():
@@ -50,7 +40,7 @@ def worker():
         except Exception:
             return
         try:
-            n = fetch_account(conn, h, max_pages=pages, backfill=True, until=UNTIL)
+            n = fetch_account(conn, h)
             tot, rel = conn.execute("SELECT count(*), sum(relevant) FROM tweets WHERE handle=?", (h,)).fetchone()
             log(f"{h}: +{n} → {tot} total, {rel} relevant  [{q.qsize()} left]")
         except Exception as e:  # noqa: BLE001
@@ -64,4 +54,6 @@ for t in threads:
     t.start()
 for t in threads:
     t.join()
-log("backfill complete")
+after = credits()
+est = sum(LAST_COST.values())
+log(f"backfill complete: ≈{est:,} credits (${est / 1e5:.3f}) by count; balance ${after / 1e5:.2f} (lazy)")

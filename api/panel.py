@@ -86,7 +86,8 @@ _current_cookie = ""
 
 # ── panel rendering: reuse src.admin, with the local-only helpers patched out ────────────────────────────────────
 def _render(path: str, qs: str, email: str) -> tuple[int, str, str]:
-    os.environ.setdefault("FINCLATOR_ACTIVE_MODEL", os.environ.get("PANEL_MODEL", "qwen3:30b-a3b-instruct-2507-q4_K_M"))
+    if "FINCLATOR_ACTIVE_MODEL" not in os.environ and os.environ.get("PANEL_MODEL"):
+        os.environ["FINCLATOR_ACTIVE_MODEL"] = os.environ["PANEL_MODEL"]  # else models.DEFAULT_MODEL applies
     import sys
     sys.path.insert(0, str(ROOT))
     from src import admin, audit  # noqa: PLC0415

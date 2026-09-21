@@ -1,5 +1,5 @@
 """Agreement test: re-classify frontier-labeled tweets with the configured model and compare.
-Usage: FINCLATOR_MODEL_BASE_URL=http://localhost:11434/v1 FINCLATOR_MODEL=qwen3:... PYTHONPATH=. .venv/bin/python scripts/agreement.py [N] [gold.jsonl]
+Usage: PYTHONPATH=. .venv/bin/python scripts/agreement.py [N] [gold.jsonl]   (FINCLATOR_MODEL=<tag> to test another)
 Default gold = data/labels_backfill.jsonl (the prompt-tuning set); pass data/labels_holdout.jsonl for the out-of-sample check.
 """
 import json
