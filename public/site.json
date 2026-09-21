@@ -1,0 +1,118 @@
+{
+ "generated_at": "2026-09-21T17:24+00:00",
+ "accounts": 98,
+ "tweets": 145192,
+ "from": "2021",
+ "to": "2026-09-15",
+ "calls": 8155,
+ "outcomes": 6043,
+ "results": {
+  "CORRECT": 3054,
+  "PARTIAL": 1754,
+  "WRONG": 1235
+ },
+ "hit_by_horizon": {
+  "LONG": {
+   "rate": 0.779,
+   "n": 596
+  },
+  "MEDIUM": {
+   "rate": 0.744,
+   "n": 2065
+  },
+  "SHORT": {
+   "rate": 0.571,
+   "n": 3382
+  }
+ },
+ "scored_accounts": 33,
+ "trust_lo": 0.5,
+ "trust_hi": 0.84,
+ "schools": [
+  {
+   "school": "Macro",
+   "n": 45
+  },
+  {
+   "school": "Crypto",
+   "n": 19
+  },
+  {
+   "school": "Quant",
+   "n": 16
+  },
+  {
+   "school": "Technical",
+   "n": 13
+  },
+  {
+   "school": "Goldbug",
+   "n": 5
+  }
+ ],
+ "matrix": {
+  "BTC:SHORT": {
+   "label": "NEUTRAL",
+   "net": 0.074,
+   "n": 63
+  },
+  "BTC:MEDIUM": {
+   "label": "BUY",
+   "net": 0.556,
+   "n": 350
+  },
+  "BTC:LONG": {
+   "label": "BUY",
+   "net": 0.803,
+   "n": 854
+  },
+  "GOLD:SHORT": {
+   "label": "BUY",
+   "net": 0.534,
+   "n": 19
+  },
+  "GOLD:MEDIUM": {
+   "label": "BUY",
+   "net": 0.942,
+   "n": 216
+  },
+  "GOLD:LONG": {
+   "label": "BUY",
+   "net": 0.978,
+   "n": 339
+  },
+  "SPX:SHORT": {
+   "label": "NEUTRAL",
+   "net": 0.076,
+   "n": 27
+  },
+  "SPX:MEDIUM": {
+   "label": "BUY",
+   "net": 0.697,
+   "n": 152
+  },
+  "SPX:LONG": {
+   "label": "BUY",
+   "net": 0.253,
+   "n": 92
+  }
+ },
+ "matrix_generated_at": "2026-09-16",
+ "example": {
+  "handle": "garethsoloway",
+  "asset": "BTC",
+  "direction": "BUY",
+  "horizon": "SHORT",
+  "called": "2026-02-13",
+  "price_target": 85000.0,
+  "quote": "If it does, upside between $80,000-$85,000 is likely.",
+  "entry_date": "2026-02-13",
+  "exit_date": "2026-05-14",
+  "entry_close": 68857.84375,
+  "exit_close": 81051.25,
+  "return_pct": 17.708086088594662,
+  "threshold_pct": 11.497707459684914,
+  "result": "CORRECT",
+  "tweet_id": "2022351409782640927"
+ }
+}

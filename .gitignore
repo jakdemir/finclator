@@ -103,3 +103,7 @@ dmypy.json
 
 .env.keys
 data/*.out
+.vercel
+node_modules/
+.vercel/
+.env.local

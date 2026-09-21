@@ -1,0 +1,15 @@
+.venv
+node_modules
+.git
+.cache
+data/*.out
+data/*.log
+data/*.jsonl
+data/*.db-wal
+data/*.db-shm
+specs
+tests
+scripts
+tradingview
+*.md
+!public/**

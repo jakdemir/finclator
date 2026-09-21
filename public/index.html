@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finclator — who on finance Twitter has actually been right</title>
+<meta name="description" content="Finclator turns the market calls of ~100 finance accounts on X into a track record, then into one trust-weighted Buy / Neutral / Sell reading for Bitcoin, Gold and the S&P 500 over three horizons.">
+<meta property="og:title" content="Finclator — who on finance Twitter has actually been right">
+<meta property="og:description" content="Every explicit call, scored against price when its horizon matures. Trust follows the record, not the follower count.">
+<meta property="og:type" content="website">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<div class="wrap">
+<nav class="nav">
+  <a class="brand" href="/" aria-label="Finclator home"><svg viewBox="0 0 22 22" fill="none" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="8" y="1" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="15" y="1" width="6" height="6" rx="1.2" fill="#6d6860"/><rect x="1" y="8" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="8" y="8" width="6" height="6" rx="1.2" fill="#a8352c"/><rect x="15" y="8" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="1" y="15" width="6" height="6" rx="1.2" fill="#6d6860"/><rect x="8" y="15" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="15" y="15" width="6" height="6" rx="1.2" fill="#1f6f43"/></svg>Finclator</a>
+  <a href="/" class="on">Overview</a>
+  <a href="/method">Method</a>
+  <span class="spacer"></span>
+  <a href="/login" class="btn ghost">Panel sign-in</a>
+</nav>
+
+<section class="hero">
+  <div class="two">
+    <div>
+      <h1>Who on finance Twitter has actually been right?</h1>
+      <p class="lede">Finclator reads a fixed roster of finance accounts on X, keeps only the explicit calls — <em>Bitcoin to $85K by spring</em>, not vibes — and scores each one against the price once its horizon has passed. Trust follows the record. The result is a single reading per asset and horizon.</p>
+      <div class="cta">
+        <a class="btn" href="/method">How the scoring works</a>
+        <a class="btn ghost" href="/login">Request panel access</a>
+      </div>
+    </div>
+    <div>
+      <table class="matrix" aria-label="Current trust-weighted consensus">
+        <thead><tr><th class="row"></th><th>Short <span class="muted">0–3 mo</span></th><th>Medium <span class="muted">3–12 mo</span></th><th>Long <span class="muted">1–5 y</span></th></tr></thead>
+        <tbody id="matrix">
+          <tr><th class="row">BTC</th><td><span class="cell NA"><b>—</b></span></td><td><span class="cell NA"><b>—</b></span></td><td><span class="cell NA"><b>—</b></span></td></tr>
+          <tr><th class="row">Gold</th><td><span class="cell NA"><b>—</b></span></td><td><span class="cell NA"><b>—</b></span></td><td><span class="cell NA"><b>—</b></span></td></tr>
+          <tr><th class="row">S&amp;P</th><td><span class="cell NA"><b>—</b></span></td><td><span class="cell NA"><b>—</b></span></td><td><span class="cell NA"><b>—</b></span></td></tr>
+        </tbody>
+        <caption id="matrix-cap">Trust-weighted consensus of the roster. Net score in −1…+1; |net| ≤ 0.15 reads Neutral.</caption>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="stats" id="stats" aria-label="Dataset size">
+  <div><b id="s-accounts">—</b><small>accounts on the roster</small></div>
+  <div><b id="s-tweets">—</b><small>original posts read, <span id="s-span">—</span></small></div>
+  <div><b id="s-calls">—</b><small>explicit calls extracted</small></div>
+  <div><b id="s-outcomes">—</b><small>calls matured and scored</small></div>
+</div>
+
+<section>
+  <h2>Three steps, no opinions in between</h2>
+  <div class="steps">
+    <div class="step"><span class="k">1 · extract</span><h3>Only falsifiable calls count</h3><p>A language model reads every original post and keeps the ones that name an asset, a direction and a time frame — a price target if one is stated. Mood, news, past moves and questions are not calls. Every call carries the exact phrase that justified it, so any label can be checked against the tweet.</p></div>
+    <div class="step"><span class="k">2 · evaluate</span><h3>Wait, then check the price</h3><p>Short calls are judged after 3 months, medium after 12, long after 24. The move is compared against a flat band scaled to the asset's own volatility, so a 2 % wobble in Bitcoin doesn't count as a win. A stated target earns extra credit if the price actually got there.</p></div>
+    <div class="step"><span class="k">3 · weigh</span><h3>Trust follows the record</h3><p>Each account earns a score per asset and horizon from its matured calls, pulled toward the middle when the sample is small. Current calls are then aggregated with that score as the weight — a loud account with a poor record is outweighed, not banned.</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="two">
+    <div>
+      <h2>What one scored call looks like</h2>
+      <p style="margin-top:14px;color:var(--ink-2)">A real row from the dataset. The highlighted phrase is the exact span the model used; entry and exit are daily closes on the instrument itself. Anyone with access can open the tweet and the price history and disagree.</p>
+      <p><a href="/method#evaluation">How the outcome and the flat band are computed →</a></p>
+    </div>
+    <div class="example" id="example" hidden>
+      <p class="tweet" id="ex-text"></p>
+      <dl>
+        <dt>Account</dt><dd id="ex-handle"></dd>
+        <dt>Call</dt><dd id="ex-call"></dd>
+        <dt>Entry → exit</dt><dd id="ex-window"></dd>
+        <dt>Move</dt><dd id="ex-move"></dd>
+        <dt>Outcome</dt><dd id="ex-result"></dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>What it is not</h2>
+  <p style="margin-top:14px">Not a price forecast and not advice. It measures what a specific set of public commentators are saying and how reliable they have been on record — nothing about whether they will be right next time. Sentiment across finance Twitter has been bullish for most of the period covered, so a Buy reading is common; a flip to Neutral or Sell is the more informative event.</p>
+  <p>Finclator is a personal research project. The roster, every call, every outcome and every trust score are open to inspection in the panel — access is granted by hand to people I know. <a href="/login">Ask for it</a> and I'll approve you by email.</p>
+</section>
+</div>
+
+<div class="wrap"><footer>
+  <span>Finclator · updated <span id="f-date">—</span></span>
+  <span class="spacer"></span>
+  <a href="/method">Method</a>
+  <a href="/login">Panel</a>
+</footer></div>
+
+<script>
+(async () => {
+  const fmt = n => n.toLocaleString("en-US");
+  let d; try { d = await (await fetch("/site.json", {cache: "no-cache"})).json(); } catch { return; }
+  const $ = id => document.getElementById(id);
+  $("s-accounts").textContent = fmt(d.accounts);
+  $("s-tweets").textContent = fmt(d.tweets);
+  $("s-span").textContent = d.from + "–" + d.to.slice(0, 4);
+  $("s-calls").textContent = fmt(d.calls);
+  $("s-outcomes").textContent = fmt(d.outcomes);
+  $("f-date").textContent = d.to;
+  const rows = $("matrix").rows, A = ["BTC", "GOLD", "SPX"], H = ["SHORT", "MEDIUM", "LONG"];
+  A.forEach((a, i) => H.forEach((h, j) => {
+    const c = d.matrix[a + ":" + h]; const td = rows[i].cells[j + 1]; if (!c) return;
+    const lbl = c.label === "N/A" ? "NA" : c.label;
+    const word = {BUY: "Buy", SELL: "Sell", NEUTRAL: "Neutral", NA: "n/a"}[lbl];
+    td.innerHTML = `<span class="cell ${lbl}"><b>${word}</b><small>net ${c.net >= 0 ? "+" : ""}${c.net.toFixed(2)} · ${c.n} calls</small></span>`;
+  }));
+  $("matrix-cap").textContent = `Trust-weighted consensus of the roster as of ${d.matrix_generated_at}. Net score in −1…+1; |net| ≤ 0.15 reads Neutral.`;
+  const ex = d.example; if (!ex) return;
+  const esc = s => s.replace(/[&<>]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;"}[c]));
+  $("ex-text").innerHTML = "“<mark>" + esc(ex.quote) + "</mark>”";
+  $("ex-handle").innerHTML = `<a href="https://x.com/${ex.handle}/status/${ex.tweet_id}" rel="noopener">@${ex.handle} ↗</a> · ${ex.called}`;
+  $("ex-call").textContent = `${ex.asset} ${ex.direction} · ${ex.horizon.toLowerCase()}` + (ex.price_target ? ` · target ${fmt(ex.price_target)}` : "");
+  $("ex-window").textContent = `${ex.entry_date} ${fmt(Math.round(ex.entry_close))} → ${ex.exit_date} ${fmt(Math.round(ex.exit_close))}`;
+  $("ex-move").textContent = `${ex.return_pct >= 0 ? "+" : ""}${ex.return_pct.toFixed(1)} % vs flat band ±${ex.threshold_pct.toFixed(1)} %`;
+  $("ex-result").innerHTML = `<span class="tag ${ex.result}">${ex.result}</span>`;
+  $("example").hidden = false;
+})();
+</script>
+</body>
+</html>

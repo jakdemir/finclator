@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Method — Finclator</title>
+<meta name="description" content="How Finclator turns tweets into calls, calls into outcomes, outcomes into trust, and trust into a consensus reading — with every formula stated.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/site.css">
+</head>
+<body>
+<div class="wrap">
+<nav class="nav">
+  <a class="brand" href="/" aria-label="Finclator home"><svg viewBox="0 0 22 22" fill="none" aria-hidden="true"><rect x="1" y="1" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="8" y="1" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="15" y="1" width="6" height="6" rx="1.2" fill="#6d6860"/><rect x="1" y="8" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="8" y="8" width="6" height="6" rx="1.2" fill="#a8352c"/><rect x="15" y="8" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="1" y="15" width="6" height="6" rx="1.2" fill="#6d6860"/><rect x="8" y="15" width="6" height="6" rx="1.2" fill="#1f6f43"/><rect x="15" y="15" width="6" height="6" rx="1.2" fill="#1f6f43"/></svg>Finclator</a>
+  <a href="/">Overview</a>
+  <a href="/method" class="on">Method</a>
+  <span class="spacer"></span>
+  <a href="/login" class="btn ghost">Panel sign-in</a>
+</nav>
+
+<section class="prose">
+<h1 style="margin-bottom:18px">Method</h1>
+<p class="lede" style="font-size:1.15rem;color:var(--ink-2)">The financial reasoning behind each stage, with the actual formulas. The aim is a reading you can argue with: every number on the panel traces back to a tweet, a date and a close.</p>
+
+<h2 id="universe">Universe</h2>
+<p>Three assets, chosen because they are the ones finance Twitter argues about most and each has a clean daily instrument to score against:</p>
+<table>
+<tr><th>Asset</th><th>Instrument used for scoring</th><th>Why this one</th></tr>
+<tr><td>Bitcoin</td><td class="mono">BTC-USD</td><td>Spot composite; trades every day, so every call has an exit close.</td></tr>
+<tr><td>Gold</td><td class="mono">GC=F</td><td>COMEX front-month future, not spot — it is what most "gold to $3,000" calls are actually watching.</td></tr>
+<tr><td>S&amp;P 500</td><td class="mono">^GSPC</td><td>Index level; calls on SPY, ES and "the market" are mapped here.</td></tr>
+</table>
+<p>The roster is fixed: <span id="m-accounts">~100</span> accounts grouped into five schools — <span id="m-schools">Macro, Crypto, Quant, Technical, Goldbug</span> — spanning English and Turkish. Everyone on the roster contributes; nobody is pruned by hand. Trust does the filtering.</p>
+<p>Only original posts are read. Replies and retweets are excluded at every layer, because a reply's context is unknowable and a retweet is not the account's own call.</p>
+
+<h2 id="calls">What counts as a call</h2>
+<p>A call is an <strong>explicit, falsifiable claim</strong> about where one of the three assets is going. It has four fields and an optional fifth:</p>
+<table>
+<tr><th>Field</th><th>Values</th><th>Notes</th></tr>
+<tr><td>asset</td><td class="mono">BTC · GOLD · SPX</td><td>One row per asset when a post calls several.</td></tr>
+<tr><td>direction</td><td class="mono">BUY · SELL · NEUTRAL</td><td>Neutral is a stated "sideways / no edge" view, not the absence of one.</td></tr>
+<tr><td>horizon</td><td class="mono">SHORT · MEDIUM · LONG</td><td>0–3 months · 3–12 months · 1–5 years. Taken from the author's own frame: level and pattern talk reads short; an undated expectation reads medium; a valuation or structural thesis reads long; a stated date wins.</td></tr>
+<tr><td>confidence</td><td class="mono">0–1</td><td>How committed the language is.</td></tr>
+<tr><td>price target</td><td class="mono">USD</td><td>Only when a level is actually stated. "100k" becomes 100000. A target implies direction.</td></tr>
+</table>
+<p>Everything else is <em>not</em> a call, and this list is where most of the precision comes from: reports of what already happened, news forwarding, ETF flow and volume, questions, chart captions with no opinion, generic macro commentary, and two-sided conditionals ("if it breaks up, moon; if it breaks down, crash"). Sarcasm and idiom are read as intended — "gold is a bubble" is a sell, however it is phrased.</p>
+<p>Every call stores the <strong>exact phrase</strong> from the post that justified it. That is what makes the dataset auditable rather than a black box: any label can be checked against the words in seconds.</p>
+
+<h2 id="evaluation">Evaluation</h2>
+<p>A call is scored once, when its horizon matures — 90 days for short, 365 for medium, 730 for long — against the daily close of the instrument above. Nothing is scored early and nothing is re-scored.</p>
+<div class="formula">return = exit_close / entry_close − 1<br>entry = close on the day of the post · exit = close at maturity</div>
+<p>The return is compared to a <strong>flat band</strong> scaled to the asset's own volatility and to the horizon, so that noise in Bitcoin and a rounding error in the S&amp;P over two years are not both counted as moves:</p>
+<div class="formula">band = 0.5 × σ<sub>daily</sub> × √days<br>σ<sub>daily</sub> = standard deviation of daily returns over the trailing year at entry</div>
+<p>In practice the band is about ±11–13 % for Bitcoin over three months, ±22–24 % over a year, and about ±6 % for the S&amp;P over a year. The market's own direction is then <em>up</em> above the band, <em>down</em> below it, <em>flat</em> inside it, and the call resolves to one of three outcomes:</p>
+<table>
+<tr><th>Outcome</th><th class="num">Points</th><th>When</th></tr>
+<tr><td>Correct</td><td class="num">1.0</td><td>Called direction matches the market's direction (or called neutral and the market stayed inside the band).</td></tr>
+<tr><td>Partial</td><td class="num">0.5</td><td>Called a direction and the market stayed flat — or called neutral and it moved.</td></tr>
+<tr><td>Wrong</td><td class="num">0.0</td><td>Called one direction, market went the other.</td></tr>
+</table>
+<p>A stated price target is the most falsifiable thing an account can say, so it carries its own adjustment: <strong>+0.25</strong> if any daily close inside the horizon touched the target, <strong>−0.25</strong> if none did. The best close reached (the "extreme") is recorded either way, so a near miss is visible.</p>
+
+<h2 id="trust">Trust</h2>
+<p>Trust is a per-account score for each asset and horizon, built only from matured calls:</p>
+<div class="formula">trust = (Σ points + 5) / (n + 10)</div>
+<p>The +5 / +10 is a prior of 0.5 worth ten calls. It pulls small samples toward the middle so that one lucky call does not outrank a fifty-call record, and it fades as evidence accumulates — with n = 100 the prior is worth 9 % of the weight. When an account has no matured calls for a specific cell, the lookup falls back to its asset-level score, then its overall score, then the 0.5 prior.</p>
+<p>Two properties matter for reading the numbers:</p>
+<ul>
+<li><strong>Point-in-time.</strong> Any historical view — a past matrix, a backtest — computes trust only from outcomes that had matured by that date. Past readings are never weighted by knowledge of the future.</li>
+<li><strong>The whole roster scores.</strong> Currently <span id="m-scored">33</span> accounts have at least 20 matured calls; their overall trust runs from <span id="m-lo">0.50</span> to <span id="m-hi">0.84</span>. Nobody sits at 1.0, which is the shrinkage working.</li>
+</ul>
+
+<h2 id="matrix">The consensus reading</h2>
+<p>For each of the nine cells (asset × horizon), every call inside the horizon window is weighted and summed:</p>
+<div class="formula">weight = trust(account, asset, horizon) × confidence × 2<sup>−age / (window / 3)</sup><br>net = (Σ buy weight − Σ sell weight) / Σ all weight</div>
+<p>The recency term halves a call's weight every third of the window, and calls older than the full window drop out — a three-month-old short call is stale by definition. The label is Buy above +0.15, Sell below −0.15, Neutral between, and n/a when there is too little weight to say anything. Each school also gets its own sub-reading per cell, weighted by the sum of its members' trust, so a one-person school cannot dominate.</p>
+
+<h2 id="reading">How to read it honestly</h2>
+<div class="note">
+<p><strong>Direction, not magnitude.</strong> A Buy cell says the trusted part of the roster leans long; it says nothing about how far.</p>
+<p><strong>Regime bias is real.</strong> Most of the period covered has been a bull market for all three assets, and most of the roster is structurally bullish. Trust scores partly reward having been long while things went up — long-horizon hit rates run <span id="m-long">78 %</span> against <span id="m-short">57 %</span> for short. A flip away from Buy is therefore more informative than a Buy.</p>
+<p><strong>Volume is not evidence.</strong> One account can post a thousand calls a year; trust caps its influence but a prolific, decent account still carries the most weight in its cells. The contributor list behind every cell is on the panel.</p>
+<p><strong>The extraction is a model.</strong> Labels are produced by a language model checked against a hand-labeled reference set; on that set it agrees on whether a post is a call about 90 % of the time, on direction about 90 %, and on horizon about 80 %. Horizon is the softest field, which is why the three horizons are kept separate rather than blended.</p>
+</div>
+
+<h2 id="stats">Current state</h2>
+<table>
+<tr><th>Metric</th><th class="num">Value</th></tr>
+<tr><td>Original posts read</td><td class="num" id="t-tweets">—</td></tr>
+<tr><td>Explicit calls extracted</td><td class="num" id="t-calls">—</td></tr>
+<tr><td>Calls matured and scored</td><td class="num" id="t-outcomes">—</td></tr>
+<tr><td>Correct · partial · wrong</td><td class="num" id="t-results">—</td></tr>
+<tr><td>Hit rate, short · medium · long</td><td class="num" id="t-hit">—</td></tr>
+<tr><td>Accounts with ≥ 20 scored calls</td><td class="num" id="t-scored">—</td></tr>
+<tr><td>Data through</td><td class="num" id="t-to">—</td></tr>
+</table>
+<p>The full per-account, per-cell breakdown, every call with its tweet and price points, and the contributor list behind each reading are on the panel. <a href="/login">Request access.</a></p>
+</section>
+</div>
+
+<div class="wrap"><footer>
+  <span>Finclator</span>
+  <span class="spacer"></span>
+  <a href="/">Overview</a>
+  <a href="/login">Panel</a>
+</footer></div>
+
+<script>
+(async () => {
+  let d; try { d = await (await fetch("/site.json", {cache: "no-cache"})).json(); } catch { return; }
+  const $ = id => document.getElementById(id), fmt = n => n.toLocaleString("en-US"), pct = x => Math.round(x * 100) + " %";
+  $("m-accounts").textContent = d.accounts; $("m-schools").textContent = d.schools.map(s => s.school).join(", ");
+  $("m-scored").textContent = d.scored_accounts; $("m-lo").textContent = d.trust_lo.toFixed(2); $("m-hi").textContent = d.trust_hi.toFixed(2);
+  $("m-long").textContent = pct(d.hit_by_horizon.LONG.rate); $("m-short").textContent = pct(d.hit_by_horizon.SHORT.rate);
+  $("t-tweets").textContent = fmt(d.tweets); $("t-calls").textContent = fmt(d.calls); $("t-outcomes").textContent = fmt(d.outcomes);
+  const r = d.results; $("t-results").textContent = `${fmt(r.CORRECT || 0)} · ${fmt(r.PARTIAL || 0)} · ${fmt(r.WRONG || 0)}`;
+  const h = d.hit_by_horizon; $("t-hit").textContent = `${pct(h.SHORT.rate)} · ${pct(h.MEDIUM.rate)} · ${pct(h.LONG.rate)}`;
+  $("t-scored").textContent = d.scored_accounts; $("t-to").textContent = d.to;
+})();
+</script>
+</body>
+</html>

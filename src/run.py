@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import sys
 
-from . import audit, classify, evaluate, fetch, matrix, pine, prices, score
+from . import audit, classify, evaluate, fetch, matrix, pine, prices, score, site
 from .db import connect, log
 
 
@@ -20,6 +20,8 @@ def main(skip_fetch: bool = False, skip_classify: bool = False) -> None:
     matrix.print_grid(matrix.build(conn))
     log(f"audit: {audit.build()}")
     log(f"pine: {pine.generate(conn)}")
+    site.build(conn)
+    log("site: public/site.json")
 
 
 if __name__ == "__main__":

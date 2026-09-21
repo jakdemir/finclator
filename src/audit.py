@@ -103,8 +103,9 @@ def _flags(r) -> list[str]:
     return f
 
 
-def body(conn, model: str | None = None) -> str:
-    """HTML fragment for the audit tab (no chrome)."""
+def body(conn, model: str | None = None, limit: int | None = None, account: str | None = None) -> str:
+    """HTML fragment for the audit tab (no chrome). `limit`/`account` cap the rendered rows (hosted panel) — counts and
+    filter options are still computed over every call of the model."""
     model = model or active_model()
     e = html.escape
     rows = conn.execute("""
@@ -124,9 +125,20 @@ def body(conn, model: str | None = None) -> str:
             flag_counts[x] = flag_counts.get(x, 0) + 1
     others = [m for m in list_models(conn) if m != model]
     handles = sorted({r["handle"] for r in rows})
+    total = len(rows)
+    if account:
+        rows = [r for r in rows if r["handle"] == account]
+    if limit and len(rows) > limit:
+        rows = rows[:limit]
+    capped = len(rows) < total
 
     B = [f"<style>{CSS}</style><script>{JS}</script>"]
-    B.append(f"<h2>Calls <small>{len(rows)} · model <b>{e(model)}</b>{' · also in DB: ' + ', '.join(e(m) for m in others) if others else ''}</small></h2>")
+    B.append(f"<h2>Calls <small>{total} · model <b>{e(model)}</b>{' · also in DB: ' + ', '.join(e(m) for m in others) if others else ''}</small></h2>")
+    if capped:
+        opts = "".join(f"<option value='{e(h)}'{' selected' if h == account else ''}>@{e(h)}</option>" for h in handles)
+        B.append(f"<p class=help><b>Showing {len(rows)} of {total} calls</b> (newest first{', @' + e(account) if account else ''}). "
+                 f"Pick an account to see its full history: <select onchange=\"location.search='?account='+encodeURIComponent(this.value)\">"
+                 f"<option value=''>all accounts (newest {limit})</option>{opts}</select></p>")
     B.append("<div class=filters>")
     B.append(f"<span class=pill><span class=hit1>CORRECT {res_counts['CORRECT']}</span> · <span style='color:#f0b64c'>PARTIAL {res_counts['PARTIAL']}</span> · "
              f"<span class=hit0>WRONG {res_counts['WRONG']}</span> · pending {res_counts['PENDING']}</span>")
