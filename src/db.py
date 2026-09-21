@@ -1,6 +1,16 @@
-"""SQLite storage. Single file, single writer, zero ops."""
+"""Storage. Two backends behind one `connect()`:
+
+- SQLite (`data/finclator.db`) when `DATABASE_URL` is unset — the original single-file, zero-ops mode.
+- Postgres (Neon via Vercel) when `DATABASE_URL` is set — the hosted panel and the weekly run share one live DB.
+
+Every module writes SQLite-flavoured SQL; `_PgConnection` rewrites the small set of idioms that differ
+(`?` placeholders, `INSERT OR IGNORE/REPLACE`, `datetime('now')`, `instr()`, `random()`) so the query sites stay
+untouched. Rows behave like `sqlite3.Row` on both backends (index by position or name, `.keys()`).
+"""
 from __future__ import annotations
 
+import os
+import re
 import sqlite3
 from pathlib import Path
 
@@ -13,9 +23,12 @@ def log(msg: str) -> None:
     from datetime import datetime, timezone
     line = f"{datetime.now(timezone.utc):%Y-%m-%d %H:%M:%S} {msg}"
     print(line, flush=True)
-    LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with LOG_PATH.open("a") as f:
-        f.write(line + "\n")
+    try:
+        LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with LOG_PATH.open("a") as f:
+            f.write(line + "\n")
+    except OSError:
+        pass  # read-only filesystem (hosted panel)
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS accounts (
@@ -105,22 +118,212 @@ CREATE TABLE IF NOT EXISTS trust (
 );
 """
 
+# Tables in FK order (migration + schema listing) and their conflict keys (for INSERT OR REPLACE → ON CONFLICT).
+TABLES = ["accounts", "tweets", "classified_by", "calls", "prices", "outcomes", "trust"]
+CONFLICT_KEYS = {
+    "accounts": ("handle",), "tweets": ("id",), "classified_by": ("tweet_id", "model"),
+    "calls": ("tweet_id", "asset", "model"), "prices": ("asset", "date"), "outcomes": ("call_id",),
+    "trust": ("model", "handle", "asset", "horizon"),
+}
+MIGRATIONS = (("accounts", "rate_per_year", "INTEGER"), ("accounts", "sampling", "TEXT"), ("accounts", "tier", "TEXT"),
+              ("calls", "price_target", "REAL"), ("outcomes", "target_hit", "INTEGER"), ("outcomes", "extreme", "REAL"))
 
-def connect(path: Path = DB_PATH) -> sqlite3.Connection:
+
+def database_url() -> str | None:
+    url = os.environ.get("DATABASE_URL")
+    if url:
+        return url
+    p = DB_PATH.parent.parent / ".env"
+    if p.exists():
+        for ln in p.read_text().splitlines():
+            if ln.startswith("DATABASE_URL="):
+                return ln.split("=", 1)[1].strip().strip('"')
+    return None
+
+
+# ── Postgres backend ─────────────────────────────────────────────────────────────────────────────────────────────
+class Row(tuple):
+    """sqlite3.Row look-alike: r[0], r["col"], r.keys()."""
+
+    def __new__(cls, cols, values):
+        self = super().__new__(cls, values)
+        self._cols = cols
+        return self
+
+    def __getitem__(self, k):
+        if isinstance(k, str):
+            return tuple.__getitem__(self, self._cols[k])
+        return tuple.__getitem__(self, k)
+
+    def keys(self):
+        return list(self._cols)
+
+
+def _row_factory(cursor):
+    from decimal import Decimal
+    cols = {d.name: i for i, d in enumerate(cursor.description or ())}
+
+    def make(values):
+        return Row(cols, tuple(float(v) if isinstance(v, Decimal) else v for v in values))
+    return make
+
+
+_RE_IGNORE = re.compile(r"INSERT\s+OR\s+IGNORE\s+INTO\s+(\w+)", re.I)
+_RE_REPLACE = re.compile(r"INSERT\s+OR\s+REPLACE\s+INTO\s+(\w+)\s*\(([^)]*)\)", re.I)
+_RE_NOW_DELTA = re.compile(r"datetime\('now'\s*,\s*'([-+]?\d+)\s+(\w+)'\)", re.I)
+_RE_INSTR = re.compile(r"\binstr\(([^,]+),\s*([^)]+)\)", re.I)
+_PG_NOW = "to_char(now() at time zone 'utc', 'YYYY-MM-DD HH24:MI:SS')"
+
+
+def to_pg(sql: str) -> str:
+    """Rewrite SQLite idioms used in this codebase into Postgres."""
+    m = _RE_IGNORE.search(sql)
+    if m:
+        sql = _RE_IGNORE.sub(r"INSERT INTO \1", sql).rstrip().rstrip(";") + " ON CONFLICT DO NOTHING"
+    m = _RE_REPLACE.search(sql)
+    if m:
+        table, cols = m.group(1), [c.strip() for c in m.group(2).split(",")]
+        keys = CONFLICT_KEYS[table]
+        sets = ", ".join(f"{c}=EXCLUDED.{c}" for c in cols if c not in keys)
+        sql = _RE_REPLACE.sub(rf"INSERT INTO {table}(\2)", sql).rstrip().rstrip(";")
+        sql += f" ON CONFLICT ({', '.join(keys)}) DO UPDATE SET {sets}"
+    sql = _RE_NOW_DELTA.sub(lambda m: f"to_char((now() at time zone 'utc') + interval '{m.group(1)} {m.group(2)}', "
+                                      "'YYYY-MM-DD HH24:MI:SS')", sql)
+    sql = sql.replace("datetime('now')", _PG_NOW)
+    sql = _RE_INSTR.sub(r"position(\2 in \1)", sql)
+    sql = sql.replace("%", "%%").replace("?", "%s")
+    return sql
+
+
+class _PgCursorProxy:
+    def __init__(self, cur):
+        self._cur = cur
+
+    def __getattr__(self, name):
+        return getattr(self._cur, name)
+
+    def __iter__(self):
+        return iter(self._cur)
+
+    def fetchone(self):
+        return self._cur.fetchone()
+
+    def fetchall(self):
+        return self._cur.fetchall()
+
+
+class _PgConnection:
+    """Minimal sqlite3.Connection-compatible façade over psycopg 3."""
+    backend = "postgres"
+
+    def __init__(self, url: str):
+        import psycopg
+        self._c = psycopg.connect(url, row_factory=_row_factory, autocommit=False)
+
+    # sqlite3 API surface used by the codebase
+    def execute(self, sql: str, params=()):
+        cur = self._c.cursor()
+        cur.execute(to_pg(sql), tuple(params) if not isinstance(params, dict) else params)
+        return _PgCursorProxy(cur)
+
+    def executemany(self, sql: str, seq):
+        cur = self._c.cursor()
+        cur.executemany(to_pg(sql), [tuple(p) for p in seq])
+        return _PgCursorProxy(cur)
+
+    def executescript(self, script: str):
+        clean = "\n".join(ln.split("--", 1)[0] for ln in script.splitlines())
+        for stmt in [s.strip() for s in clean.split(";") if s.strip()]:
+            self._c.execute(stmt)
+        self._c.commit()
+
+    def cursor(self):
+        return self._c.cursor()
+
+    def commit(self):
+        self._c.commit()
+
+    def rollback(self):
+        self._c.rollback()
+
+    def close(self):
+        self._c.close()
+
+    @property
+    def row_factory(self):
+        return _row_factory
+
+    @row_factory.setter
+    def row_factory(self, _):
+        pass
+
+    @property
+    def raw(self):
+        return self._c
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        (self.rollback if exc[0] else self.commit)()
+
+
+def pg_schema() -> str:
+    """SCHEMA translated for Postgres: identity ids, float8 instead of float4."""
+    s = SCHEMA.replace("id          INTEGER PRIMARY KEY,", "id          BIGINT GENERATED BY DEFAULT AS IDENTITY PRIMARY KEY,")
+    s = re.sub(r"\bREAL\b", "DOUBLE PRECISION", s)
+    return s
+
+
+def columns(conn, table: str) -> list[str]:
+    if getattr(conn, "backend", "sqlite") == "postgres":
+        return [r[0] for r in conn.execute(
+            "SELECT column_name FROM information_schema.columns WHERE table_schema='public' AND table_name=? "
+            "ORDER BY ordinal_position", (table,))]
+    return [r["name"] for r in conn.execute(f"PRAGMA table_info({table})")]
+
+
+def primary_key(conn, table: str) -> set[str]:
+    if getattr(conn, "backend", "sqlite") == "postgres":
+        return set(CONFLICT_KEYS.get(table, ()))
+    return {r["name"] for r in conn.execute(f"PRAGMA table_info({table})") if r["pk"]}
+
+
+def tables(conn) -> list[str]:
+    if getattr(conn, "backend", "sqlite") == "postgres":
+        return [r[0] for r in conn.execute(
+            "SELECT table_name FROM information_schema.tables WHERE table_schema='public' ORDER BY 1")]
+    return [r[0] for r in conn.execute(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")]
+
+
+def _migrate(conn) -> None:
+    for table, col, typ in MIGRATIONS:
+        if col not in columns(conn, table):
+            if getattr(conn, "backend", "sqlite") == "postgres" and typ == "REAL":
+                typ = "DOUBLE PRECISION"
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {typ}")
+    conn.commit()
+
+
+def connect(path: Path = DB_PATH, url: str | None = None):
+    """Postgres when DATABASE_URL (env or .env) is set, else SQLite at `path`."""
+    url = url if url is not None else database_url()
+    if url:
+        conn = _PgConnection(url)
+        conn.executescript(pg_schema())
+        _migrate(conn)
+        return conn
     path.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(path)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
     conn.executescript(SCHEMA)
-    # additive migrations for existing DBs
-    cols = {r["name"] for r in conn.execute("PRAGMA table_info(accounts)")}
-    for col, typ in (("rate_per_year", "INTEGER"), ("sampling", "TEXT")):
-        if col not in cols:
-            conn.execute(f"ALTER TABLE accounts ADD COLUMN {col} {typ}")
-    for table, col, typ in (("calls", "price_target", "REAL"), ("outcomes", "target_hit", "INTEGER"),
-                            ("outcomes", "extreme", "REAL")):
-        if col not in {r["name"] for r in conn.execute(f"PRAGMA table_info({table})")}:
-            conn.execute(f"ALTER TABLE {table} ADD COLUMN {col} {typ}")
-    conn.commit()
+    _migrate(conn)
     return conn
+
+
+def connect_sqlite(path: Path = DB_PATH) -> sqlite3.Connection:
+    """Always the local SQLite file (migration source, offline tools)."""
+    return connect(path, url="")

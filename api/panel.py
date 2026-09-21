@@ -1,7 +1,8 @@
 """Vercel Python function: the admin panel behind the session cookie set by api/auth.js.
 
-Same HMAC scheme as auth.js (SESSION_SECRET over "session|email|exp", base64url payload "." signature). The DB is the
-committed data/finclator.db bundled with the deployment (read-only filesystem → copied to /tmp for WAL/pragmas).
+Same HMAC scheme as auth.js (SESSION_SECRET over "session|email|exp", base64url payload "." signature). The DB is
+Postgres (Neon) via DATABASE_URL — the same one the weekly pipeline writes to — with the committed data/finclator.db
+as a fallback when DATABASE_URL is unset (copied to /tmp because SQLite needs a writable dir even for reads).
 Local-only widgets (process probes, live log, vendor balance, rebuild links) are neutralised in-process.
 """
 from __future__ import annotations
@@ -22,7 +23,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SECRET = os.environ.get("SESSION_SECRET", "")
 OWNER = os.environ.get("OWNER_EMAIL", "").lower()
 
-# ── DB: the deployment filesystem is read-only; SQLite needs a writable dir for the WAL journal even for reads ──
+# ── DB ────────────────────────────────────────────────────────────────────────────────────────────────────────────
 _DB_SRC = ROOT / "data" / "finclator.db"
 _DB_TMP = Path("/tmp") / "finclator.db"
 
@@ -33,7 +34,10 @@ def _db_path() -> Path:
     return _DB_TMP
 
 
-def _connect() -> sqlite3.Connection:
+def _connect():
+    if os.environ.get("DATABASE_URL"):
+        from src.db import connect
+        return connect()
     conn = sqlite3.connect(_db_path())
     conn.row_factory = sqlite3.Row
     return conn

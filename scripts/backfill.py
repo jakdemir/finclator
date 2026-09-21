@@ -1,13 +1,12 @@
 """3-year backfill for every roster account, N accounts in parallel. Resumable.
 Usage: PYTHONPATH=. .venv/bin/python scripts/backfill.py [--workers 8] [--pages N] [handle ...]
 """
-import sqlite3
 import sys
 import threading
 from datetime import datetime, timedelta, timezone
 from queue import Queue
 
-from src.db import DB_PATH, connect, log
+from src.db import connect, log
 from src.fetch import fetch_account, sync_roster
 
 UNTIL = (datetime.now(timezone.utc) - timedelta(days=3 * 365)).date().isoformat()
@@ -42,9 +41,9 @@ log(f"{q.qsize()} accounts to fetch with {workers} workers, back to {UNTIL}")
 
 
 def worker():
-    conn = sqlite3.connect(DB_PATH, timeout=60)
-    conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA journal_mode=WAL")
+    conn = connect()
+    if getattr(conn, "backend", "sqlite") == "sqlite":
+        conn.execute("PRAGMA busy_timeout=60000")
     while True:
         try:
             h = q.get_nowait()

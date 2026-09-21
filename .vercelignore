@@ -13,3 +13,4 @@ scripts
 tradingview
 *.md
 !public/**
+data/finclator.db

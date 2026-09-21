@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import audit
+from . import audit, db
 from .db import LOG_PATH as LOG
 from .db import connect, log
 from .models import active_model
@@ -118,13 +118,13 @@ def _page(title: str, body: str, active: str) -> str:
 def status(conn) -> dict:
     model = active_model()
     f = _one(conn, """SELECT count(*) t, coalesce(sum(relevant),0) rel,
-                       coalesce(sum(is_reply),0) replies, coalesce(sum(text LIKE 'RT @%'),0) rts,
+                       coalesce(sum(is_reply),0) replies, coalesce(sum(CASE WHEN text LIKE 'RT @%' THEN 1 ELSE 0 END),0) rts,
                        (SELECT count(*) FROM classified_by b JOIN tweets x ON x.id=b.tweet_id WHERE b.model=? AND x.relevant=1) cls,
                        (SELECT count(*) FROM calls WHERE model=?) calls,
                        (SELECT count(*) FROM outcomes o JOIN calls c ON c.id=o.call_id WHERE c.model=?) outs,
                        (SELECT count(*) FROM trust WHERE model=? AND asset='*' AND horizon='*') scored,
                        (SELECT count(*) FROM accounts) accounts,
-                       (SELECT count(*) FROM accounts WHERE active) active,
+                       (SELECT count(*) FROM accounts WHERE active=1) active,
                        (SELECT count(DISTINCT handle) FROM tweets) fetched FROM tweets""", model, model, model, model)
     # classification throughput for the active model over the last 10 minutes (classified_by.at is UTC)
     recent = _one(conn, "SELECT count(*) n, min(at) a FROM classified_by WHERE model=? AND at >= datetime('now','-10 minutes')", model)
@@ -362,7 +362,7 @@ def page_architecture(conn) -> str:
     from .evaluate import MATURITY_DAYS
     from .prefilter import _ASSET_PATTERNS
     e = html.escape
-    f = _one(conn, """SELECT count(*) t, coalesce(sum(relevant),0) rel, coalesce(sum(relevant AND classified),0) cls,
+    f = _one(conn, """SELECT count(*) t, coalesce(sum(relevant),0) rel, coalesce(sum(CASE WHEN relevant=1 AND classified=1 THEN 1 ELSE 0 END),0) cls,
                        (SELECT count(*) FROM calls) calls, (SELECT count(DISTINCT tweet_id) FROM calls) ct,
                        (SELECT count(*) FROM outcomes) outs, (SELECT count(*) FROM accounts) acc FROM tweets""")
     pct = lambda a, b: f"{100 * a / b:.0f}%" if b else "–"  # noqa: E731
@@ -466,12 +466,13 @@ def page_tables(conn, qs: str) -> str:
     offset = max(0, int(q.get("o", ["0"])[0] or 0))
     limit = min(500, max(1, int(q.get("n", ["50"])[0] or 50)))
     sql = q.get("sql", [""])[0].strip()
-    tables = [r[0] for r in _q(conn, "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name")]
+    tables = db.tables(conn)
 
     B = ["<h2>Tables</h2><table><tr><th>table</th><th>rows</th><th>columns</th></tr>"]
     for t in tables:
         n = _one(conn, f"SELECT count(*) FROM {t}")[0]
-        cols = ", ".join(r["name"] + ("*" if r["pk"] else "") for r in _q(conn, f"PRAGMA table_info({t})"))
+        pk = db.primary_key(conn, t)
+        cols = ", ".join(c + ("*" if c in pk else "") for c in db.columns(conn, t))
         B.append(f"<tr><td><a href='/tables?t={t}' style='color:#9ecbff'><b>{t}</b></a></td><td class=num>{n:,}</td><td><small>{e(cols)}</small></td></tr>")
     B.append("</table>")
 
@@ -482,14 +483,18 @@ def page_tables(conn, qs: str) -> str:
              "<code>SELECT * FROM outcomes WHERE result='WRONG'</code> · <code>SELECT date, close FROM prices WHERE asset='BTC' ORDER BY date DESC LIMIT 10</code></small></form>")
     if sql:
         first = sql.lstrip("(").split(None, 1)[0].upper() if sql else ""
-        if first not in ("SELECT", "WITH", "EXPLAIN", "PRAGMA") or ";" in sql.rstrip(";"):
-            B.append("<p class=err>only a single SELECT / WITH / EXPLAIN / PRAGMA statement is allowed</p>")
+        if first not in ("SELECT", "WITH", "EXPLAIN") or ";" in sql.rstrip(";"):
+            B.append("<p class=err>only a single SELECT / WITH / EXPLAIN statement is allowed</p>")
         else:
             try:
                 ro = connect()
-                ro.execute("PRAGMA query_only=1")
+                if getattr(ro, "backend", "sqlite") == "postgres":
+                    ro.execute("SET TRANSACTION READ ONLY")
+                else:
+                    ro.execute("PRAGMA query_only=1")
                 cur = ro.execute(sql.rstrip(";") + (" LIMIT 500" if first == "SELECT" and " LIMIT " not in sql.upper() else ""))
                 B.append("<h3>result</h3>" + _render_rows(cur))
+                ro.rollback()
                 ro.close()
             except Exception as ex:  # noqa: BLE001
                 B.append(f"<p class=err>{e(str(ex))}</p>")
@@ -497,7 +502,7 @@ def page_tables(conn, qs: str) -> str:
     if name in tables:
         total = _one(conn, f"SELECT count(*) FROM {name}")[0]
         order = {"tweets": "created_at DESC", "calls": "called_at DESC", "outcomes": "exit_date DESC", "prices": "date DESC",
-                 "trust": "score DESC", "accounts": "handle"}.get(name, "rowid")
+                 "trust": "score DESC", "accounts": "handle", "classified_by": "at DESC"}.get(name, "1")
         cur = conn.execute(f"SELECT * FROM {name} ORDER BY {order} LIMIT ? OFFSET ?", (limit, offset))
         prev_ = f"<a href='/tables?t={name}&o={max(0, offset - limit)}&n={limit}' style='color:#9ecbff'>← prev</a>" if offset else ""
         next_ = f"<a href='/tables?t={name}&o={offset + limit}&n={limit}' style='color:#9ecbff'>next →</a>" if offset + limit < total else ""
