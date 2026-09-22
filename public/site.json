@@ -1,31 +1,31 @@
 {
- "generated_at": "2026-09-22T13:21+00:00",
+ "generated_at": "2026-09-22T13:33+00:00",
  "accounts": 98,
- "tweets": 156064,
+ "tweets": 156124,
  "from": "2021",
- "to": "2026-09-21",
- "calls": 11527,
- "outcomes": 7692,
+ "to": "2026-09-22",
+ "calls": 11531,
+ "outcomes": 7715,
  "results": {
-  "CORRECT": 3719,
-  "PARTIAL": 2250,
-  "WRONG": 1723
+  "CORRECT": 3728,
+  "PARTIAL": 2255,
+  "WRONG": 1732
  },
  "hit_by_horizon": {
   "MEDIUM": {
-   "rate": 0.71,
+   "rate": 0.711,
    "baseline": 0.814,
-   "n": 2122
+   "n": 2127
   },
   "LONG": {
    "rate": 0.758,
-   "baseline": 0.829,
-   "n": 1306
+   "baseline": 0.828,
+   "n": 1310
   },
   "SHORT": {
    "rate": 0.55,
-   "baseline": 0.616,
-   "n": 4264
+   "baseline": 0.617,
+   "n": 4278
   }
  },
  "scored_accounts": 40,
@@ -57,26 +57,26 @@
   "BTC:SHORT": {
    "label": "NEUTRAL",
    "net": 0.074,
-   "n": 196,
-   "top_share": 0.346
+   "n": 197,
+   "top_share": 0.344
   },
   "BTC:MEDIUM": {
    "label": "BUY",
-   "net": 0.204,
+   "net": 0.2,
    "n": 492,
    "top_share": 0.148
   },
   "BTC:LONG": {
    "label": "BUY",
-   "net": 0.647,
-   "n": 1402,
+   "net": 0.648,
+   "n": 1404,
    "top_share": 0.175
   },
   "GOLD:SHORT": {
    "label": "BUY",
-   "net": 0.32,
+   "net": 0.323,
    "n": 59,
-   "top_share": 0.159
+   "top_share": 0.151
   },
   "GOLD:MEDIUM": {
    "label": "BUY",
@@ -86,9 +86,9 @@
   },
   "GOLD:LONG": {
    "label": "BUY",
-   "net": 0.924,
-   "n": 901,
-   "top_share": 0.361
+   "net": 0.925,
+   "n": 902,
+   "top_share": 0.359
   },
   "SPX:SHORT": {
    "label": "NEUTRAL",
