@@ -1,33 +1,33 @@
 {
- "generated_at": "2026-09-21T18:30+00:00",
+ "generated_at": "2026-09-22T13:12+00:00",
  "accounts": 98,
- "tweets": 145192,
+ "tweets": 156064,
  "from": "2021",
- "to": "2026-09-15",
- "calls": 8155,
- "outcomes": 6065,
+ "to": "2026-09-21",
+ "calls": 11527,
+ "outcomes": 7692,
  "results": {
-  "CORRECT": 3060,
-  "WRONG": 1246,
-  "PARTIAL": 1759
+  "CORRECT": 3719,
+  "PARTIAL": 2250,
+  "WRONG": 1723
  },
  "hit_by_horizon": {
   "MEDIUM": {
-   "rate": 0.742,
-   "n": 2074
+   "rate": 0.71,
+   "n": 2122
   },
   "LONG": {
-   "rate": 0.778,
-   "n": 601
+   "rate": 0.758,
+   "n": 1306
   },
   "SHORT": {
-   "rate": 0.57,
-   "n": 3390
+   "rate": 0.55,
+   "n": 4264
   }
  },
- "scored_accounts": 33,
- "trust_lo": 0.5,
- "trust_hi": 0.84,
+ "scored_accounts": 40,
+ "trust_lo": 0.27,
+ "trust_hi": 0.83,
  "schools": [
   {
    "school": "Macro",
@@ -53,66 +53,66 @@
  "matrix": {
   "BTC:SHORT": {
    "label": "NEUTRAL",
-   "net": 0.097,
-   "n": 58
+   "net": 0.074,
+   "n": 196
   },
   "BTC:MEDIUM": {
    "label": "BUY",
-   "net": 0.553,
-   "n": 345
+   "net": 0.204,
+   "n": 492
   },
   "BTC:LONG": {
    "label": "BUY",
-   "net": 0.803,
-   "n": 850
+   "net": 0.647,
+   "n": 1402
   },
   "GOLD:SHORT": {
    "label": "BUY",
-   "net": 0.534,
-   "n": 19
+   "net": 0.32,
+   "n": 59
   },
   "GOLD:MEDIUM": {
    "label": "BUY",
-   "net": 0.942,
-   "n": 214
+   "net": 0.873,
+   "n": 302
   },
   "GOLD:LONG": {
    "label": "BUY",
-   "net": 0.978,
-   "n": 338
+   "net": 0.924,
+   "n": 901
   },
   "SPX:SHORT": {
    "label": "NEUTRAL",
-   "net": 0.09,
-   "n": 26
+   "net": -0.146,
+   "n": 60
   },
   "SPX:MEDIUM": {
    "label": "BUY",
-   "net": 0.7,
-   "n": 150
+   "net": 0.254,
+   "n": 172
   },
   "SPX:LONG": {
-   "label": "BUY",
-   "net": 0.254,
-   "n": 92
+   "label": "NEUTRAL",
+   "net": -0.008,
+   "n": 251
   }
  },
- "matrix_generated_at": "2026-09-21",
+ "matrix_generated_at": "2026-09-22",
  "example": {
-  "handle": "garethsoloway",
+  "handle": "tedpillows",
   "asset": "BTC",
   "direction": "BUY",
   "horizon": "SHORT",
-  "called": "2026-02-13",
-  "price_target": 85000.0,
-  "quote": "If it does, upside between $80,000-$85,000 is likely.",
-  "entry_date": "2026-02-13",
-  "exit_date": "2026-05-14",
-  "entry_close": 68857.84375,
-  "exit_close": 81051.25,
-  "return_pct": 17.708086088594662,
-  "threshold_pct": 11.497707459684914,
+  "called": "2026-06-23",
+  "price_target": 67000.0,
+  "quote": "After that, liquidity clusters around $66,000-$67,000 will start looking attractive again.",
+  "entry_date": "2026-06-23",
+  "exit_date": "2026-09-21",
+  "entry_close": 62668.01953125,
+  "exit_close": 85916.2578125,
+  "return_pct": 37.09745170685831,
+  "threshold_pct": 10.714272210121434,
   "result": "CORRECT",
-  "tweet_id": "2022351409782640927"
+  "tweet_id": "2069351066945147166"
  }
 }
