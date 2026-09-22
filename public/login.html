@@ -23,7 +23,7 @@
     <div>
       <h1 style="font-size:clamp(1.8rem,3.6vw,2.6rem)">The panel</h1>
       <p class="lede" style="font-size:1.1rem;color:var(--ink-2);margin-top:16px">Every account's trust grid, the contributor list behind each cell, and every call with its tweet, entry and exit close. Access is by email and granted by hand.</p>
-      <p style="color:var(--ink-2)">No password. Enter your email: if you already have access you get a sign-in link; if not, a request goes to me and you get a link once I approve it. Links sign you in for 30 days on the device you open them on.</p>
+      <p style="color:var(--ink-2)">No password. Enter your email and pick one: <b>Send sign-in link</b> if you already have access, <b>Request access</b> if you don't. Links sign you in for 30 days on the device you open them on.</p>
       <p id="signed" hidden style="color:var(--ink-2)">You're signed in as <b id="signed-as"></b>. <a href="/panel">Open the panel →</a></p>
     </div>
     <form class="card" id="f" novalidate>
@@ -36,9 +36,11 @@
         <textarea id="note" name="note" maxlength="300"></textarea>
       </div>
       <div style="margin-top:20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <button class="btn" id="go" type="submit">Continue</button>
-        <button class="btn ghost" id="req" type="button" hidden>Request access instead</button>
+        <button class="btn" id="go" type="submit">Send sign-in link</button>
+        <button class="btn ghost" id="req" type="button">Request access</button>
+        <button class="btn ghost" id="back" type="button" hidden>Back</button>
       </div>
+      <p class="muted" id="hint" style="margin:10px 0 0;font-size:.85rem">Already approved → sign-in link by email. Not yet → request goes to me; you get a link once approved.</p>
       <div class="msg" id="msg" role="status" aria-live="polite"></div>
     </form>
   </div>
@@ -49,29 +51,37 @@
 
 <script>
 (() => {
-  const $ = id => document.getElementById(id), f = $("f"), msg = $("msg"), go = $("go"), req = $("req"), more = $("more");
+  const $ = id => document.getElementById(id), f = $("f"), msg = $("msg"), go = $("go"), req = $("req"), back = $("back"), more = $("more"), hint = $("hint");
   const q = new URLSearchParams(location.search);
   const say = (t, ok) => { msg.textContent = t; msg.className = "msg " + (ok ? "ok" : "err"); };
   if (q.get("e") === "expired") say("That sign-in link has expired or was already used. Enter your email for a fresh one.", false);
-  if (q.get("e") === "denied") say("This address doesn't have panel access yet.", false);
+  if (q.get("e") === "denied") say("This address doesn't have panel access yet — use Request access.", false);
   fetch("/auth/me").then(r => r.ok ? r.json() : null).then(u => { if (u) { $("signed-as").textContent = u.email; $("signed").hidden = false; } }).catch(() => {});
   let mode = "login";
-  req.onclick = () => { mode = "request"; more.hidden = false; req.hidden = true; go.textContent = "Send request"; $("name").focus(); };
+  const setMode = m => {
+    mode = m; msg.textContent = ""; msg.className = "msg";
+    more.hidden = m === "login"; req.hidden = m === "request"; back.hidden = m === "login";
+    go.textContent = m === "request" ? "Send request" : "Send sign-in link";
+    hint.textContent = m === "request" ? "I approve requests by hand and email you a sign-in link." : "Already approved → sign-in link by email. Not yet → request goes to me; you get a link once approved.";
+    if (m === "request") $("name").focus();
+  };
+  req.onclick = () => setMode("request");
+  back.onclick = () => setMode("login");
   f.onsubmit = async ev => {
     ev.preventDefault();
     const email = $("email").value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { say("Enter a valid email address.", false); $("email").focus(); return; }
-    go.disabled = true; go.textContent = mode === "request" ? "Sending…" : "Checking…";
+    go.disabled = true; go.textContent = mode === "request" ? "Sending…" : "Sending…";
     try {
       const body = mode === "request" ? {email, name: $("name").value, note: $("note").value} : {email};
       const r = await fetch("/auth/" + mode, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
       const d = await r.json();
       if (!r.ok) { say(d.error || "Something went wrong. Try again in a minute.", false); return; }
       say(d.message, true);
-      if (mode === "login") { req.hidden = false; msg.textContent += " Not on the list yet? Request access below."; }
-      else { go.hidden = true; }
+      if (mode === "login") { hint.textContent = "No email within a minute? You may not be on the list yet — use Request access."; }
+      else { go.hidden = true; back.hidden = true; hint.textContent = ""; }
     } catch { say("Couldn't reach the server. Try again in a minute.", false); }
-    finally { go.disabled = false; go.textContent = mode === "request" ? "Send request" : "Continue"; }
+    finally { go.disabled = false; go.textContent = mode === "request" ? "Send request" : "Send sign-in link"; }
   };
 })();
 </script>
