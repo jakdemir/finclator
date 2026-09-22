@@ -128,9 +128,9 @@ export default async function handler(req, res) {
         await mail(email, "Your Finclator sign-in link", shell("Sign in to the panel",
           `<p>This link signs you in for ${SESSION_DAYS} days on this device. It expires in ${LINK_MINUTES} minutes.</p>` +
           btn(`${SITE}/auth/verify?t=${makeToken("login", email, LINK_MINUTES * 60e3)}`, "Sign in")));
-        return json(res, 200, { status: "approved", message: "You already have access — a sign-in link is on its way." });
+        return json(res, 200, { status: "approved", message: "Check your inbox — your link is on its way." });
       }
-      if (existing && existing.status === "denied") return json(res, 200, { status: "pending", message: "Request received. You'll get an email if access is granted." });
+      if (existing && existing.status === "denied") return json(res, 200, { status: "pending", message: "Check your inbox — you'll get a link by email." });
       users[email] = { email, name: String(name).slice(0, 80), note: String(note).slice(0, 300), status: "pending",
         requested_at: existing?.requested_at || now, requests: (existing?.requests || 0) + 1 };
       await saveUsers(users);
@@ -142,7 +142,7 @@ export default async function handler(req, res) {
         btn(approve, "Approve") + `<p><a href="${deny}" style="color:#8a8a8a">Deny</a></p>`));
       await mail(email, "Finclator: request received", shell("Request received",
         `<p>Thanks — access to the Finclator panel is granted by hand. You'll get a sign-in link by email once it's approved.</p>`));
-      return json(res, 200, { status: "pending", message: "Request received. You'll get an email once it's approved." });
+      return json(res, 200, { status: "pending", message: "Check your inbox — you'll get a link by email." });
     }
 
     if (action === "login" && req.method === "POST") {
