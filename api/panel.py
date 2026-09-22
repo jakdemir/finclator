@@ -84,7 +84,7 @@ def _approved(email: str) -> bool:
 _current_cookie = ""
 
 
-# ── panel rendering: reuse src.admin, with the local-only helpers patched out ────────────────────────────────────
+# ── panel rendering: reuse src.admin; chrome via admin.CHROME (ContextVar), local-only helpers stubbed ───────────
 def _render(path: str, qs: str, email: str) -> tuple[int, str, str]:
     if "FINCLATOR_ACTIVE_MODEL" not in os.environ and os.environ.get("PANEL_MODEL"):
         os.environ["FINCLATOR_ACTIVE_MODEL"] = os.environ["PANEL_MODEL"]  # else models.DEFAULT_MODEL applies
@@ -92,30 +92,21 @@ def _render(path: str, qs: str, email: str) -> tuple[int, str, str]:
     sys.path.insert(0, str(ROOT))
     from src import admin, audit  # noqa: PLC0415
 
+    # plain replacements (not wrappers) — safe to apply on every request
     admin._proc_running = lambda pattern: False
     admin._credits = lambda: None
     admin._log_tail = lambda n=200: "(live pipeline log is only available on the operator's machine)"
     admin.connect = _connect
     audit.connect = _connect
     audit.OUT = Path("/tmp/audit.html")
-    who = f"<span style='margin-left:auto;color:#9aa'>{admin.html.escape(email)} · <a href='/auth/logout' style='color:#9ecbff'>sign out</a> · <a href='/' style='color:#9ecbff'>site</a></span>"
-    orig_page = admin._page
-
-    def page(title, body, active):
-        html = orig_page(title, body, active)
-        # rewrite tab links to live under /panel and drop the meta refresh + rebuild link (no writers in production)
-        for old, new in (("href='/'", "href='/panel'"), ("href='/matrix'", "href='/panel/matrix'"), ("href='/accounts'", "href='/panel/accounts'"),
-                         ("href='/audit'", "href='/panel/audit'"), ("href='/architecture'", "href='/panel/architecture'"),
-                         ("href='/tables'", "href='/panel/tables'"), ("href='/api/status'", "href='/panel/api/status'"),
-                         ("href='/tables?", "href='/panel/tables?"), ("href='/matrix?rebuild=1'", "href='/panel/matrix'"),
-                         ("fetch('/api/log')", "fetch('/panel/api/log')")):
-            html = html.replace(old, new)
-        html = html.replace("<meta http-equiv=refresh content=60>", "").replace("<meta http-equiv=refresh content=30>", "")
-        return html.replace("</nav>", who + "</nav>", 1)
-
-    admin._page = page
-    conn = _connect()
+    who = (f"<span style='margin-left:18px;color:#9aa'>{admin.html.escape(email)} · "
+           f"<a href='/auth/logout' style='color:#9ecbff'>sign out</a> · <a href='/' style='color:#9ecbff'>site</a></span>")
+    # Never wrap admin._page: a wrapper left behind by a failed request (Neon cold start) nested one more sign-out
+    # block per request in the warm function. CHROME is set here and always reset in finally.
+    token = admin.CHROME.set({"prefix": "/panel", "who": who, "readonly": True, "refresh": False})
+    conn = None
     try:
+        conn = _connect()
         if path in ("", "/", "progress"):
             return 200, "text/html; charset=utf-8", admin.page_progress(conn)
         if path == "matrix":
@@ -125,7 +116,7 @@ def _render(path: str, qs: str, email: str) -> tuple[int, str, str]:
         if path == "audit":
             q = parse_qs(qs)
             acc = (q.get("account") or [None])[0]
-            return 200, "text/html; charset=utf-8", page("audit", audit.body(conn, limit=600, account=acc), "/audit")
+            return 200, "text/html; charset=utf-8", admin._page("audit", audit.body(conn, limit=600, account=acc), "/audit")
         if path == "architecture":
             return 200, "text/html; charset=utf-8", admin.page_architecture(conn)
         if path == "tables":
@@ -139,8 +130,9 @@ def _render(path: str, qs: str, email: str) -> tuple[int, str, str]:
             return 200, "application/json", p.read_text() if p.exists() else "{}"
         return 404, "text/plain; charset=utf-8", "not found"
     finally:
-        conn.close()
-        admin._page = orig_page
+        admin.CHROME.reset(token)
+        if conn is not None:
+            conn.close()
 
 
 class handler(BaseHTTPRequestHandler):  # noqa: N801 — Vercel's Python runtime looks for `handler`

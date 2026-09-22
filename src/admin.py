@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import argparse
+import contextvars
 import html
 import json
 import subprocess
@@ -22,6 +23,27 @@ from .models import active_model
 ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ("BTC", "GOLD", "SPX")
 HORIZONS = ("SHORT", "MEDIUM", "LONG")
+
+# Per-request chrome. The hosted panel (api/panel.py) sets prefix='/panel', who=<user block>, readonly=True,
+# refresh=False; the local server leaves the default. Set with CHROME.set(...) and reset in finally — never wrap
+# _page: a wrapper that survives a failed request nests itself (that was the duplicated sign-out block).
+CHROME: contextvars.ContextVar[dict | None] = contextvars.ContextVar("chrome", default=None)
+
+
+def _chrome() -> dict:
+    return CHROME.get() or {}
+
+
+def _u(path: str) -> str:
+    """Admin route → href honouring the hosted prefix: '/' → '/panel', '/tables' → '/panel/tables'."""
+    prefix = _chrome().get("prefix", "")
+    if not prefix:
+        return path
+    return prefix if path == "/" else prefix + path
+
+
+def _readonly() -> bool:
+    return bool(_chrome().get("readonly"))
 
 CSS = """
 body{font:14px system-ui,sans-serif;margin:0;background:#0f1115;color:#e6e6e6}
@@ -40,6 +62,7 @@ th{background:#1d2129;cursor:pointer}td.num{text-align:right;font-variant-numeri
 .ok{color:#7ddc8a}.warn{color:#f0b64c}.err{color:#ff6b6b}
 pre{background:#0a0c10;padding:10px;border-radius:6px;max-height:340px;overflow:auto;font-size:12px}
 .mono{font-family:ui-monospace,monospace}
+.help{color:#9aa;font-size:12px;margin:2px 0 10px;max-width:1100px;line-height:1.45}
 """
 
 JS = """
@@ -48,7 +71,7 @@ const t=th.closest('table'),i=[...th.parentNode.children].indexOf(th),tb=t.tBodi
 th.dataset.asc=asc?'1':'0';const v=td=>td.dataset.v!==undefined?+td.dataset.v:(isNaN(parseFloat(td.textContent))?td.textContent:parseFloat(td.textContent));
 [...tb.rows].sort((a,b)=>{const x=v(a.cells[i]),y=v(b.cells[i]);return (x>y?1:x<y?-1:0)*(asc?1:-1)}).forEach(r=>tb.appendChild(r));});
 async function tailLog(){const el=document.getElementById('log');if(!el)return;
- try{const t=await (await fetch('/api/log')).text();if(t!==el.textContent){el.textContent=t;
+ try{const t=await (await fetch(LOG_URL)).text();if(t!==el.textContent){el.textContent=t;
  if(document.getElementById('follow').checked)el.scrollTop=el.scrollHeight;}}catch(e){}}
 window.addEventListener('load',()=>{const el=document.getElementById('log');if(el){el.scrollTop=el.scrollHeight;setInterval(tailLog,3000);}});
 """
@@ -106,12 +129,17 @@ def _log_tail(n=200) -> str:
 
 
 def _page(title: str, body: str, active: str) -> str:
-    tabs = [("/", "Progress"), ("/matrix", "Matrix"), ("/accounts", "Accounts"), ("/audit", "Audit"), ("/architecture", "Architecture"), ("/tables", "Tables"), ("/api/status", "JSON")]
-    nav = "".join(f"<a href='{h}' class='{'on' if h == active else ''}'>{t}</a>" for h, t in tabs)
-    refresh = "" if active in ("/tables", "/audit") else f"<meta http-equiv=refresh content={60 if active == '/' else 30}>"
+    ch = _chrome()
+    tabs = [("/", "Progress"), ("/matrix", "Matrix"), ("/accounts", "Accounts"), ("/audit", "Audit"),
+            ("/architecture", "Architecture"), ("/tables", "Tables"), ("/api/status", "JSON")]
+    nav = "".join(f"<a href='{_u(h)}' class='{'on' if h == active else ''}'>{t}</a>" for h, t in tabs)
+    live = ch.get("refresh", True) and active not in ("/tables", "/audit")
+    refresh = f"<meta http-equiv=refresh content={60 if active == '/' else 30}>" if live else ""
+    mode = ("page 60s · log live 3s" if active == "/" else "auto-refresh 30s") if live else "no auto-refresh"
+    who = ch.get("who", "")
     return (f"<!doctype html><meta charset=utf-8><title>Finclator admin — {title}</title>"
-            f"{refresh}<style>{CSS}</style><script>{JS}</script>"
-            f"<nav>{nav}<span style='margin-left:auto;color:#9aa'>{datetime.now(timezone.utc):%H:%M:%S} UTC · {'page 60s · log live 3s' if active == '/' else ('no auto-refresh' if active in ('/tables', '/audit') else 'auto-refresh 30s')}</span></nav>"
+            f"{refresh}<style>{CSS}</style><script>const LOG_URL={json.dumps(_u('/api/log'))}</script><script>{JS}</script>"
+            f"<nav>{nav}<span style='margin-left:auto;color:#9aa'>{datetime.now(timezone.utc):%H:%M:%S} UTC · {mode}</span>{who}</nav>"
             f"<main>{body}</main>")
 
 
@@ -158,29 +186,36 @@ def page_progress(conn) -> str:
     s = status(conn)
     e = html.escape
     pct = lambda a, b: (100 * a / b) if b else 0  # noqa: E731
-    run_state = ("<span class=ok>running</span>" if s["backfill_running"] else "<span class=warn>idle</span>")
-    cls_state = ("<span class=ok>running</span>" if s["classify_running"] else "<span class=warn>idle</span>")
+    run_state = ("<small>operator machine</small>" if _readonly() else
+                 "<span class=ok>running</span>" if s["backfill_running"] else "<span class=warn>idle</span>")
+    cls_state = ("<small>operator machine</small>" if _readonly() else
+                 "<span class=ok>running</span>" if s["classify_running"] else "<span class=warn>idle</span>")
     eta = (f"{s['classify_rate_per_min']:.0f}/min · ETA {s['classify_eta_hours']:.1f} h" if s["classify_rate_per_min"]
            else ("no throughput in last 10 min" if s["pending_classification"] else "done"))
     cards = [
         ("backfill", run_state, "scripts/backfill.py (twitterapi.io fetch)"),
         ("classifier", cls_state, f"{e(s['model'])}<br>{eta}"),
         ("accounts fetched", f"{s['accounts_fetched']} / {s['accounts']}", f"{s['accounts_active']} active"),
-        ("tweets", f"{s['tweets']:,}", f"replies {s['replies_in_db']} · RTs {s['retweets_in_db']} (must be 0)"),
-        ("asset-mentioning", f"{s['relevant']:,}", f"{pct(s['relevant'], s['tweets']):.0f}% of tweets"),
+        ("tweets", f"{s['tweets']:,}", f"replies {s['replies_in_db']} · RTs {s['retweets_in_db']} — originals-only invariant"),
+        ("asset-mentioning", f"{s['relevant']:,}", f"{pct(s['relevant'], s['tweets']):.0f}% of tweets (regex stage)"),
         ("classified by this model", f"{s['classified']:,}", f"<span class='{'warn' if s['pending_classification'] else 'ok'}'>{s['pending_classification']:,} pending</span>"),
         ("calls", f"{s['calls']:,}", f"{s['outcomes']:,} matured & evaluated"),
-        ("accounts scored", f"{s['accounts_scored']}", "have ≥1 matured outcome"),
+        ("accounts scored", f"{s['accounts_scored']}", "≥ 1 matured outcome (trust exists)"),
     ]
     cr = _credits()
     if cr is not None:
         cards.append(("twitterapi.io", f"${cr:.2f}", f"$0.15 / 1K tweets + $0.15 / 1K requests → ≈ {int(cr / 0.15 * 1000):,} tweets if every request were full"))
-    B = [f"<h2>Pipeline <small>· active model {e(s['model'])} · models in DB: {e(', '.join(s['models']) or '—')}</small></h2><div class=cards>"]
+    B = [f"<h2>Pipeline <small>· active model {e(s['model'])} · models in DB: {e(', '.join(s['models']) or '—')}</small></h2>",
+         "<p class=help>Funnel, left to right: stored originals → mention an asset (regex) → labeled by the active model → "
+         "explicit calls → matured &amp; evaluated → accounts with a trust score. Everything after “asset-mentioning” is per "
+         "model; the header names the active one.</p><div class=cards>"]
     for t, v, sub in cards:
         B.append(f"<div class=card><small>{t}</small><b>{v}</b><small>{sub}</small></div>")
     B.append("</div>")
+    never = [r[0] for r in _q(conn, "SELECT handle FROM accounts WHERE handle NOT IN (SELECT DISTINCT handle FROM tweets) ORDER BY 1")]
     B.append(f"<h2>Fetch coverage <small>({pct(s['accounts_fetched'], s['accounts']):.0f}%)</small></h2>"
-             f"<div class=bar><i style='width:{pct(s['accounts_fetched'], s['accounts']):.1f}%'></i></div>")
+             f"<div class=bar><i style='width:{pct(s['accounts_fetched'], s['accounts']):.1f}%'></i></div>"
+             f"<p class=help>never fetched: {', '.join('@' + e(h) for h in never) or '—'}</p>")
     B.append(f"<h2>Classification by {e(s['model'])} <small>({pct(s['classified'], s['relevant']):.1f}% of asset-mentioning tweets · newest first)</small></h2>"
              f"<div class=bar><i style='width:{pct(s['classified'], s['relevant']):.1f}%'></i></div>")
     cov = _one(conn, "SELECT min(x.created_at) a, max(x.created_at) b FROM classified_by y JOIN tweets x ON x.id=y.tweet_id WHERE y.model=?", s["model"])
@@ -219,8 +254,9 @@ def page_progress(conn) -> str:
                  f"<td>{(r['f'] or '')[:10]}</td><td>{(r['l'] or '')[:10]}</td><td>{(r['last_fetch_at'] or '')[:16].replace('T', ' ')}</td></tr>")
     B.append("</tbody></table>")
 
-    B.append("<h2>pipeline.log <small>(live, last 200 lines, UTC) · <label><input type=checkbox id=follow checked> follow</label></small></h2>"
-             f"<pre id=log>{e(_log_tail())}</pre>")
+    if not _readonly():
+        B.append("<h2>pipeline.log <small>(live, last 200 lines, UTC) · <label><input type=checkbox id=follow checked> follow</label></small></h2>"
+                 f"<pre id=log>{e(_log_tail())}</pre>")
     return _page("progress", "".join(B), "/")
 
 
@@ -229,8 +265,8 @@ def page_matrix(conn) -> str:
     B = []
     matrix_p = ROOT / "data" / "matrix.json"
     m = json.loads(matrix_p.read_text()) if matrix_p.exists() else {"generated_at": "", "cells": {}}
-    B.append(f"<h2>Current matrix <small>generated {e(m.get('generated_at') or '—')}</small> "
-             f"<a href='/matrix?rebuild=1' style='color:#9ecbff'>rebuild now</a></h2>")
+    B.append(f"<h2>Current matrix <small>generated {e(m.get('generated_at') or '—')}</small>"
+             + ("" if _readonly() else " <a href='/matrix?rebuild=1' style='color:#9ecbff'>rebuild now</a>") + "</h2>")
     B.append("<table class=grid><tr><th></th><th>SHORT<br><small>0–3 mo</small></th><th>MEDIUM<br><small>3–12 mo</small></th><th>LONG<br><small>1–5 y</small></th></tr>")
     for a in ASSETS:
         tds = ""
@@ -393,7 +429,7 @@ def page_architecture(conn) -> str:
     B.append("</table><p>Disambiguation: <i>hisse / borsa / endeks</i> alone usually means BIST, so they count as SPX only with a "
              "US cue (ABD, Fed, Nasdaq, Tesla…) <b>and</b> no BIST cue (THY, Aselsan, xu100…). "
              "Result is stored as <code>tweets.relevant</code> + <code>assets_hint</code>. "
-             "Check it on <a href='/audit' style='color:#9ecbff'>Audit → “prefilter dropped”</a> sample.</p>")
+             f"Check it on <a href='{_u('/audit')}' style='color:#9ecbff'>Audit → “prefilter dropped”</a> sample.</p>")
 
     B.append("<h2>Stage 2 — classifier <small>(src/classify.py) · strict</small></h2>"
              "<p>One LLM call per relevant tweet. Must answer “is this an explicit, falsifiable call?” — past-move reports, news, charts "
@@ -415,7 +451,7 @@ def page_architecture(conn) -> str:
              "<li><b>Matrix</b>: per cell, each call in the window weighs trust × confidence × 2<sup>−age/(window/3)</sup>; "
              "net = (buy−sell)/total → BUY &gt; +0.15, SELL &lt; −0.15, else NEUTRAL; N/A when total weight &lt; 0.3. "
              "Everyone contributes; noisy accounts are outweighed, not filtered.</li>"
-             "<li><b>Schools</b> (accounts.school) get their own sub-label per cell, shown on <a href='/matrix' style='color:#9ecbff'>Matrix</a>.</li></ul>")
+             f"<li><b>Schools</b> (accounts.school) get their own sub-label per cell, shown on <a href='{_u('/matrix')}' style='color:#9ecbff'>Matrix</a>.</li></ul>")
 
     B.append("<h2>Known weak spots</h2><ul>"
              "<li>Stage 1 can't catch calls that name no asset (“this is the top” under a chart image).</li>"
@@ -467,17 +503,19 @@ def page_tables(conn, qs: str) -> str:
     limit = min(500, max(1, int(q.get("n", ["50"])[0] or 50)))
     sql = q.get("sql", [""])[0].strip()
     tables = db.tables(conn)
+    T = _u("/tables")
 
-    B = ["<h2>Tables</h2><table><tr><th>table</th><th>rows</th><th>columns</th></tr>"]
+    B = ["<h2>Tables</h2><p class=help>* = primary key. The hosted panel queries Postgres, the local admin SQLite — write portable SQL "
+         "(no PRAGMA, no sqlite_master; <code>CASE WHEN</code> instead of sum(bool)).</p><table><tr><th>table</th><th>rows</th><th>columns</th></tr>"]
     for t in tables:
         n = _one(conn, f"SELECT count(*) FROM {t}")[0]
         pk = db.primary_key(conn, t)
         cols = ", ".join(c + ("*" if c in pk else "") for c in db.columns(conn, t))
-        B.append(f"<tr><td><a href='/tables?t={t}' style='color:#9ecbff'><b>{t}</b></a></td><td class=num>{n:,}</td><td><small>{e(cols)}</small></td></tr>")
+        B.append(f"<tr><td><a href='{T}?t={t}' style='color:#9ecbff'><b>{t}</b></a></td><td class=num>{n:,}</td><td><small>{e(cols)}</small></td></tr>")
     B.append("</table>")
 
     B.append("<h2>SQL <small>(read-only; SELECT / WITH / EXPLAIN only, 500 rows max)</small></h2>"
-             f"<form method=get action=/tables><textarea name=sql rows=3 style='width:100%;max-width:900px;background:#0a0c10;color:#e6e6e6;border:1px solid #2a2f3a;padding:6px;font-family:ui-monospace,monospace'>{e(sql)}</textarea><br>"
+             f"<form method=get action={T}><textarea name=sql rows=3 style='width:100%;max-width:900px;background:#0a0c10;color:#e6e6e6;border:1px solid #2a2f3a;padding:6px;font-family:ui-monospace,monospace'>{e(sql)}</textarea><br>"
              "<button style='margin-top:6px'>run</button> "
              "<small style='color:#9aa'>examples: <code>SELECT handle, count(*) n FROM calls GROUP BY 1 ORDER BY 2 DESC</code> · "
              "<code>SELECT * FROM outcomes WHERE result='WRONG'</code> · <code>SELECT date, close FROM prices WHERE asset='BTC' ORDER BY date DESC LIMIT 10</code></small></form>")
@@ -504,10 +542,10 @@ def page_tables(conn, qs: str) -> str:
         order = {"tweets": "created_at DESC", "calls": "called_at DESC", "outcomes": "exit_date DESC", "prices": "date DESC",
                  "trust": "score DESC", "accounts": "handle", "classified_by": "at DESC"}.get(name, "1")
         cur = conn.execute(f"SELECT * FROM {name} ORDER BY {order} LIMIT ? OFFSET ?", (limit, offset))
-        prev_ = f"<a href='/tables?t={name}&o={max(0, offset - limit)}&n={limit}' style='color:#9ecbff'>← prev</a>" if offset else ""
-        next_ = f"<a href='/tables?t={name}&o={offset + limit}&n={limit}' style='color:#9ecbff'>next →</a>" if offset + limit < total else ""
+        prev_ = f"<a href='{T}?t={name}&o={max(0, offset - limit)}&n={limit}' style='color:#9ecbff'>← prev</a>" if offset else ""
+        next_ = f"<a href='{T}?t={name}&o={offset + limit}&n={limit}' style='color:#9ecbff'>next →</a>" if offset + limit < total else ""
         B.append(f"<h2>{name} <small>rows {offset + 1:,}–{min(offset + limit, total):,} of {total:,} · order {e(order)} · "
-                 f"{prev_} {next_} · <a href='/tables?t={name}&o={offset}&n=200' style='color:#9ecbff'>200/page</a></small></h2>")
+                 f"{prev_} {next_} · <a href='{T}?t={name}&o={offset}&n=200' style='color:#9ecbff'>200/page</a></small></h2>")
         B.append(_render_rows(cur))
     return _page("tables", "".join(B), "/tables")
 
