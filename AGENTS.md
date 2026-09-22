@@ -3,7 +3,8 @@
 Finfluencer tweets → explicit, falsifiable market calls → evaluated against price when the horizon matures →
 per-account trust → a 3×3 BUY/NEUTRAL/SELL matrix (BTC, GOLD, SPX × SHORT 0–3 mo / MEDIUM 3–12 mo / LONG 1–5 y).
 Surfaces: **finclator.com** (public landing + method page, gated admin panel), `data/audit.html`, and
-`tradingview/finclator.pine` (publishing on hold). Spec: `specs/001-influencer-trust-scores/`. Branch `main`
+`tradingview/finclator.pine` (publishing on hold). Spec: `specs/001-influencer-trust-scores/`. GitHub **protocogni/finclator**
+(public; `main` is the only branch that matters, collaborators are Read-only → fork + PR). Branch `main`
 (`001-influencer-trust-scores` kept in sync). Standing product decisions live in the
 `social-sentiment-trading-signals` skill; site/panel/Vercel ops in its `references/website-ops.md`.
 
