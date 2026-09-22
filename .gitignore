@@ -108,6 +108,7 @@ node_modules/
 .vercel/
 .env.local
 data/finclator.db
+data/audit.html
 data/agreement_*
 data/tune_*.jsonl
 .hermes/
