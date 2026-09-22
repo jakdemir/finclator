@@ -1,0 +1,20 @@
+gold=data/labels_holdout.jsonl (100 of 120 frontier-labeled tweets, 9 gold calls)
+A_terse_par8: terse output, no thinking, 8 parallel streams (current production)
+B_full_par8: full JSON output (is_call field, whitespace), no thinking, 8 streams
+C_batch4_par8: terse, 4 tweets per request, 8 streams
+D_think_par8: terse, thinking ON (reasoning tokens before the answer), 8 streams
+
+variant           tw/min  s/tweet  is_call   prec    rec     F1    dir    hor  err
+A_terse_par8         179    0.335    0.920   0.53   0.89   0.67   0.89   0.67    0
+B_full_par8           92    0.650    0.950   0.67   0.89   0.76   0.89   0.67    0
+C_batch4_par8        122    0.492    0.970   0.88   0.78   0.82   0.88   0.88    0
+D_think_par8           4   16.228    0.920   0.67   0.22   0.33   1.00   0.67    0
+
+confirmation on the tuning set data/labels_backfill.jsonl (300 tweets, 71 gold calls; ~69 tw/min for batch modes there —
+more calls → more output tokens, long tweets fall back to single mode):
+A_terse_par8_bf    n=300 is_call=0.860 prec=0.62 rec=0.89 F1=0.73 dir=0.94 hor=0.71 (both=63)
+C_batch4_par8_bf   n=300 is_call=0.890 prec=0.75 rec=0.74 F1=0.74 dir=0.92 hor=0.73 (both=52)
+E_batch8_par8_bf   n=300 is_call=0.930 prec=0.88 rec=0.78 F1=0.83 dir=0.95 hor=0.73 (both=56)
+
+verdict: batching (FINCLATOR_BATCH_SIZE=8, terse, think off, 8 workers) — best is_call/precision/F1 on both sets,
+~2/3 the speed of single terse; thinking mode is 45x slower and collapses recall (the model over-applies "be strict").

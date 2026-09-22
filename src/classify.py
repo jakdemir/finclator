@@ -117,6 +117,8 @@ tweet is a call (be as generous to calls as the rules allow). If it is NOT a cal
 If it IS a call, reply with compact JSON on one line, no spaces or newlines:
 {"calls":[{"asset":"BTC","direction":"BUY","horizon":"SHORT","confidence":0.8,"price_target":null,"quote":"..."}]}"""
 TERSE = os.environ.get("FINCLATOR_TERSE", "1") == "1"
+THINK = os.environ.get("FINCLATOR_THINK", "0") == "1"   # Ollama native path: let Qwen3.6 reason before answering (slow)
+THINK_PREDICT = int(os.environ.get("FINCLATOR_THINK_PREDICT", "1500"))  # num_predict budget incl. reasoning tokens
 
 
 def pending(conn: sqlite3.Connection, limit: int | None = None, model: str | None = None) -> list[sqlite3.Row]:
@@ -197,9 +199,10 @@ def _ollama_chat(user: str, num_predict: int, num_ctx: int | None = None, json_m
 
     url = BASE_URL.split("/v1")[0].rstrip("/") + "/api/chat"
     body = {
-        "model": MODEL, "stream": False, "keep_alive": "1h", "think": False,  # Qwen3.5+/3.6 ignore the /no_think tag
-        "options": {"temperature": 0, "num_ctx": num_ctx or NUM_CTX, "num_predict": num_predict},
-        "messages": [{"role": "system", "content": SYSTEM + (TERSE_SUFFIX if TERSE else "") + "\n/no_think"},
+        "model": MODEL, "stream": False, "keep_alive": "1h", "think": THINK,  # Qwen3.5+/3.6 ignore the /no_think tag
+        "options": {"temperature": 0, "num_ctx": num_ctx or NUM_CTX,
+                    "num_predict": max(num_predict, THINK_PREDICT) if THINK else num_predict},
+        "messages": [{"role": "system", "content": SYSTEM + (TERSE_SUFFIX if TERSE else "") + ("" if THINK else "\n/no_think")},
                      {"role": "user", "content": user}],
     }
     if json_mode:  # JSON mode: with TERSE the non-call sentinel is `{}` (2 tokens), still valid JSON
@@ -211,7 +214,8 @@ def _ollama_chat(user: str, num_predict: int, num_ctx: int | None = None, json_m
 
 # ---------- batched mode (local model only) ----------
 
-BATCH_SIZE = int(os.environ.get("FINCLATOR_BATCH_SIZE", "1"))  # >1 → several tweets per request
+BATCH_SIZE = int(os.environ.get("FINCLATOR_BATCH_SIZE", "4"))  # >1 → several tweets per request. 4 = variant C
+# (holdout 2026-09-21: is_call .97, F1 .82, hor .88 vs .92/.67/.67 single-tweet); production default.
 BATCH_MAX_TEXT = 1200  # per-tweet clip inside a batch; longer tweets are sent alone
 BATCH_SUFFIX = """
 

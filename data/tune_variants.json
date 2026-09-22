@@ -1,0 +1,98 @@
+[
+ {
+  "variant": "A_terse_par8",
+  "model": "qwen3.6-local:35b-a3b-q4_K_M",
+  "n": 100,
+  "seconds": 33.5,
+  "s_per_tweet": 0.335,
+  "tweets_per_min": 179.1,
+  "errors": 0,
+  "is_call_acc": 0.92,
+  "call_precision": 0.533,
+  "call_recall": 0.889,
+  "call_f1": 0.667,
+  "both": 9,
+  "dir_acc": 0.889,
+  "hor_acc": 0.667,
+  "env": {
+   "FINCLATOR_WORKERS": "8",
+   "FINCLATOR_BATCH_SIZE": "1",
+   "FINCLATOR_TERSE": "1",
+   "FINCLATOR_THINK": "0",
+   "FINCLATOR_NUM_CTX": "6144"
+  },
+  "desc": "terse output, no thinking, 8 parallel streams (current production)"
+ },
+ {
+  "variant": "B_full_par8",
+  "model": "qwen3.6-local:35b-a3b-q4_K_M",
+  "n": 100,
+  "seconds": 65.0,
+  "s_per_tweet": 0.65,
+  "tweets_per_min": 92.4,
+  "errors": 0,
+  "is_call_acc": 0.95,
+  "call_precision": 0.667,
+  "call_recall": 0.889,
+  "call_f1": 0.762,
+  "both": 9,
+  "dir_acc": 0.889,
+  "hor_acc": 0.667,
+  "env": {
+   "FINCLATOR_WORKERS": "8",
+   "FINCLATOR_BATCH_SIZE": "1",
+   "FINCLATOR_TERSE": "0",
+   "FINCLATOR_THINK": "0",
+   "FINCLATOR_NUM_CTX": "6144"
+  },
+  "desc": "full JSON output (is_call field, whitespace), no thinking, 8 streams"
+ },
+ {
+  "variant": "C_batch4_par8",
+  "model": "qwen3.6-local:35b-a3b-q4_K_M",
+  "n": 100,
+  "seconds": 49.2,
+  "s_per_tweet": 0.492,
+  "tweets_per_min": 122.0,
+  "errors": 0,
+  "is_call_acc": 0.97,
+  "call_precision": 0.875,
+  "call_recall": 0.778,
+  "call_f1": 0.824,
+  "both": 8,
+  "dir_acc": 0.875,
+  "hor_acc": 0.875,
+  "env": {
+   "FINCLATOR_WORKERS": "8",
+   "FINCLATOR_BATCH_SIZE": "4",
+   "FINCLATOR_TERSE": "1",
+   "FINCLATOR_THINK": "0",
+   "FINCLATOR_NUM_CTX": "6144"
+  },
+  "desc": "terse, 4 tweets per request, 8 streams"
+ },
+ {
+  "variant": "D_think_par8",
+  "model": "qwen3.6-local:35b-a3b-q4_K_M",
+  "n": 100,
+  "seconds": 1622.8,
+  "s_per_tweet": 16.228,
+  "tweets_per_min": 3.7,
+  "errors": 0,
+  "is_call_acc": 0.92,
+  "call_precision": 0.667,
+  "call_recall": 0.222,
+  "call_f1": 0.333,
+  "both": 3,
+  "dir_acc": 1.0,
+  "hor_acc": 0.667,
+  "env": {
+   "FINCLATOR_WORKERS": "8",
+   "FINCLATOR_BATCH_SIZE": "1",
+   "FINCLATOR_TERSE": "1",
+   "FINCLATOR_THINK": "1",
+   "FINCLATOR_NUM_CTX": "6144"
+  },
+  "desc": "terse, thinking ON (reasoning tokens before the answer), 8 streams"
+ }
+]
