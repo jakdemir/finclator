@@ -15,7 +15,7 @@ from datetime import datetime, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from . import audit, db
+from . import audit, db, score
 from .db import LOG_PATH as LOG
 from .db import connect, log
 from .models import active_model
@@ -274,11 +274,34 @@ def page_matrix(conn) -> str:
             c = m["cells"].get(f"{a}:{h}", {"label": "N/A", "n_calls": 0, "net": 0, "buy": 0, "sell": 0, "neutral": 0})
             cls = c["label"] if c["label"] != "N/A" else "NA"
             w = c.get("buy", 0) + c.get("sell", 0) + c.get("neutral", 0)
-            tds += f"<td class={cls}>{c['label']}<br><small>n={c['n_calls']} net={c['net']:+.2f} w={w:.2f}</small></td>"
+            ts = c.get("top_share", 0) or 0
+            top = (f"<br><small class='{'warn' if ts >= 0.5 else ''}'>top @{e(c.get('top_handle') or '–')} {ts:.0%}</small>"
+                   if c.get("top_handle") else "")
+            tds += f"<td class={cls}>{c['label']}<br><small>n={c['n_calls']} net={c['net']:+.2f} w={w:.2f}</small>{top}</td>"
         B.append(f"<tr><th>{a}</th>{tds}</tr>")
     B.append("</table>")
+    B.append("<p class=help>Each cell is the trust-weighted lean of the roster's calls inside that horizon window. "
+             "<b>n</b> = calls in the window · <b>net</b> = (buy − sell) / total weight, −1…+1 (BUY &gt; +0.15, SELL &lt; −0.15, "
+             "else NEUTRAL; N/A when total weight &lt; 0.3) · <b>w</b> = Σ trust × confidence × 2<sup>−age/(window/3)</sup> · "
+             "<b>top</b> = largest single account's share of w (amber ≥ 50 %: one account is carrying the cell — that is its "
+             "view, not a consensus).</p>")
 
-    B.append("<h2>Contributions per cell <small>(weight = trust × confidence × recency)</small></h2>")
+    B.append("<h2>Hit rate vs always-BUY <small>· same matured outcomes, target bonus excluded</small></h2>"
+             "<table><tr><th>horizon</th><th title='matured calls of the active model'>n</th>"
+             "<th title='CORRECT=1 PARTIAL=0.5 WRONG=0'>roster</th>"
+             "<th title='a BUY call on every one of these outcomes: market up=1, flat=0.5, down=0'>always-BUY</th><th>edge</th></tr>")
+    hr = score.hit_rates(conn, active_model())
+    for hz in HORIZONS:
+        v = hr.get(hz)
+        if not v:
+            continue
+        edge = v["rate"] - v["baseline"]
+        B.append(f"<tr><td>{hz}</td><td class=num>{v['n']:,}</td><td class=num>{v['rate']:.1%}</td><td class=num>{v['baseline']:.1%}</td>"
+                 f"<td class='num {'ok' if edge > 0.02 else 'err' if edge < -0.02 else 'warn'}'>{edge:+.1%}</td></tr>")
+    B.append("</table><p class=help>Edge = roster − always-BUY. Most of the covered period was a bull market, so a high hit rate "
+             "alone is not skill; only the edge column says whether the roster beat “just buy”.</p>")
+
+    B.append("<h2>Contributors per cell <small>(15 heaviest; weight = trust × confidence × recency)</small></h2>")
     for a in ASSETS:
         for h in HORIZONS:
             c = m["cells"].get(f"{a}:{h}")
@@ -299,7 +322,8 @@ def page_matrix(conn) -> str:
                           GROUP BY a.school ORDER BY mean DESC""", active_model()):
         B.append(f"<tr><td>{e(r['school'] or '')}</td><td class=num>{r['n_acc']}</td><td class=num>{r['scored']}</td>"
                  f"<td class=num>{(r['mean'] or 0):.3f}</td><td class=num>{r['sn']}</td></tr>")
-    B.append("</tbody></table>")
+    B.append("</tbody></table><p class=help>mean trust = average of each scored member's overall score (all cells pooled); "
+             "Σn = their matured calls. Per-school sub-labels for each cell are inside the contributor sections above.</p>")
     return _page("matrix", "".join(B), "/matrix")
 
 

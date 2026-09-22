@@ -9,6 +9,7 @@ import sqlite3
 from datetime import datetime, timezone
 from pathlib import Path
 
+from . import score
 from .db import connect
 from .models import active_model
 
@@ -26,9 +27,7 @@ def build(conn: sqlite3.Connection, model: str | None = None) -> dict:
                     (SELECT count(*) FROM outcomes o JOIN calls k ON k.id=o.call_id WHERE k.model=?) outcomes,
                     (SELECT count(*) FROM trust WHERE model=? AND asset='*' AND horizon='*' AND n>=20) scored20""",
           model, model, model)
-    hit = {r["horizon"]: {"rate": round(r["r"], 3), "n": r["n"]} for r in conn.execute(
-        """SELECT k.horizon, avg(CASE o.result WHEN 'CORRECT' THEN 1 WHEN 'PARTIAL' THEN 0.5 ELSE 0 END) r, count(*) n
-           FROM outcomes o JOIN calls k ON k.id=o.call_id WHERE k.model=? GROUP BY 1""", (model,))}
+    hit = score.hit_rates(conn, model)  # {horizon: {rate, baseline (always-BUY on the same outcomes), n}}
     results = {r["result"]: r["n"] for r in conn.execute(
         "SELECT o.result, count(*) n FROM outcomes o JOIN calls k ON k.id=o.call_id WHERE k.model=? GROUP BY 1", (model,))}
     spread = q("SELECT min(score) lo, max(score) hi FROM trust WHERE model=? AND asset='*' AND horizon='*' AND n>=20", model)
@@ -44,7 +43,8 @@ def build(conn: sqlite3.Connection, model: str | None = None) -> dict:
               ORDER BY k.called_at DESC LIMIT 1""", model)
     matrix_p = ROOT / "data" / "matrix.json"
     m = json.loads(matrix_p.read_text()) if matrix_p.exists() else {"cells": {}}
-    cells = {k: {"label": v["label"], "net": v["net"], "n": v["n_calls"]} for k, v in m.get("cells", {}).items()}
+    cells = {k: {"label": v["label"], "net": v["net"], "n": v["n_calls"], "top_share": v.get("top_share", 0)}
+             for k, v in m.get("cells", {}).items()}
     out = {
         "generated_at": datetime.now(timezone.utc).isoformat(timespec="minutes"),
         "accounts": f["accounts"], "tweets": f["tweets"], "from": f["t0"][:4], "to": f["t1"][:10],

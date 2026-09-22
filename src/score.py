@@ -79,6 +79,21 @@ class TrustLookup:
         return 0.5
 
 
+def hit_rates(conn: sqlite3.Connection, model: str) -> dict[str, dict]:
+    """{horizon: {rate, baseline, n}} over matured outcomes of `model`. `rate` scores the account's call
+    (CORRECT=1, PARTIAL=0.5, WRONG=0; target bonus excluded so the two columns are comparable); `baseline` scores an
+    always-BUY call on the same outcomes (market up=1, flat=0.5, down=0). A hit rate without this row is not
+    evidence of skill — most of the covered period was a bull market."""
+    out: dict[str, dict] = {}
+    for r in conn.execute("""SELECT c.horizon,
+                                    avg(CASE o.result WHEN 'CORRECT' THEN 1.0 WHEN 'PARTIAL' THEN 0.5 ELSE 0.0 END) r,
+                                    avg(CASE o.actual WHEN 'BUY' THEN 1.0 WHEN 'NEUTRAL' THEN 0.5 ELSE 0.0 END) b,
+                                    count(*) n
+                             FROM outcomes o JOIN calls c ON c.id=o.call_id WHERE c.model=? GROUP BY c.horizon""", (model,)):
+        out[r["horizon"]] = {"rate": round(float(r["r"]), 3), "baseline": round(float(r["b"]), 3), "n": r["n"]}
+    return out
+
+
 if __name__ == "__main__":
     conn = connect()
     print(recompute(conn), "trust rows")

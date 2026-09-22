@@ -2,7 +2,9 @@
 
 Recency: exponential decay with half-life = 1/3 of the horizon's maturity window, and a hard cutoff at the
 full window (a SHORT call older than 3 months is stale by definition).
-School aggregation: sum of member weights (a one-person school cannot dominate). Written to data/matrix.json.
+School aggregation: sum of member weights (a one-person school cannot dominate). `top_handle`/`top_share` = the
+single account carrying the largest share of a cell's weight (concentration warning at ≥ 0.5); `contributors` are
+the 15 heaviest. Written to data/matrix.json.
 """
 from __future__ import annotations
 
@@ -54,6 +56,7 @@ def build(conn: sqlite3.Connection, today: date | None = None, write: bool = Tru
                                 (model, asset, horizon, since, until)).fetchall()
             # latest call per account dominates; older ones from the same account decay
             per_school: dict[str, dict] = {}
+            per_handle: dict[str, float] = {}
             contributors = []
             buy = sell = neutral = 0.0
             for r in rows:
@@ -68,14 +71,18 @@ def build(conn: sqlite3.Connection, today: date | None = None, write: bool = Tru
                     neutral += w
                 s = per_school.setdefault(schools.get(r["handle"], "?"), {"buy": 0.0, "sell": 0.0, "neutral": 0.0})
                 s["buy" if d == "BUY" else "sell" if d == "SELL" else "neutral"] += w
+                per_handle[r["handle"]] = per_handle.get(r["handle"], 0.0) + w
                 contributors.append({"handle": r["handle"], "direction": d, "date": r["called_at"][:10],
                                      "weight": round(w, 3), "quote": r["quote"], "tweet_id": r["tweet_id"]})
             total = buy + sell + neutral
             net = (buy - sell) / total if total else 0.0
+            top_handle, top_w = max(per_handle.items(), key=lambda kv: kv[1]) if per_handle else (None, 0.0)
+            contributors.sort(key=lambda x: -x["weight"])
             matrix["cells"][f"{asset}:{horizon}"] = {
                 "asset": asset, "horizon": horizon, "label": _label(net, total),
                 "net": round(net, 3), "buy": round(buy, 3), "sell": round(sell, 3), "neutral": round(neutral, 3),
                 "n_calls": len(rows),
+                "top_handle": top_handle, "top_share": round(top_w / total, 3) if total else 0.0,
                 "schools": {k: {**{kk: round(vv, 3) for kk, vv in v.items()},
                                 "label": _label((v["buy"] - v["sell"]) / (sum(v.values()) or 1), sum(v.values()))}
                             for k, v in per_school.items()},

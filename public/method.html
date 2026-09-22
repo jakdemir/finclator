@@ -79,9 +79,9 @@
 <h2 id="reading">How to read it honestly</h2>
 <div class="note">
 <p><strong>Direction, not magnitude.</strong> A Buy cell says the trusted part of the roster leans long; it says nothing about how far.</p>
-<p><strong>Regime bias is real.</strong> Most of the period covered has been a bull market for all three assets, and most of the roster is structurally bullish. Trust scores partly reward having been long while things went up — long-horizon hit rates run <span id="m-long">78 %</span> against <span id="m-short">57 %</span> for short. A flip away from Buy is therefore more informative than a Buy.</p>
-<p><strong>Volume is not evidence.</strong> One account can post a thousand calls a year; trust caps its influence but a prolific, decent account still carries the most weight in its cells. The contributor list behind every cell is on the panel.</p>
-<p><strong>The extraction is a model.</strong> Labels are produced by a language model checked against a hand-labeled reference set; on that set it agrees on whether a post is a call about 90 % of the time, on direction about 90 %, and on horizon about 80 %. Horizon is the softest field, which is why the three horizons are kept separate rather than blended.</p>
+<p><strong>Regime bias is real.</strong> Most of the period covered has been a bull market for all three assets, and most of the roster is structurally bullish. Trust scores partly reward having been long while things went up. On the very same matured calls, an account that simply said "buy" every time would have scored <span id="m-base-short">—</span> short · <span id="m-base-medium">—</span> medium · <span id="m-base-long">—</span> long, against the roster's <span id="m-short">—</span> · <span id="m-medium">—</span> · <span id="m-long">—</span>. Where the roster does not beat that row it has no measurable edge; a flip away from Buy is therefore more informative than a Buy.</p>
+<p><strong>Volume is not evidence.</strong> One account can post a thousand calls a year; trust caps its influence but a prolific, decent account still carries the most weight in its cells. The largest single contributor's share of each cell's weight is reported with the reading — a cell where one account carries half the weight is that account's view, not a consensus. The full contributor list behind every cell is on the panel.</p>
+<p><strong>The extraction is a model.</strong> Labels are produced by a language model checked against a hand-labeled reference set. On that set it agrees on whether a post is a call about 95 % of the time, and on direction and horizon roughly 90 % — but the reference set is small, so horizon remains the softest field, which is why the three horizons are kept separate rather than blended.</p>
 </div>
 
 <h2 id="stats">Current state</h2>
@@ -92,6 +92,7 @@
 <tr><td>Calls matured and scored</td><td class="num" id="t-outcomes">—</td></tr>
 <tr><td>Correct · partial · wrong</td><td class="num" id="t-results">—</td></tr>
 <tr><td>Hit rate, short · medium · long</td><td class="num" id="t-hit">—</td></tr>
+<tr><td>Always-Buy on the same calls, short · medium · long</td><td class="num" id="t-base">—</td></tr>
 <tr><td>Accounts with ≥ 20 scored calls</td><td class="num" id="t-scored">—</td></tr>
 <tr><td>Data through</td><td class="num" id="t-to">—</td></tr>
 </table>
@@ -110,12 +111,17 @@
 (async () => {
   let d; try { d = await (await fetch("/site.json", {cache: "no-cache"})).json(); } catch { return; }
   const $ = id => document.getElementById(id), fmt = n => n.toLocaleString("en-US"), pct = x => Math.round(x * 100) + " %";
+  const h = d.hit_by_horizon;
   $("m-accounts").textContent = d.accounts; $("m-schools").textContent = d.schools.map(s => s.school).join(", ");
   $("m-scored").textContent = d.scored_accounts; $("m-lo").textContent = d.trust_lo.toFixed(2); $("m-hi").textContent = d.trust_hi.toFixed(2);
-  $("m-long").textContent = pct(d.hit_by_horizon.LONG.rate); $("m-short").textContent = pct(d.hit_by_horizon.SHORT.rate);
+  for (const k of ["short", "medium", "long"]) {
+    const v = h[k.toUpperCase()]; if (!v) continue;
+    $("m-" + k).textContent = pct(v.rate); if (v.baseline != null) $("m-base-" + k).textContent = pct(v.baseline);
+  }
   $("t-tweets").textContent = fmt(d.tweets); $("t-calls").textContent = fmt(d.calls); $("t-outcomes").textContent = fmt(d.outcomes);
   const r = d.results; $("t-results").textContent = `${fmt(r.CORRECT || 0)} · ${fmt(r.PARTIAL || 0)} · ${fmt(r.WRONG || 0)}`;
-  const h = d.hit_by_horizon; $("t-hit").textContent = `${pct(h.SHORT.rate)} · ${pct(h.MEDIUM.rate)} · ${pct(h.LONG.rate)}`;
+  $("t-hit").textContent = `${pct(h.SHORT.rate)} · ${pct(h.MEDIUM.rate)} · ${pct(h.LONG.rate)}`;
+  if (h.SHORT.baseline != null) $("t-base").textContent = `${pct(h.SHORT.baseline)} · ${pct(h.MEDIUM.baseline)} · ${pct(h.LONG.baseline)}`;
   $("t-scored").textContent = d.scored_accounts; $("t-to").textContent = d.to;
 })();
 </script>
