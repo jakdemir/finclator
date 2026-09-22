@@ -7,13 +7,19 @@ Surfaces: **finclator.com** (public landing + method page, gated admin panel), `
 (`001-influencer-trust-scores` kept in sync). Standing product decisions live in the
 `social-sentiment-trading-signals` skill; site/panel/Vercel ops in its `references/website-ops.md`.
 
-## State of play (2026-09-21)
-- Backlog fully classified by `qwen3:30b-a3b-instruct-2507-q4_K_M` (49.7k tweets → 8.2k calls → 6.1k matured outcomes,
-  67 accounts scored). Frontier labels (`claude-fable-5.1/interactive`, 297 + 120 holdout) coexist as a second model.
+## State of play (2026-09-22)
+- Backlog fully classified by **`qwen3.6-local:35b-a3b-q4_K_M`** (51.6k relevant tweets → 11.5k calls → 7.7k matured
+  outcomes, 73 accounts scored; 40 with ≥20). The 30B labels and the frontier labels (`claude-fable-5.1/interactive`)
+  coexist as other model dimensions. **User decision: the 3.6 labels are final for now; keep every other model's labels
+  in the DB for future comparison — never purge `calls`/`classified_by`/`trust` rows of a non-active model.**
+- **Roster underperforms always-BUY at every horizon** (SHORT 55 % vs 62 %, MEDIUM 71 % vs 81 %, LONG 76 % vs 83 %) —
+  `score.hit_rates()`; shown on Matrix tab, `/method`, `site.json`. Say so when discussing "skill".
 - **Database is Postgres (Neon, Vercel team Protocogni Labs)** via `DATABASE_URL` in `.env`; `data/finclator.db` is an
   untracked cold backup of the pre-migration state. `db.connect()` falls back to SQLite only when `DATABASE_URL` is unset.
 - Site live at **https://finclator.com** (DNS at Cloudflare, cert issued, www → apex). Resend mail from
-  `admin@finclator.com` verified end-to-end (sign-in links deliver). No open infra items.
+  `admin@finclator.com` verified end-to-end (sign-in links deliver).
+- **Scheduled: launchd `com.finclator.daily` 06:00 local** runs `scripts/daily.sh` (src.run → `vercel deploy` →
+  commit matrix.json/site.json/pine → push). Log `data/daily.log`. Install/refresh: `scripts/install_daily.py [--run-now|--remove]`.
 
 ## Dev environment
 - Python ≥3.11 (venv is 3.14 at `.venv`); `.venv/bin/pip install -e ".[dev]"` (or `scripts/bootstrap.sh`, which also
@@ -21,27 +27,35 @@ Surfaces: **finclator.com** (public landing + method page, gated admin panel), `
 - Run modules as `.venv/bin/python -m src.<mod>`; scripts as `PYTHONPATH=. .venv/bin/python scripts/<x>.py`.
 - `.env` (gitignored): `DATABASE_URL` (Neon pooled), `TWITTERAPI_IO_KEY` (fetch), `ANTHROPIC_API_KEY` (API-mode
   classifier), `RESEND_API_KEY` + `MAIL_FROM` (mail). Local classifier needs
-  `FINCLATOR_MODEL_BASE_URL=http://localhost:11434/v1 FINCLATOR_MODEL=qwen3:30b-a3b-instruct-2507-q4_K_M` (Ollama).
-- Admin UI: `FINCLATOR_ACTIVE_MODEL=<model> .venv/bin/python -m src.admin` → http://127.0.0.1:8787 (tabs: Progress,
-  Matrix, Accounts, Audit, Architecture, Tables, `/api/status`). Run it in the background; verify with `urllib`, the
-  browser tool blocks localhost. Same pages are served hosted at finclator.com/panel by `api/panel.py`.
+  `FINCLATOR_MODEL_BASE_URL=http://localhost:11434/v1` (Ollama; model tag defaults to `models.DEFAULT_MODEL`, batch-4).
+- Admin UI: launchd `com.finclator.admin` serves http://127.0.0.1:8787 (tabs: Progress, Matrix, Accounts, Audit,
+  Architecture, Tables, `/api/status`). After editing `src/admin.py`/`audit.py`: `.venv/bin/python scripts/restart_admin.py`
+  (kills strays holding the port, kickstarts the job). Verify with `scripts/check_pages.py`; the browser tool blocks
+  localhost. Same pages are served hosted at finclator.com/panel by `api/panel.py`.
 - Node deps (`package.json`, pnpm) exist only for `api/auth.js` (`@vercel/blob` ≥2, `resend`).
 
 ## Commands
-- Weekly pipeline: `.venv/bin/python -m src.run [--no-fetch] [--no-classify]` (fetch → classify → prices → evaluate →
+- Daily pipeline: `.venv/bin/python -m src.run [--no-fetch] [--no-classify]` (fetch → classify → prices → evaluate →
   score → matrix → audit → pine → site). Writes straight to Neon; the hosted panel reflects it without a deploy.
-  `public/site.json` (landing numbers) still needs `vercel deploy --prod --yes` to go live.
+  `public/site.json` (landing numbers) still needs `vercel deploy --prod --yes` to go live. `scripts/daily.sh` does all of it.
+- Page audit: `PYTHONPATH=. .venv/bin/python scripts/check_pages.py [https://finclator.com/panel "fc_session=…"] [--public]`
+  — 200, no Traceback/None/nan, one `<nav>`, ≤1 "sign out", <10 s. Cookie: copy `fc_session` from the browser
+  (SESSION_SECRET is a Sensitive Vercel var; `vercel env pull` returns "").
+- Commit+push in one gated-safe call: `bash scripts/gitc.sh "<msg>" [paths…]`.
 - Deploy: `vercel deploy --prod --yes` (project linked to `protocogni/finclator`). Env: `vercel env ls`.
 - Backfill tweets: `PYTHONPATH=. .venv/bin/python scripts/backfill.py --workers 8` (resumable; verify with `pgrep -f backfill.py`).
+  Accounts the search index under-serves (0 stored tweets although public): `scripts/probe_handles.py` then
+  `scripts/walk_handles.py <handle>…` (timeline cursor walk, `fetch.walk_timeline`).
 - Classify backlog locally (resumable, newest→oldest, rebuilds trust/matrix/audit per batch): `scripts/start_run.sh`
   (launchd jobs for Ollama + `scripts/classify_run.py` + admin; survive the desktop session) / `scripts/stop_run.sh`.
-  Nothing is ever re-classified (`classified_by(tweet_id, model)` PK).
+  Nothing is ever re-classified (`classified_by(tweet_id, model)` PK). `classify_pending` batches BATCH_SIZE tweets per
+  request on the Ollama path (`tests/test_classify_batch.py` asserts the code path; `scripts/smoke_batch.py` proves it live).
 - Model agreement vs frontier labels: `PYTHONPATH=. .venv/bin/python scripts/agreement.py [N] [data/labels_holdout.jsonl]`,
   then `scripts/agreement_diff.py {is_call|dir|hor}` to read disagreements.
 - After changing `src/prefilter.py`: `PYTHONPATH=. .venv/bin/python scripts/reprefilter.py` (re-tags every stored tweet).
-- Prefilter cases: `PYTHONPATH=. .venv/bin/python tests/test_prefilter.py` — a plain script printing `failures: N`;
-  **`pytest` collects nothing** in this repo. Lint: `.venv/bin/ruff check .` (line length 110, rules E/F/W/I/B;
-  12 pre-existing warnings in scripts/ are known).
+- Prefilter cases: `PYTHONPATH=. .venv/bin/python tests/test_prefilter.py` — a plain script printing `failures: N`.
+  Unit tests: `.venv/bin/python -m pytest tests -q` (admin chrome, batch routing, hit_rates, matrix concentration).
+  Lint: `.venv/bin/ruff check .` (line length 110, rules E/F/W/I/B; 3 B905 in src/ + 12 in scripts/ are known).
 - SQLite → Postgres (re)migration: `DATABASE_URL=<unpooled> PYTHONPATH=. .venv/bin/python scripts/migrate_to_pg.py --yes`
   (truncates target, COPY, checksums, asserts identical matrix).
 
@@ -60,7 +74,10 @@ Surfaces: **finclator.com** (public landing + method page, gated admin panel), `
 - One classifier `SYSTEM` prompt in `src/classify.py` shared by every backend (Anthropic, Ollama native, OpenAI-compat).
   Ollama's `/v1` route silently drops `num_ctx`; the `:11434` branch uses `/api/chat` for that reason.
 - Admin pages are f-string HTML built into a `B` list, `html.escape` as `e`, tables `class=sortable`, numeric headers get
-  `title=` tooltips or a legend. Audit page is rendered inside the admin chrome via `admin._page`.
+  `title=` tooltips or a `<p class=help>` legend. Audit page is rendered inside the admin chrome via `admin._page`.
+  **Hosted chrome goes through `admin.CHROME` (ContextVar: prefix/who/readonly/refresh) and in-body links through
+  `admin._u(path)` — never wrap/monkey-patch `admin._page`** (a wrapper surviving a failed request nested the sign-out
+  block once per request). `_readonly()` hides local-only widgets (log, rebuild link, process cards).
 - Public pages: numbers only from `public/site.json`; no stack/model/infra names on `/` or `/method`.
 - Commit messages: one line, imperative, semicolon-separated scope list (see `git log --oneline`).
 

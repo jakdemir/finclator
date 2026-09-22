@@ -204,11 +204,6 @@ accounts:
   school: Macro
   language: en
   source: seed
-- handle: durdn
-  display_name: Nicola Paolucci
-  school: Quant
-  language: en
-  source: following
 - handle: ergun_unutmaz
   display_name: Ergun Unutmaz
   school: Macro
@@ -342,11 +337,6 @@ accounts:
 - handle: MMCrypto
   display_name: MMCrypto
   school: Crypto
-  language: en
-  source: following
-- handle: MrCollaborative
-  display_name: Matthew Richardson
-  school: Macro
   language: en
   source: following
 - handle: nntaleb

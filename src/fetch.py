@@ -183,6 +183,37 @@ def _is_keyword_account(row) -> bool:
     return bool(row["sampling"]) or (row["rate_per_year"] or 0) > SAMPLE_ABOVE_PER_YEAR
 
 
+def walk_timeline(conn: sqlite3.Connection, handle: str, years: int = BACKFILL_YEARS, max_pages: int = 400) -> dict:
+    """Fallback for accounts that `advanced_search from:<handle>` under-returns (X's search index is incomplete for
+    low-engagement accounts): cursor-walk `/twitter/user/last_tweets` (replies excluded server-side, RTs dropped by
+    `_keep`) back to the `years` cutoff. Same insert gate as the search path; sets the watermark so the daily search
+    windows take over from here. Cost ≈ 15 × (tweets returned + pages)."""
+    handle = handle.lower()
+    cutoff = datetime.now(timezone.utc) - timedelta(days=365 * years)
+    received = inserted = pages = 0
+    cursor = ""
+    with _client() as c:
+        for _ in range(max_pages):
+            time.sleep(1.0)
+            r = _get(c, "/twitter/user/last_tweets", userName=handle, cursor=cursor, includeReplies="false")
+            pages += 1
+            raw = (r.get("data") or {}).get("tweets") or []
+            rows = [_norm(t, handle) for t in raw if _keep(t)]
+            received += len(rows)
+            inserted += _insert(conn, rows)
+            conn.commit()
+            oldest = min((datetime.fromisoformat(x["created_at"]) for x in rows), default=None)
+            if not raw or not r.get("has_next_page") or not r.get("next_cursor") or (oldest and oldest < cutoff):
+                break
+            cursor = r["next_cursor"]
+    now = datetime.now(timezone.utc)
+    conn.execute("UPDATE accounts SET last_fetch_at=?, updated_at=? WHERE handle=?", (now.isoformat(), now.isoformat(), handle))
+    conn.commit()
+    cost = 15 * (received + pages)
+    log(f"  {handle}: timeline walk → {received} received, {inserted} new, {pages} pages ≈ {cost} cr")
+    return {"received": received, "inserted": inserted, "pages": pages, "credits": cost}
+
+
 def _since(conn: sqlite3.Connection, handle: str, row, now: datetime) -> datetime:
     """Start of the span to fetch: watermark − overlap; seeded from the newest stored tweet; else BACKFILL_YEARS ago."""
     wm = row["last_fetch_at"]
