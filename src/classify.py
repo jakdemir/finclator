@@ -304,31 +304,43 @@ def make_classifier():
 
 
 def classify_pending(conn: sqlite3.Connection, limit: int | None = None) -> tuple[int, int]:
-    """Classify pending tweets with WORKERS concurrent model calls; a failed call is logged and skipped
-    (stays pending), never aborts the run. Only the main thread touches the connection."""
+    """Classify pending tweets. On the local Ollama path with BATCH_SIZE > 1, BATCH_SIZE tweets go in one request
+    (variant C in data/tune_variants.txt; make_batch_classifier falls back per tweet on a malformed answer);
+    otherwise one request per tweet. WORKERS requests in flight; a failed request is logged and its tweets stay
+    pending, never aborting the run. Only the main thread touches the connection."""
     from concurrent.futures import ThreadPoolExecutor
 
-    run, model = make_classifier()
+    batched = BATCH_SIZE > 1 and bool(BASE_URL) and ":11434" in BASE_URL
+    if batched:
+        run_batch, model = make_batch_classifier()
+    else:
+        run_single, model = make_classifier()
+
+        def run_batch(chunk):
+            return [run_single(t) for t in chunk]
     rows = pending(conn, limit, model)
+    size = BATCH_SIZE if batched else 1
+    chunks = [rows[i:i + size] for i in range(0, len(rows), size)]
     tweets_done = calls_made = failed = 0
 
-    def safe(t):
+    def safe(chunk):
         try:
-            return t, run(t), None
-        except Exception as e:  # noqa: BLE001 — any transport/model error: skip this tweet, keep going
-            return t, None, e
+            return chunk, run_batch(chunk), None
+        except Exception as e:  # noqa: BLE001 — any transport/model error: skip these tweets, keep going
+            return chunk, None, e
 
     with ThreadPoolExecutor(max_workers=WORKERS) as pool:
-        for t, result, err in pool.map(safe, rows):
+        for chunk, results, err in pool.map(safe, chunks):
             if err is not None:
-                failed += 1
-                log(f"classify: {t['id']} failed: {type(err).__name__}: {str(err)[:120]}")
+                failed += len(chunk)
+                log(f"classify: {','.join(t['id'] for t in chunk)} failed: {type(err).__name__}: {str(err)[:120]}")
                 continue
-            calls_made += store_result(conn, t, result, model)
-            tweets_done += 1
-            if tweets_done % 50 == 0:
-                conn.commit()
-                log(f"classify [{model}]: {tweets_done}/{len(rows)} ({calls_made} calls, {failed} failed)")
+            for t, result in zip(chunk, results, strict=True):
+                calls_made += store_result(conn, t, result, model)
+                tweets_done += 1
+                if tweets_done % 50 == 0:
+                    conn.commit()
+                    log(f"classify [{model}{f' batch{size}' if batched else ''}]: {tweets_done}/{len(rows)} ({calls_made} calls, {failed} failed)")
     conn.commit()
     if failed:
         log(f"classify: {failed} tweets failed and remain pending")
