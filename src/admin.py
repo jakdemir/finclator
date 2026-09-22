@@ -379,18 +379,18 @@ def page_accounts(conn) -> str:
     scored.sort(key=lambda x: (-(x[1]["n"] if x[1] else 0), x[0]["handle"]))
 
     B = [f"<h2>Trust per account × asset × horizon <small>· model {e(model)}</small></h2>",
-         "<p><small>Each account's trust is a 3×3 grid, one score per (asset, horizon) — the matrix weights a call by the cell it lands in, "
-         "never by a single number. Cell = shrunk hit rate <b>(hits + 5) / (n + 10)</b> over matured calls (SHORT 90d, MEDIUM 365d, LONG 730d); "
+         "<p class=help>Each account is scored separately per asset and horizon; the matrix weights a call by the score of the cell it lands in, "
+         "never by one number per account. Cell = shrunk hit rate <b>(hits + 5) / (n + 10)</b> over matured calls (SHORT 90d, MEDIUM 365d, LONG 730d); "
          "hits: CORRECT=1, PARTIAL=0.5, WRONG=0, ±0.25 when a stated price target hit/missed. Margins: per-asset and per-horizon aggregates; "
          "corner: overall. Grey = no matured outcome → the 0.5 prior is used, and the matrix falls back specific → asset → overall → 0.5. "
-         "Colour: red ≤0.3 · neutral 0.5 · green ≥0.7.</small></p>",
+         "Colour: red ≤0.3 · neutral 0.5 · green ≥0.7.</p>",
          "<style>.tg{display:inline-block;vertical-align:top;margin:0 18px 18px 0;background:#181b22;border:1px solid #2a2f3a;border-radius:8px;padding:10px 12px;min-width:330px}"
          ".tg table{font-size:12px}.tg td,.tg th{text-align:center;width:66px;height:40px;padding:2px 4px}.tg th{background:#1d2129;cursor:default}"
          ".tg td.agg{background:#22262f;color:#bbb}.tg .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}"
          ".tg details{margin-top:6px}.tg details table{font-size:11px}.tg details td{text-align:left;width:auto;height:auto}</style>"]
 
     B.append("<h3>Ranking <small>(overall = all cells pooled; sortable)</small></h3><table class=sortable><thead><tr><th>account</th><th>school</th>"
-             "<th title='calls by this model, matured or not'>calls</th><th title='matured calls'>n</th><th>hits</th><th>overall</th>"
+             "<th title='calls by this model, matured or not'>calls</th><th title='matured calls'>n</th><th title='Σ points over matured calls: CORRECT 1, PARTIAL 0.5, WRONG 0, ±0.25 target hit/miss'>hits</th><th title='(hits + 5) / (n + 10) — all cells pooled'>overall</th>"
              "<th title='cells with ≥1 matured outcome, of 9'>cells</th></tr></thead><tbody>")
     for a, ov in scored:
         h = a["handle"]
@@ -419,14 +419,18 @@ def page_accounts(conn) -> str:
 
 
 def page_architecture(conn) -> str:
+    from .classify import BATCH_SIZE
     from .evaluate import MATURITY_DAYS
     from .prefilter import _ASSET_PATTERNS
     e = html.escape
-    f = _one(conn, """SELECT count(*) t, coalesce(sum(relevant),0) rel, coalesce(sum(CASE WHEN relevant=1 AND classified=1 THEN 1 ELSE 0 END),0) cls,
-                       (SELECT count(*) FROM calls) calls, (SELECT count(DISTINCT tweet_id) FROM calls) ct,
-                       (SELECT count(*) FROM outcomes) outs, (SELECT count(*) FROM accounts) acc FROM tweets""")
+    model = active_model()
+    f = _one(conn, """SELECT count(*) t, coalesce(sum(relevant),0) rel,
+                       (SELECT count(*) FROM classified_by b JOIN tweets x ON x.id=b.tweet_id WHERE b.model=? AND x.relevant=1) cls,
+                       (SELECT count(*) FROM calls WHERE model=?) calls, (SELECT count(DISTINCT tweet_id) FROM calls WHERE model=?) ct,
+                       (SELECT count(*) FROM outcomes o JOIN calls c ON c.id=o.call_id WHERE c.model=?) outs,
+                       (SELECT count(*) FROM accounts) acc FROM tweets""", model, model, model, model)
     pct = lambda a, b: f"{100 * a / b:.0f}%" if b else "–"  # noqa: E731
-    B = ["<h2>Data flow</h2><pre class=mono>"
+    B = [f"<h2>Data flow <small>· counts for the active model {e(model)}</small></h2><pre class=mono>"
          f"""twitterapi.io ──► fetch.py ──────────► tweets            {f['t']:>8,}  originals only (replies / RTs rejected at insert)
                     {f['acc']} accounts, 3y   │                       search since watermark; >1,000 orig/yr → asset keywords in query
                                     ▼
@@ -441,7 +445,7 @@ def page_architecture(conn) -> str:
                                     ▼
                      matrix.py     3×3 = Σ trust × confidence × recency-decay  ─► data/matrix.json
                                     ▼
-                     audit.py · admin.py · pine.py (verification page, this site, TradingView indicator)"""
+                     audit.py · admin.py · site.py · pine.py (verification page, this panel, public site.json, TradingView script — publishing on hold)"""
          "</pre>"]
 
     B.append("<h2>Stage 1 — prefilter <small>(src/prefilter.py) · generous: recall over precision</small></h2>"
@@ -456,11 +460,13 @@ def page_architecture(conn) -> str:
              f"Check it on <a href='{_u('/audit')}' style='color:#9ecbff'>Audit → “prefilter dropped”</a> sample.</p>")
 
     B.append("<h2>Stage 2 — classifier <small>(src/classify.py) · strict</small></h2>"
-             "<p>One LLM call per relevant tweet. Must answer “is this an explicit, falsifiable call?” — past-move reports, news, charts "
+             f"<p>Local open-weights model via Ollama (the tag is defined once in <code>src/models.py</code>; active: <code>{e(model)}</code>), "
+             f"{BATCH_SIZE} tweets per request, temperature 0, JSON output, thinking off. The Anthropic and OpenAI-compatible paths share the same "
+             "prompt and parser. Must answer “is this an explicit, falsifiable call?” — past-move reports, news, charts "
              "without opinion, generic macro talk → <code>is_call=false</code>. Per asset it returns direction (BUY/SELL/NEUTRAL), horizon, "
              "confidence, price target in USD, and an <b>exact quote</b> from the tweet that justifies the label (auditable). "
-             "Two modes with the same schema: <code>ANTHROPIC_API_KEY</code> for the cron, or export-JSONL → label interactively → import "
-             "(tagged in <code>calls.model</code>).</p>"
+             "Every label is tagged with its model in <code>calls.model</code> / <code>classified_by</code>; models never overwrite each other, "
+             "and every page counts one model at a time.</p>"
              "<table><tr><th>horizon</th><th>meaning (spec)</th><th>evaluated after</th><th>inferred when unstated</th></tr>"
              f"<tr><td>SHORT</td><td>0–3 months</td><td>{MATURITY_DAYS['SHORT']} d</td><td>technical / level talk, swing</td></tr>"
              f"<tr><td>MEDIUM</td><td>3–12 months</td><td>{MATURITY_DAYS['MEDIUM']} d</td><td>default</td></tr>"
@@ -480,17 +486,19 @@ def page_architecture(conn) -> str:
     B.append("<h2>Known weak spots</h2><ul>"
              "<li>Stage 1 can't catch calls that name no asset (“this is the top” under a chart image).</li>"
              "<li>Horizon inference on terse Turkish tweets is the least reliable field.</li>"
-             "<li>Stage 2 API path is untested at scale; only the interactive labels exist so far.</li>"
+             "<li>Labels are one model's reading. Production config vs a 120-tweet frontier-labeled holdout: is-call 97 %, direction 88 %, "
+             "horizon 88 % — on only 15 gold calls, so treat those as rough. Per-config numbers: <code>data/tune_variants.txt</code>.</li>"
              "<li>Sampled accounts (&gt;1,000 orig/yr) see ~10% of their tweets — evenly spread, but sparse.</li></ul>")
 
     B.append("<h2>Files</h2><table><tr><th>file</th><th>role</th></tr>"
              "<tr><td class=mono>roster.yaml</td><td>accounts, school, language</td></tr>"
-             "<tr><td class=mono>src/db.py</td><td>SQLite schema (accounts, tweets, calls, outcomes, prices, trust), log()</td></tr>"
+             "<tr><td class=mono>src/db.py</td><td>schema in SQLite dialect, runs on SQLite locally and Postgres (Neon) hosted; log()</td></tr>"
              "<tr><td class=mono>src/fetch.py</td><td>twitterapi.io: advanced_search with exact since_time windows per account (last_fetch_at watermark), asset keywords in the query for heavy posters, credit floor</td></tr>"
              "<tr><td class=mono>src/prefilter.py</td><td>stage 1</td></tr><tr><td class=mono>src/classify.py</td><td>stage 2</td></tr>"
              "<tr><td class=mono>src/prices.py · evaluate.py · score.py · matrix.py</td><td>outcomes → trust → 3×3</td></tr>"
              "<tr><td class=mono>src/audit.py · admin.py · pine.py</td><td>verification page, this site, TradingView script</td></tr>"
-             "<tr><td class=mono>src/run.py</td><td>daily: fetch → classify → prices → evaluate → score → matrix → audit → pine → site</td></tr>"
+             "<tr><td class=mono>src/run.py</td><td>the pipeline: fetch → classify → prices → evaluate → score → matrix → audit → pine → site</td></tr>"
+             "<tr><td class=mono>scripts/daily.sh</td><td>launchd com.finclator.daily 06:00 local: src.run → deploy site.json → commit</td></tr>"
              "<tr><td class=mono>scripts/backfill.py</td><td>parallel fetch of every account from its watermark (8 workers)</td></tr></table>")
     return _page("architecture", "".join(B), "/architecture")
 

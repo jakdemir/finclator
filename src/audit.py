@@ -203,27 +203,30 @@ def body(conn, model: str | None = None, limit: int | None = None, account: str 
                           AND id IN (SELECT tweet_id FROM classified_by WHERE model=?)
                           AND id NOT IN (SELECT tweet_id FROM calls WHERE model=?) ORDER BY random() LIMIT 40""",
                        (model, model)).fetchall()
-    B.append("<h2>Classifier said “not a call” <small>40 random — look for missed calls</small></h2><table>")
+    B.append("<h2>Classifier said “not a call” <small>40 random asset-mentioning tweets the active model labeled not-a-call — look for missed calls</small></h2><table>")
     for r in rej:
         B.append(f"<tr><td style='white-space:nowrap'><a href='https://x.com/{r['handle']}/status/{r['id']}'>@{e(r['handle'])}</a><br><small>{r['created_at'][:10]} · {r['assets_hint']}</small></td><td class=tweet>{e(r['text'])}</td></tr>")
     B.append("</table>")
     norel = conn.execute("SELECT handle, created_at, text, id FROM tweets WHERE relevant=0 ORDER BY random() LIMIT 40").fetchall()
-    B.append("<h2>Prefilter dropped <small>40 random — look for missed asset mentions</small></h2><table>")
+    B.append("<h2>Prefilter dropped <small>40 random tweets that matched no asset regex — look for missed asset words</small></h2><table>")
     for r in norel:
         B.append(f"<tr><td style='white-space:nowrap'><a href='https://x.com/{r['handle']}/status/{r['id']}'>@{e(r['handle'])}</a><br><small>{r['created_at'][:10]}</small></td><td class=tweet>{e(r['text'])}</td></tr>")
     B.append("</table>")
-    B.append("<h2>Price coverage</h2><table><tr><th>asset</th><th>from</th><th>to</th><th>rows</th><th>last close</th><th>gaps &gt; 5 d</th></tr>")
+    B.append("<h2>Price coverage <small>· BTC-USD · GC=F (COMEX front month, not spot) · ^GSPC · Yahoo daily close</small></h2><table><tr><th>asset</th><th>from</th><th>to</th><th>rows</th><th>last close</th><th>gaps &gt; 5 d</th></tr>")
     for r in conn.execute("SELECT asset, min(date) a, max(date) b, count(*) n FROM prices GROUP BY asset"):
         last = conn.execute("SELECT close FROM prices WHERE asset=? ORDER BY date DESC LIMIT 1", (r["asset"],)).fetchone()[0]
         dates = [x[0] for x in conn.execute("SELECT date FROM prices WHERE asset=? ORDER BY date", (r["asset"],))]
         gaps = sum(1 for x, y in zip(dates, dates[1:]) if (date.fromisoformat(y) - date.fromisoformat(x)).days > 5)
         B.append(f"<tr><td>{r['asset']}</td><td>{r['a']}</td><td>{r['b']}</td><td class=num>{r['n']}</td><td class=num>{_fmt(last)}</td><td class=num>{gaps}</td></tr>")
     B.append("</table>")
-    B.append("<h2>Models in DB</h2><table><tr><th>model</th><th>classified</th><th>calls</th><th>evaluated</th></tr>")
+    B.append("<h2>Models in DB <small>· every count on every tab is for one model; the active one is published</small></h2><table><tr><th>model</th><th title='relevant tweets labeled by this model'>classified</th><th title='relevant tweets not yet labeled by this model'>pending</th><th>calls</th><th>evaluated</th></tr>")
     for m in list_models(conn):
         c = conn.execute("""SELECT (SELECT count(*) FROM classified_by WHERE model=?) a, (SELECT count(*) FROM calls WHERE model=?) b,
-                            (SELECT count(*) FROM outcomes o JOIN calls c ON c.id=o.call_id WHERE c.model=?) d""", (m, m, m)).fetchone()
-        B.append(f"<tr><td>{e(m)}{' <b>(active)</b>' if m == model else ''}</td><td class=num>{c['a']}</td><td class=num>{c['b']}</td><td class=num>{c['d']}</td></tr>")
+                            (SELECT count(*) FROM outcomes o JOIN calls c ON c.id=o.call_id WHERE c.model=?) d,
+                            (SELECT count(*) FROM tweets t WHERE t.relevant=1
+                               AND t.id NOT IN (SELECT tweet_id FROM classified_by WHERE model=?)) p""", (m, m, m, m)).fetchone()
+        B.append(f"<tr><td>{e(m)}{' <b>(active)</b>' if m == model else ''}</td><td class=num>{c['a']:,}</td><td class=num>{c['p']:,}</td>"
+                 f"<td class=num>{c['b']:,}</td><td class=num>{c['d']:,}</td></tr>")
     B.append("</table>")
     return "".join(B)
 
