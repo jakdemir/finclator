@@ -8,13 +8,16 @@ Surfaces: **finclator.com** (public landing + method page, gated admin panel), `
 (`001-influencer-trust-scores` kept in sync). Standing product decisions live in the
 `social-sentiment-trading-signals` skill; site/panel/Vercel ops in its `references/website-ops.md`.
 
-## State of play (2026-09-22)
-- Backlog fully classified by **`qwen3.6-local:35b-a3b-q4_K_M`** (51.6k relevant tweets → 11.5k calls → 7.7k matured
-  outcomes, 73 accounts scored; 40 with ≥20). The 30B labels and the frontier labels (`claude-fable-5.1/interactive`)
-  coexist as other model dimensions. **User decision: the 3.6 labels are final for now; keep every other model's labels
-  in the DB for future comparison — never purge `calls`/`classified_by`/`trust` rows of a non-active model.**
-- **Roster underperforms always-BUY at every horizon** (SHORT 55 % vs 62 %, MEDIUM 71 % vs 81 %, LONG 76 % vs 83 %) —
-  `score.hit_rates()`; shown on Matrix tab, `/method`, `site.json`. Say so when discussing "skill".
+## State of play (2026-09-23)
+- **Published dimension is the hybrid `qwen3.6-local:35b-a3b-q4_K_M+jev`**: TypeSafe Jev decision model
+  (`src/gate.py`, direct API, `TYPESAFE_API_KEY`, ~3k tw/min, ~$3 per full pass) gates `is_call` at `p_call ≥ 0.3`;
+  only passing tweets (~17 %) reach Qwen for quote/target. `models.classifier_model()` adds `+jev` when
+  `FINCLATOR_GATE=1` (default); the plain `qwen3.6-local:35b-a3b-q4_K_M` labels (51.6k tweets → 11.5k calls) stay as
+  their own dimension and are reused by the hybrid via `FINCLATOR_GATE_REUSE`. The 30B labels and the frontier labels
+  (`claude-fable-5.1/interactive`) coexist too. **Never purge `calls`/`classified_by`/`trust`/`gate` rows of a non-active model.**
+- **Roster underperforms always-BUY at every horizon** (measured on the plain Qwen labels: SHORT 55 % vs 62 %,
+  MEDIUM 71 % vs 81 %, LONG 76 % vs 83 %) — `score.hit_rates()`; shown on Matrix tab, `/method`, `site.json`. Say so
+  when discussing "skill".
 - **Database is Postgres (Neon, Vercel team Protocogni Labs)** via `DATABASE_URL` in `.env`; `data/finclator.db` is an
   untracked cold backup of the pre-migration state. `db.connect()` falls back to SQLite only when `DATABASE_URL` is unset.
 - Site live at **https://finclator.com** (DNS at Cloudflare, cert issued, www → apex). Resend mail from
@@ -26,7 +29,8 @@ Surfaces: **finclator.com** (public landing + method page, gated admin panel), `
 - Python ≥3.11 (venv is 3.14 at `.venv`); `.venv/bin/pip install -e ".[dev]"` (or `scripts/bootstrap.sh`, which also
   **wipes and rebuilds the DB** — don't run it casually).
 - Run modules as `.venv/bin/python -m src.<mod>`; scripts as `PYTHONPATH=. .venv/bin/python scripts/<x>.py`.
-- `.env` (gitignored): `DATABASE_URL` (Neon pooled), `TWITTERAPI_IO_KEY` (fetch), `ANTHROPIC_API_KEY` (API-mode
+- `.env` (gitignored): `DATABASE_URL` (Neon pooled), `TWITTERAPI_IO_KEY` (fetch), `TYPESAFE_API_KEY` (Jev gate;
+  also a Sensitive Vercel var), `ANTHROPIC_API_KEY` (API-mode
   classifier), `RESEND_API_KEY` + `MAIL_FROM` (mail). Local classifier needs
   `FINCLATOR_MODEL_BASE_URL=http://localhost:11434/v1` (Ollama; model tag defaults to `models.DEFAULT_MODEL`, batch-4).
 - Admin UI: launchd `com.finclator.admin` serves http://127.0.0.1:8787 (tabs: Progress, Matrix, Accounts, Audit,
