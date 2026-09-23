@@ -50,4 +50,5 @@ def test_chrome_has_responsive_css():
     html = admin._page("t", "<table><tr><td>x</td></tr></table>", "/")
     assert "@media (max-width:700px)" in admin.CSS
     assert "nav{display:flex;flex-wrap:wrap" in admin.CSS
+    assert "<meta name=viewport content='width=device-width" in html   # without it phones render at 980 px
     assert "<div class=tw>" in html            # every table is wrapped in a horizontal-scroll container

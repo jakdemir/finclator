@@ -67,8 +67,10 @@ pre{background:#0a0c10;padding:10px;border-radius:6px;max-height:340px;overflow:
 .help{color:#9aa;font-size:12px;margin:2px 0 10px;max-width:1100px;line-height:1.45}
 td.stale{color:#f0b64c}
 .tw{overflow-x:auto;max-width:100%}
-@media (max-width:700px){main{padding:10px}.card{min-width:0;flex:1 1 44%}.grid td{width:auto;min-width:88px;height:auto;padding:6px 4px;font-size:12px}
-.grid td small{font-size:10px}table{font-size:12px}th,td{padding:3px 5px}nav span[style]{display:none}}
+@media (max-width:700px){main{padding:10px}.card{min-width:0;flex:1 1 44%}
+.grid{width:100%;table-layout:fixed}.grid td{width:auto;min-width:0;height:auto;padding:5px 2px;font-size:11px;white-space:normal;overflow-wrap:anywhere}
+.grid td small{font-size:9px;white-space:normal;display:block}.grid th{font-size:11px;padding:3px 2px;white-space:normal}.grid td:first-child,.grid th:first-child{width:38px}
+.tw{width:100%}table{font-size:12px}th,td{padding:3px 5px}nav span[style]{display:none}}
 """
 
 JS = """
@@ -153,7 +155,8 @@ def _page(title: str, body: str, active: str) -> str:
     refresh = f"<meta http-equiv=refresh content={60 if active == '/' else 30}>" if live else ""
     mode = ("page 60s · log live 3s" if active == "/" else "auto-refresh 30s") if live else "no auto-refresh"
     who = ch.get("who", "")
-    return (f"<!doctype html><meta charset=utf-8><title>Finclator admin — {title}</title>"
+    return (f"<!doctype html><meta charset=utf-8><meta name=viewport content='width=device-width, initial-scale=1'>"
+            f"<title>Finclator admin — {title}</title>"
             f"{refresh}<style>{CSS}</style><script>const LOG_URL={json.dumps(_u('/api/log'))}</script><script>{JS}</script>"
             f"<nav>{nav}<span style='margin-left:auto;color:#9aa'>{datetime.now(timezone.utc):%H:%M:%S} UTC · {mode}</span>{who}</nav>"
             f"<main>{_wrap_tables(body)}</main>")
