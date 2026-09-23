@@ -139,10 +139,12 @@ def body(conn, model: str | None = None, limit: int | None = None, account: str 
     B = [f"<style>{CSS}</style><script>{JS}</script>"]
     B.append(f"<h2>Calls <small>{total} · model <b>{e(model)}</b>{' · also in DB: ' + ', '.join(e(m) for m in others) if others else ''}</small></h2>")
     if capped:
+        from .admin import _u
         opts = "".join(f"<option value='{e(h)}'{' selected' if h == account else ''}>@{e(h)}</option>" for h in handles)
         B.append(f"<p class=help><b>Showing {len(rows)} of {total} calls</b> (newest first{', @' + e(account) if account else ''}). "
                  f"Pick an account to see its full history: <select onchange=\"location.search='?account='+encodeURIComponent(this.value)\">"
-                 f"<option value=''>all accounts (newest {limit})</option>{opts}</select></p>")
+                 f"<option value=''>all accounts (newest {limit})</option>{opts}</select>"
+                 f" · <a href='{_u('/audit')}?all=1'>render all {total}</a></p>")
     B.append("<div class=filters>")
     B.append(f"<span class=pill><span class=hit1>CORRECT {res_counts['CORRECT']}</span> · <span style='color:#f0b64c'>PARTIAL {res_counts['PARTIAL']}</span> · "
              f"<span class=hit0>WRONG {res_counts['WRONG']}</span> · pending {res_counts['PENDING']}</span>")

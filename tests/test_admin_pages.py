@@ -39,3 +39,18 @@ def test_accounts_ranking_folds_prior_only(conn):
     assert "<th title='Σ points" in html and ">points<" in html and ">hits<" not in html
     assert "<details><summary>2 accounts with no matured outcome" in html   # bob (call, no outcome) + carol
     assert html.index("@alice") < html.index("<details><summary>2 accounts")
+
+
+def test_local_audit_route_caps_and_filters(conn, monkeypatch):
+    from src import audit
+    seen = {}
+
+    def fake_body(c, model=None, limit=None, account=None):
+        seen.update(limit=limit, account=account)
+        return "<p>body</p>"
+    monkeypatch.setattr(audit, "body", fake_body)
+    html = admin.page_audit(conn, "account=alice")
+    assert seen == {"limit": 600, "account": "alice"}
+    assert "<p>body</p>" in html
+    admin.page_audit(conn, "all=1")
+    assert seen["limit"] is None

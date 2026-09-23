@@ -577,6 +577,15 @@ def _render_rows(cur, limit_cell=160) -> str:
     return "".join(out)
 
 
+def page_audit(conn, qs: str) -> str:
+    """Audit tab: newest 600 calls (or one account's full history) like the hosted panel; ?all=1 renders everything."""
+    from urllib.parse import parse_qs
+    q = parse_qs(qs)
+    acc = (q.get("account") or [None])[0]
+    limit = None if q.get("all") else 600
+    return _page("audit", audit.body(conn, limit=limit, account=acc), "/audit")
+
+
 def page_tables(conn, qs: str) -> str:
     from urllib.parse import parse_qs
     e = html.escape
@@ -679,7 +688,7 @@ class Handler(BaseHTTPRequestHandler):
             elif path == "/architecture":
                 self._send(page_architecture(conn))
             elif path == "/audit":
-                self._send(audit.render())
+                self._send(page_audit(conn, qs))
             elif path == "/api/log":
                 self._send(_log_tail(), "text/plain; charset=utf-8")
             elif path == "/api/status":
