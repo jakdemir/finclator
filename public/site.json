@@ -1,31 +1,31 @@
 {
- "generated_at": "2026-09-22T13:33+00:00",
+ "generated_at": "2026-09-23T10:10+00:00",
  "accounts": 98,
- "tweets": 156124,
- "from": "2021",
- "to": "2026-09-22",
- "calls": 11531,
- "outcomes": 7715,
+ "tweets": 156224,
+ "from": "2017",
+ "to": "2026-09-23",
+ "calls": 11535,
+ "outcomes": 7731,
  "results": {
-  "CORRECT": 3728,
-  "PARTIAL": 2255,
-  "WRONG": 1732
+  "CORRECT": 3734,
+  "PARTIAL": 2257,
+  "WRONG": 1740
  },
  "hit_by_horizon": {
   "MEDIUM": {
    "rate": 0.711,
-   "baseline": 0.814,
-   "n": 2127
+   "baseline": 0.813,
+   "n": 2129
   },
   "LONG": {
    "rate": 0.758,
    "baseline": 0.828,
-   "n": 1310
+   "n": 1314
   },
   "SHORT": {
-   "rate": 0.55,
-   "baseline": 0.617,
-   "n": 4278
+   "rate": 0.549,
+   "baseline": 0.618,
+   "n": 4288
   }
  },
  "scored_accounts": 40,
@@ -56,45 +56,45 @@
  "matrix": {
   "BTC:SHORT": {
    "label": "NEUTRAL",
-   "net": 0.074,
-   "n": 197,
+   "net": 0.08,
+   "n": 187,
    "top_share": 0.344
   },
   "BTC:MEDIUM": {
    "label": "BUY",
-   "net": 0.2,
-   "n": 492,
+   "net": 0.199,
+   "n": 490,
    "top_share": 0.148
   },
   "BTC:LONG": {
    "label": "BUY",
-   "net": 0.648,
-   "n": 1404,
-   "top_share": 0.175
+   "net": 0.65,
+   "n": 1403,
+   "top_share": 0.174
   },
   "GOLD:SHORT": {
    "label": "BUY",
-   "net": 0.323,
-   "n": 59,
+   "net": 0.326,
+   "n": 57,
    "top_share": 0.151
   },
   "GOLD:MEDIUM": {
    "label": "BUY",
    "net": 0.873,
-   "n": 302,
-   "top_share": 0.461
+   "n": 299,
+   "top_share": 0.459
   },
   "GOLD:LONG": {
    "label": "BUY",
    "net": 0.925,
    "n": 902,
-   "top_share": 0.359
+   "top_share": 0.36
   },
   "SPX:SHORT": {
    "label": "NEUTRAL",
-   "net": -0.146,
-   "n": 60,
-   "top_share": 0.157
+   "net": -0.137,
+   "n": 59,
+   "top_share": 0.154
   },
   "SPX:MEDIUM": {
    "label": "BUY",
@@ -109,7 +109,7 @@
    "top_share": 0.175
   }
  },
- "matrix_generated_at": "2026-09-22",
+ "matrix_generated_at": "2026-09-23",
  "example": {
   "handle": "tedpillows",
   "asset": "BTC",

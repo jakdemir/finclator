@@ -1,46 +1,46 @@
 {
- "generated_at": "2026-09-22T13:32:08.823160+00:00",
+ "generated_at": "2026-09-23T10:09:17.066673+00:00",
  "model": "qwen3.6-local:35b-a3b-q4_K_M",
  "cells": {
   "BTC:SHORT": {
    "asset": "BTC",
    "horizon": "SHORT",
    "label": "NEUTRAL",
-   "net": 0.074,
-   "buy": 15.558,
-   "sell": 13.062,
-   "neutral": 5.169,
-   "n_calls": 197,
+   "net": 0.08,
+   "buy": 15.017,
+   "sell": 12.407,
+   "neutral": 5.006,
+   "n_calls": 187,
    "top_handle": "tedpillows",
    "top_share": 0.344,
    "schools": {
     "Technical": {
-     "buy": 3.743,
-     "sell": 2.342,
-     "neutral": 1.95,
+     "buy": 3.649,
+     "sell": 2.207,
+     "neutral": 1.869,
      "label": "BUY"
     },
     "Crypto": {
-     "buy": 8.107,
-     "sell": 8.611,
-     "neutral": 3.013,
+     "buy": 7.744,
+     "sell": 8.284,
+     "neutral": 2.935,
      "label": "NEUTRAL"
     },
     "Macro": {
-     "buy": 2.161,
-     "sell": 0.596,
-     "neutral": 0.207,
+     "buy": 2.112,
+     "sell": 0.532,
+     "neutral": 0.202,
      "label": "BUY"
     },
     "Quant": {
-     "buy": 1.548,
-     "sell": 0.597,
+     "buy": 1.512,
+     "sell": 0.545,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Goldbug": {
      "buy": 0.0,
-     "sell": 0.917,
+     "sell": 0.838,
      "neutral": 0.0,
      "label": "SELL"
     }
@@ -50,7 +50,7 @@
      "handle": "ryandetrick",
      "direction": "BUY",
      "date": "2026-09-17",
-     "weight": 0.594,
+     "weight": 0.58,
      "quote": "still constructive and I'm in the camp it breaks out",
      "tweet_id": "2100672453743628389"
     },
@@ -58,7 +58,7 @@
      "handle": "mmcrypto",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.549,
+     "weight": 0.537,
      "quote": "BITCOIN: YES!!!!!!!!! THIS IS NEXT!!!!!!!!!!!",
      "tweet_id": "2101968098920444121"
     },
@@ -66,7 +66,7 @@
      "handle": "100trillionusd",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.524,
+     "weight": 0.512,
      "quote": "Uptober is loading.",
      "tweet_id": "2101979294847164768"
     },
@@ -74,7 +74,7 @@
      "handle": "milesdeutscher",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.491,
+     "weight": 0.48,
      "quote": "$BTC massive breakout. We are so back.",
      "tweet_id": "2102054362470338877"
     },
@@ -82,7 +82,7 @@
      "handle": "davthewave",
      "direction": "SELL",
      "date": "2026-09-21",
-     "weight": 0.465,
+     "weight": 0.455,
      "quote": "Possibility of a reverse h&s in the shorter-term now looking invalidated with the break through resistance.",
      "tweet_id": "2102103230293606456"
     },
@@ -90,7 +90,7 @@
      "handle": "trader_xo",
      "direction": "NEUTRAL",
      "date": "2026-09-15",
-     "weight": 0.456,
+     "weight": 0.446,
      "quote": "Reduced short exposure position here... over to FOMC... Not sure what sets up... the plan is to stay flat on perps heading into it... as per yesterdays tweet.",
      "tweet_id": "2099965661980278803"
     },
@@ -98,7 +98,7 @@
      "handle": "tedpillows",
      "direction": "SELL",
      "date": "2026-09-16",
-     "weight": 0.443,
+     "weight": 0.431,
      "quote": "a drop to $70K-$72K zone is highly likely before any reversal",
      "tweet_id": "2100148302272713005"
     },
@@ -106,7 +106,7 @@
      "handle": "tedpillows",
      "direction": "SELL",
      "date": "2026-09-21",
-     "weight": 0.442,
+     "weight": 0.43,
      "quote": "I'm expecting a reversal in USDT dominance just like Q1 2023, which will lead to a correction in $BTC and alts.",
      "tweet_id": "2101985035981304301"
     },
@@ -114,7 +114,7 @@
      "handle": "tedpillows",
      "direction": "SELL",
      "date": "2026-09-21",
-     "weight": 0.442,
+     "weight": 0.43,
      "quote": "Yes, I still expect a retrace toward the mid-$70Ks. That remains my base thesis for now.",
      "tweet_id": "2101978335626600746"
     },
@@ -122,7 +122,7 @@
      "handle": "tedpillows",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.442,
+     "weight": 0.43,
      "quote": "There's still room for the pump.",
      "tweet_id": "2101972322630721696"
     },
@@ -130,7 +130,7 @@
      "handle": "peterlbrandt",
      "direction": "BUY",
      "date": "2026-09-18",
-     "weight": 0.439,
+     "weight": 0.429,
      "quote": "A bear trap immediately followed by a spring board",
      "tweet_id": "2101026622522429546"
     },
@@ -138,7 +138,7 @@
      "handle": "davthewave",
      "direction": "BUY",
      "date": "2026-09-18",
-     "weight": 0.434,
+     "weight": 0.424,
      "quote": "A clean #btc break through 83K and it's all on...",
      "tweet_id": "2101027945158721611"
     },
@@ -146,7 +146,7 @@
      "handle": "ryandetrick",
      "direction": "BUY",
      "date": "2026-09-03",
-     "weight": 0.43,
+     "weight": 0.42,
      "quote": "If this breaks out (which I think it will) that can't be bad for risk assets.",
      "tweet_id": "2095593607826997486"
     },
@@ -154,7 +154,7 @@
      "handle": "michaelmottcm",
      "direction": "SELL",
      "date": "2026-09-15",
-     "weight": 0.415,
+     "weight": 0.405,
      "quote": "Bitcoin, which I think goes back below $70k",
      "tweet_id": "2099890972041650232"
     },
@@ -162,7 +162,7 @@
      "handle": "tedpillows",
      "direction": "BUY",
      "date": "2026-09-17",
-     "weight": 0.403,
+     "weight": 0.392,
      "quote": "$BTC is just one god candle away from hitting a higher high.",
      "tweet_id": "2100576375576854721"
     }
@@ -172,41 +172,41 @@
    "asset": "BTC",
    "horizon": "MEDIUM",
    "label": "BUY",
-   "net": 0.2,
-   "buy": 44.993,
-   "sell": 29.473,
-   "neutral": 3.296,
-   "n_calls": 492,
+   "net": 0.199,
+   "buy": 44.72,
+   "sell": 29.358,
+   "neutral": 3.269,
+   "n_calls": 490,
    "top_handle": "tedpillows",
    "top_share": 0.148,
    "schools": {
     "Technical": {
-     "buy": 9.41,
-     "sell": 10.59,
-     "neutral": 1.7,
+     "buy": 9.356,
+     "sell": 10.529,
+     "neutral": 1.691,
      "label": "NEUTRAL"
     },
     "Crypto": {
-     "buy": 28.507,
-     "sell": 11.078,
-     "neutral": 1.595,
+     "buy": 28.325,
+     "sell": 11.015,
+     "neutral": 1.578,
      "label": "BUY"
     },
     "Macro": {
-     "buy": 4.017,
-     "sell": 0.493,
+     "buy": 3.994,
+     "sell": 0.49,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Quant": {
-     "buy": 2.855,
-     "sell": 0.566,
+     "buy": 2.838,
+     "sell": 0.563,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Goldbug": {
-     "buy": 0.205,
-     "sell": 6.746,
+     "buy": 0.207,
+     "sell": 6.76,
      "neutral": 0.0,
      "label": "SELL"
     }
@@ -216,7 +216,7 @@
      "handle": "burak_tamac",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.655,
+     "weight": 0.651,
      "quote": "Yani bitcoin artık yükseliş trendine girdi.",
      "tweet_id": "2101988798427259371"
     },
@@ -224,7 +224,7 @@
      "handle": "rektcapital",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.59,
+     "weight": 0.587,
      "quote": "The aim is to capture the majority of the trend and the key going forward will be to buy on any deeper future pullbacks",
      "tweet_id": "2102094911646335457"
     },
@@ -232,7 +232,7 @@
      "handle": "100trillionusd",
      "direction": "BUY",
      "date": "2026-09-01",
-     "weight": 0.563,
+     "weight": 0.559,
      "quote": "IMO the bottom is behind us. I expect higher prices from here.",
      "tweet_id": "2094757118515511475"
     },
@@ -240,7 +240,7 @@
      "handle": "100trillionusd",
      "direction": "BUY",
      "date": "2026-09-19",
-     "weight": 0.554,
+     "weight": 0.551,
      "quote": "Next target: 100-week MA ($89k) 🚀",
      "tweet_id": "2101269113951727791"
     },
@@ -248,7 +248,7 @@
      "handle": "100trillionusd",
      "direction": "BUY",
      "date": "2026-08-25",
-     "weight": 0.541,
+     "weight": 0.538,
      "quote": "Feels like the bear is dead and bulls are in charge🚀",
      "tweet_id": "2092297727417676275"
     },
@@ -256,7 +256,7 @@
      "handle": "rektcapital",
      "direction": "NEUTRAL",
      "date": "2026-09-01",
-     "weight": 0.527,
+     "weight": 0.524,
      "quote": "Until then Bitcoin will remain inside this Macro Range between $60,000 and $80,000",
      "tweet_id": "2094787204920832141"
     },
@@ -264,7 +264,7 @@
      "handle": "amitisinvesting",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.526,
+     "weight": 0.523,
      "quote": "makes it more of a coiled spring now if this is the breakout",
      "tweet_id": "2102012476967583841"
     },
@@ -272,7 +272,7 @@
      "handle": "zerohedge_",
      "direction": "BUY",
      "date": "2026-09-04",
-     "weight": 0.52,
+     "weight": 0.517,
      "quote": "I’m still not FULL bull for a few reasons. But my bases are loaded.",
      "tweet_id": "2095698009887564049"
     },
@@ -280,7 +280,7 @@
      "handle": "raoulgmi",
      "direction": "BUY",
      "date": "2026-09-18",
-     "weight": 0.499,
+     "weight": 0.496,
      "quote": "My view for a couple of months is that BTC outperforms the NDX going forwards",
      "tweet_id": "2101082909474210214"
     },
@@ -288,7 +288,7 @@
      "handle": "kaanarven",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.495,
+     "weight": 0.492,
      "quote": "Bu daha fragman bile değil, kanala katılın yeni başlıyoruz",
      "tweet_id": "2101970793324265803"
     },
@@ -296,7 +296,7 @@
      "handle": "caprioleio",
      "direction": "BUY",
      "date": "2026-09-03",
-     "weight": 0.485,
+     "weight": 0.482,
      "quote": "Almost all of our Bitcoin models are long, this hasn't happened in a long-time.",
      "tweet_id": "2095656597523763386"
     },
@@ -304,7 +304,7 @@
      "handle": "saylor",
      "direction": "BUY",
      "date": "2026-09-16",
-     "weight": 0.471,
+     "weight": 0.468,
      "quote": "more capital to favor Bitcoin",
      "tweet_id": "2100184378298994891"
     },
@@ -312,7 +312,7 @@
      "handle": "ki_young_ju",
      "direction": "BUY",
      "date": "2026-08-27",
-     "weight": 0.462,
+     "weight": 0.459,
      "quote": "The peak of this bull cycle will likely be driven by institutional money and ETFs outside the US.",
      "tweet_id": "2092930758432190558"
     },
@@ -320,7 +320,7 @@
      "handle": "zerohedge_",
      "direction": "SELL",
      "date": "2026-08-14",
-     "weight": 0.462,
+     "weight": 0.459,
      "quote": "Bitcoin lows are not in. 💯",
      "tweet_id": "2088270378544025832"
     },
@@ -328,7 +328,7 @@
      "handle": "zerohedge_",
      "direction": "BUY",
      "date": "2026-07-31",
-     "weight": 0.426,
+     "weight": 0.424,
      "quote": "I do believe we'll have another bull market... Things will turn",
      "tweet_id": "2083246669970252229"
     }
@@ -338,41 +338,41 @@
    "asset": "BTC",
    "horizon": "LONG",
    "label": "BUY",
-   "net": 0.648,
-   "buy": 223.262,
-   "sell": 47.58,
-   "neutral": 0.219,
-   "n_calls": 1404,
+   "net": 0.65,
+   "buy": 223.973,
+   "sell": 47.477,
+   "neutral": 0.218,
+   "n_calls": 1403,
    "top_handle": "apompliano",
-   "top_share": 0.175,
+   "top_share": 0.174,
    "schools": {
+    "Crypto": {
+     "buy": 161.854,
+     "sell": 12.174,
+     "neutral": 0.0,
+     "label": "BUY"
+    },
     "Quant": {
-     "buy": 10.607,
-     "sell": 0.157,
+     "buy": 10.577,
+     "sell": 0.156,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Macro": {
-     "buy": 31.798,
-     "sell": 2.915,
+     "buy": 31.707,
+     "sell": 2.906,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Technical": {
-     "buy": 16.897,
-     "sell": 7.44,
-     "neutral": 0.219,
-     "label": "BUY"
-    },
-    "Crypto": {
-     "buy": 160.97,
-     "sell": 12.279,
-     "neutral": 0.0,
+     "buy": 16.849,
+     "sell": 7.419,
+     "neutral": 0.218,
      "label": "BUY"
     },
     "Goldbug": {
-     "buy": 2.99,
-     "sell": 24.788,
+     "buy": 2.986,
+     "sell": 24.82,
      "neutral": 0.0,
      "label": "SELL"
     }
@@ -382,7 +382,7 @@
      "handle": "rektcapital",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.706,
+     "weight": 0.704,
      "quote": "When a Macro Downtrend ends, a new Macro Uptrend begins",
      "tweet_id": "2102053812433260821"
     },
@@ -390,7 +390,7 @@
      "handle": "saylor",
      "direction": "BUY",
      "date": "2026-09-18",
-     "weight": 0.666,
+     "weight": 0.664,
      "quote": "Bitcoin takes you higher.",
      "tweet_id": "2100987664849572071"
     },
@@ -398,7 +398,7 @@
      "handle": "saylor",
      "direction": "BUY",
      "date": "2026-09-15",
-     "weight": 0.66,
+     "weight": 0.658,
      "quote": "The only clarity you need is Bitcoin.",
      "tweet_id": "2099938134154695082"
     },
@@ -406,7 +406,7 @@
      "handle": "saylor",
      "direction": "BUY",
      "date": "2026-09-11",
-     "weight": 0.653,
+     "weight": 0.651,
      "quote": "Just buy Bitcoin.",
      "tweet_id": "2098375716882546807"
     },
@@ -414,7 +414,7 @@
      "handle": "saylor",
      "direction": "BUY",
      "date": "2026-09-10",
-     "weight": 0.651,
+     "weight": 0.649,
      "quote": "Buy Bitcoin. Save yourself the trip.",
      "tweet_id": "2098020313091002745"
     },
@@ -422,7 +422,7 @@
      "handle": "saylor",
      "direction": "BUY",
      "date": "2026-09-07",
-     "weight": 0.645,
+     "weight": 0.644,
      "quote": "Capital gravitates toward Bitcoin.",
      "tweet_id": "2096942497268166673"
     },
@@ -430,15 +430,23 @@
      "handle": "rektcapital",
      "direction": "BUY",
      "date": "2026-09-17",
-     "weight": 0.62,
+     "weight": 0.618,
      "quote": "any deeper #BTC pullback going forward will represent a great opportunity for the long-run",
      "tweet_id": "2100588193745617029"
+    },
+    {
+     "handle": "nsquaredvalue",
+     "direction": "BUY",
+     "date": "2026-09-22",
+     "weight": 0.609,
+     "quote": "The current trajectory puts $1,000,000 no later than 2034 - 8 years.",
+     "tweet_id": "2102407213381824537"
     },
     {
      "handle": "saylor",
      "direction": "BUY",
      "date": "2026-08-16",
-     "weight": 0.606,
+     "weight": 0.605,
      "quote": "Bitcoin is the only game in the casino where we can all win.",
      "tweet_id": "2089024403619127652"
     },
@@ -446,7 +454,7 @@
      "handle": "saylor",
      "direction": "BUY",
      "date": "2026-08-11",
-     "weight": 0.598,
+     "weight": 0.596,
      "quote": "Everyone is against Bitcoin before they are for Bitcoin.",
      "tweet_id": "2087252266533175311"
     },
@@ -454,7 +462,7 @@
      "handle": "apompliano",
      "direction": "BUY",
      "date": "2026-09-19",
-     "weight": 0.595,
+     "weight": 0.593,
      "quote": "I believe is bitcoin. That's it.",
      "tweet_id": "2101408625734365395"
     },
@@ -462,7 +470,7 @@
      "handle": "100trillionusd",
      "direction": "BUY",
      "date": "2026-09-22",
-     "weight": 0.594,
+     "weight": 0.592,
      "quote": "A drop below $53K this cycle is off the table IMO.",
      "tweet_id": "2102323109739352547"
     },
@@ -470,7 +478,7 @@
      "handle": "burak_tamac",
      "direction": "BUY",
      "date": "2026-08-21",
-     "weight": 0.592,
+     "weight": 0.589,
      "quote": "Bunlar değerlenmiyor, değerini ölçtüğümüz şeyin değeri azalıyor",
      "tweet_id": "2090879364800061519"
     },
@@ -478,7 +486,7 @@
      "handle": "apompliano",
      "direction": "BUY",
      "date": "2026-09-14",
-     "weight": 0.586,
+     "weight": 0.585,
      "quote": "assets like bitcoin, gold, and land will rapidly appreciate in price",
      "tweet_id": "2099563740727288027"
     },
@@ -486,17 +494,9 @@
      "handle": "jsblokland",
      "direction": "BUY",
      "date": "2026-09-22",
-     "weight": 0.582,
+     "weight": 0.58,
      "quote": "Met het Sound Money Fund trekken we die filosofie nog verder door, met uitsluitend fysiek goud en bitcoin. ... omdat ik er heilig van overtuigd ben dat beleggers behoefte hebben aan andere oplossingen voor een wereld die er fundamenteel anders uitziet dan twintig jaar geleden.",
      "tweet_id": "2102307334168912094"
-    },
-    {
-     "handle": "nsquaredvalue",
-     "direction": "BUY",
-     "date": "2026-09-05",
-     "weight": 0.582,
-     "quote": "Dips are for buying. September is usually the biggest dip. But even it its not, this example illustrates how waiting just 4 weeks can material affect outcomes over the long run.",
-     "tweet_id": "2096283339212661065"
     }
    ]
   },
@@ -504,41 +504,41 @@
    "asset": "GOLD",
    "horizon": "SHORT",
    "label": "BUY",
-   "net": 0.323,
-   "buy": 6.638,
-   "sell": 3.332,
-   "neutral": 0.273,
-   "n_calls": 59,
-   "top_handle": "techcharts",
+   "net": 0.326,
+   "buy": 6.413,
+   "sell": 3.191,
+   "neutral": 0.267,
+   "n_calls": 57,
+   "top_handle": "peterschiff",
    "top_share": 0.151,
    "schools": {
     "Technical": {
-     "buy": 2.705,
-     "sell": 1.484,
-     "neutral": 0.273,
+     "buy": 2.569,
+     "sell": 1.385,
+     "neutral": 0.267,
      "label": "BUY"
     },
     "Quant": {
-     "buy": 0.414,
-     "sell": 0.597,
+     "buy": 0.405,
+     "sell": 0.583,
      "neutral": 0.0,
      "label": "SELL"
     },
     "Macro": {
-     "buy": 1.521,
-     "sell": 0.573,
+     "buy": 1.486,
+     "sell": 0.56,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Goldbug": {
-     "buy": 1.593,
-     "sell": 0.479,
+     "buy": 1.557,
+     "sell": 0.468,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Crypto": {
-     "buy": 0.406,
-     "sell": 0.199,
+     "buy": 0.397,
+     "sell": 0.194,
      "neutral": 0.0,
      "label": "BUY"
     }
@@ -548,7 +548,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-09-14",
-     "weight": 0.529,
+     "weight": 0.517,
      "quote": "today's selloff in gold is another gift. Buy now!",
      "tweet_id": "2099502666803970279"
     },
@@ -556,7 +556,7 @@
      "handle": "laplace2011",
      "direction": "BUY",
      "date": "2026-09-16",
-     "weight": 0.408,
+     "weight": 0.399,
      "quote": "Hele azıcık daha gerilesin de Full ‘Altın’lanalım!",
      "tweet_id": "2100333942201061825"
     },
@@ -564,7 +564,7 @@
      "handle": "laplace2011",
      "direction": "BUY",
      "date": "2026-09-09",
-     "weight": 0.397,
+     "weight": 0.388,
      "quote": "Altın’a da Gümüş’e de Dikkatle pozitif yönlü takibe devam!",
      "tweet_id": "2097680288977449141"
     },
@@ -572,7 +572,7 @@
      "handle": "techcharts",
      "direction": "SELL",
      "date": "2026-09-20",
-     "weight": 0.396,
+     "weight": 0.387,
      "quote": "Next week #GOLD latest move can look like a completed reversion to the mean.",
      "tweet_id": "2101549749543330236"
     },
@@ -580,7 +580,7 @@
      "handle": "techcharts",
      "direction": "BUY",
      "date": "2026-09-18",
-     "weight": 0.378,
+     "weight": 0.369,
      "quote": "#GOLD equities from recent #breakout #alerts can resume higher.",
      "tweet_id": "2100904086543495357"
     },
@@ -588,7 +588,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-09-09",
-     "weight": 0.367,
+     "weight": 0.358,
      "quote": "if traders understood what this means, gold would have added to its earlier gains.",
      "tweet_id": "2097705131244429340"
     },
@@ -596,7 +596,7 @@
      "handle": "barchart",
      "direction": "SELL",
      "date": "2026-09-14",
-     "weight": 0.358,
+     "weight": 0.35,
      "quote": "Head & Shoulders pattern and losing the 100-day moving average",
      "tweet_id": "2099570083131457559"
     },
@@ -604,7 +604,7 @@
      "handle": "kingkong9888",
      "direction": "SELL",
      "date": "2026-09-01",
-     "weight": 0.349,
+     "weight": 0.341,
      "quote": "#Gold literally fell off a truck…",
      "tweet_id": "2094822093531885687"
     },
@@ -612,7 +612,7 @@
      "handle": "zerohedge",
      "direction": "BUY",
      "date": "2026-09-04",
-     "weight": 0.344,
+     "weight": 0.336,
      "quote": "A negative jobs report tomorrow would help propel it to the 38.2%",
      "tweet_id": "2095667185158898138"
     },
@@ -620,7 +620,7 @@
      "handle": "nsquaredvalue",
      "direction": "BUY",
      "date": "2026-09-07",
-     "weight": 0.343,
+     "weight": 0.335,
      "quote": "7 more download to 2800.",
      "tweet_id": "2097008397216350705"
     },
@@ -628,7 +628,7 @@
      "handle": "techcharts",
      "direction": "BUY",
      "date": "2026-09-11",
-     "weight": 0.321,
+     "weight": 0.314,
      "quote": "When your most recent evidence is suggesting a breakout to new highs, you are better off taking that into account until new evidence emerges...",
      "tweet_id": "2098334321471856806"
     },
@@ -636,7 +636,7 @@
      "handle": "tuncsatiroglu",
      "direction": "BUY",
      "date": "2026-09-14",
-     "weight": 0.299,
+     "weight": 0.293,
      "quote": "Değerli metallere yarar.",
      "tweet_id": "2099541436039680411"
     },
@@ -644,7 +644,7 @@
      "handle": "profkayafinance",
      "direction": "BUY",
      "date": "2026-09-14",
-     "weight": 0.291,
+     "weight": 0.284,
      "quote": "Bunlar bize altin tepside sunulmuş kazanımlar olurdu.",
      "tweet_id": "2099371971288920299"
     },
@@ -652,7 +652,7 @@
      "handle": "zerohedge_",
      "direction": "BUY",
      "date": "2026-08-24",
-     "weight": 0.28,
+     "weight": 0.274,
      "quote": "long gold",
      "tweet_id": "2091911371080274159"
     },
@@ -660,7 +660,7 @@
      "handle": "peterlbrandt",
      "direction": "SELL",
      "date": "2026-09-10",
-     "weight": 0.275,
+     "weight": 0.268,
      "quote": "I am interested in the short side of Gold",
      "tweet_id": "2098065985441783957"
     }
@@ -671,40 +671,40 @@
    "horizon": "MEDIUM",
    "label": "BUY",
    "net": 0.873,
-   "buy": 74.222,
-   "sell": 5.015,
+   "buy": 73.51,
+   "sell": 4.987,
    "neutral": 0.0,
-   "n_calls": 302,
+   "n_calls": 299,
    "top_handle": "peterschiff",
-   "top_share": 0.461,
+   "top_share": 0.459,
    "schools": {
     "Quant": {
-     "buy": 5.006,
-     "sell": 0.205,
+     "buy": 4.978,
+     "sell": 0.204,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Goldbug": {
-     "buy": 40.741,
-     "sell": 0.42,
+     "buy": 40.219,
+     "sell": 0.418,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Crypto": {
-     "buy": 3.671,
-     "sell": 0.768,
+     "buy": 3.65,
+     "sell": 0.763,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Macro": {
-     "buy": 14.529,
-     "sell": 2.147,
+     "buy": 14.446,
+     "sell": 2.135,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Technical": {
-     "buy": 10.275,
-     "sell": 1.475,
+     "buy": 10.217,
+     "sell": 1.467,
      "neutral": 0.0,
      "label": "BUY"
     }
@@ -714,7 +714,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-09-17",
-     "weight": 0.839,
+     "weight": 0.834,
      "quote": "Just another reason to buy gold.",
      "tweet_id": "2100577681842602262"
     },
@@ -722,7 +722,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-09-16",
-     "weight": 0.834,
+     "weight": 0.829,
      "quote": "You must get aboard the gold train.",
      "tweet_id": "2100237306644861054"
     },
@@ -730,7 +730,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-09-08",
-     "weight": 0.797,
+     "weight": 0.793,
      "quote": "gold won't stay at $4,400",
      "tweet_id": "2097390908127776834"
     },
@@ -738,7 +738,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-09-02",
-     "weight": 0.77,
+     "weight": 0.766,
      "quote": "That's bullish for gold.",
      "tweet_id": "2095143440988197058"
     },
@@ -746,7 +746,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-21",
-     "weight": 0.719,
+     "weight": 0.715,
      "quote": "wait until the dollar starts to drop sharply against its major fiat currency counterparts. Dollar weakness is the missing piece that will complete the puzzle necessary for a full-blown U.S. sovereign debt crisis.",
      "tweet_id": "2090850852730732930"
     },
@@ -754,7 +754,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-21",
-     "weight": 0.719,
+     "weight": 0.715,
      "quote": "Gold is trading above $4,600. So far, over the first three weeks of August, gold is up 15%. This doesn't happen with a hawkish Fed determined to do whatever it takes to lower inflation. It happens when investors realize the Fed is bluffing and intends to let inflation run away.",
      "tweet_id": "2090828538152661177"
     },
@@ -762,7 +762,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-21",
-     "weight": 0.719,
+     "weight": 0.715,
      "quote": "Gold hitting $4,600... investors are choosing their preferred hedge.",
      "tweet_id": "2090770804497674291"
     },
@@ -770,7 +770,7 @@
      "handle": "kingkong9888",
      "direction": "BUY",
      "date": "2026-09-20",
-     "weight": 0.718,
+     "weight": 0.714,
      "quote": "I am pretty sure that some of this liquidity will flow into physical #Gold and #Silver via the new Hong Kong GOLD HUB. It is inevitable…",
      "tweet_id": "2101529818936508627"
     },
@@ -778,7 +778,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-20",
-     "weight": 0.715,
+     "weight": 0.711,
      "quote": "Got gold?",
      "tweet_id": "2090412834605715858"
     },
@@ -786,7 +786,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-20",
-     "weight": 0.715,
+     "weight": 0.711,
      "quote": "Sell Bitcoin, buy gold.",
      "tweet_id": "2090402972375122136"
     },
@@ -794,7 +794,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-19",
-     "weight": 0.711,
+     "weight": 0.707,
      "quote": "That's why gold is already up $125 on the news!",
      "tweet_id": "2090067570816606429"
     },
@@ -802,7 +802,7 @@
      "handle": "jsblokland",
      "direction": "BUY",
      "date": "2026-09-07",
-     "weight": 0.709,
+     "weight": 0.705,
      "quote": "If the global money supply keeps growing by 7% annually (the pace since the Great Financial Crisis) over the next 3 years, gold would need to rise another 22% just to maintain the same gold-to-money ratio.",
      "tweet_id": "2096918679526985807"
     },
@@ -810,7 +810,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-18",
-     "weight": 0.707,
+     "weight": 0.703,
      "quote": "what's happening with JGBs and Treasuries is actually extremely bullish for gold",
      "tweet_id": "2089555696224219299"
     },
@@ -818,7 +818,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-18",
-     "weight": 0.707,
+     "weight": 0.703,
      "quote": "one asset class that's not even close to a bubble is precious metals mining stocks. It's nowhere near too late to buy.",
      "tweet_id": "2089512152478486610"
     },
@@ -826,7 +826,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-10",
-     "weight": 0.676,
+     "weight": 0.672,
      "quote": "Gold and oil should rise together, as inflation pushes the CPI and bond yields higher, while the U.S. economy weakens as more jobs disappear.",
      "tweet_id": "2086906619464409344"
     }
@@ -837,40 +837,40 @@
    "horizon": "LONG",
    "label": "BUY",
    "net": 0.925,
-   "buy": 258.078,
-   "sell": 9.99,
-   "neutral": 0.234,
+   "buy": 257.443,
+   "sell": 9.963,
+   "neutral": 0.233,
    "n_calls": 902,
    "top_handle": "peterschiff",
-   "top_share": 0.359,
+   "top_share": 0.36,
    "schools": {
     "Macro": {
-     "buy": 98.085,
-     "sell": 3.523,
-     "neutral": 0.234,
+     "buy": 97.806,
+     "sell": 3.513,
+     "neutral": 0.233,
      "label": "BUY"
     },
     "Technical": {
-     "buy": 18.949,
-     "sell": 1.591,
+     "buy": 18.895,
+     "sell": 1.587,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Goldbug": {
-     "buy": 116.152,
-     "sell": 1.645,
+     "buy": 115.921,
+     "sell": 1.641,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Crypto": {
-     "buy": 13.333,
-     "sell": 2.485,
+     "buy": 13.295,
+     "sell": 2.478,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Quant": {
-     "buy": 11.558,
-     "sell": 0.746,
+     "buy": 11.525,
+     "sell": 0.744,
      "neutral": 0.0,
      "label": "BUY"
     }
@@ -880,7 +880,7 @@
      "handle": "jsblokland",
      "direction": "BUY",
      "date": "2026-09-22",
-     "weight": 0.842,
+     "weight": 0.839,
      "quote": "Met het Sound Money Fund trekken we die filosofie nog verder door, met uitsluitend fysiek goud en bitcoin. ... omdat ik er heilig van overtuigd ben dat beleggers behoefte hebben aan andere oplossingen voor een wereld die er fundamenteel anders uitziet dan twintig jaar geleden.",
      "tweet_id": "2102307334168912094"
     },
@@ -888,7 +888,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-09-16",
-     "weight": 0.834,
+     "weight": 0.833,
      "quote": "Buy gold.",
      "tweet_id": "2100285230133227966"
     },
@@ -896,7 +896,7 @@
      "handle": "jsblokland",
      "direction": "BUY",
      "date": "2026-09-17",
-     "weight": 0.83,
+     "weight": 0.827,
      "quote": "positive real returns alone won’t be enough to reverse the massive relative underperformance against scarce monetary assets like gold and bitcoin",
      "tweet_id": "2100661474586739039"
     },
@@ -904,7 +904,7 @@
      "handle": "jsblokland",
      "direction": "BUY",
      "date": "2026-09-17",
-     "weight": 0.83,
+     "weight": 0.827,
      "quote": "investing exclusively in two genuinely scarce assets: physical gold and bitcoin... positioning your portfolio for these changes",
      "tweet_id": "2100497185682997428"
     },
@@ -912,23 +912,15 @@
      "handle": "jsblokland",
      "direction": "BUY",
      "date": "2026-09-05",
-     "weight": 0.802,
+     "weight": 0.799,
      "quote": "The days when the price of gold was mainly about the opportunity cost of holding it relative to real interest rates are long gone.",
      "tweet_id": "2096193774992892068"
-    },
-    {
-     "handle": "jsblokland",
-     "direction": "BUY",
-     "date": "2026-09-04",
-     "weight": 0.799,
-     "quote": "Gold is the ultimate anchor of confidence to hedge extreme systemic risks. ... Gold is nobody’s liability. It cannot be printed and is specifically meant to preserve value when confidence in the financial and monetary system comes under pressure.",
-     "tweet_id": "2095771991491981405"
     },
     {
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-09-01",
-     "weight": 0.799,
+     "weight": 0.798,
      "quote": "Got Gold?",
      "tweet_id": "2094873605775507718"
     },
@@ -936,15 +928,23 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-09-01",
-     "weight": 0.799,
+     "weight": 0.798,
      "quote": "This couldn't be more bullish for gold.",
      "tweet_id": "2094775003291992532"
+    },
+    {
+     "handle": "jsblokland",
+     "direction": "BUY",
+     "date": "2026-09-04",
+     "weight": 0.797,
+     "quote": "Gold is the ultimate anchor of confidence to hedge extreme systemic risks. ... Gold is nobody’s liability. It cannot be printed and is specifically meant to preserve value when confidence in the financial and monetary system comes under pressure.",
+     "tweet_id": "2095771991491981405"
     },
     {
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-31",
-     "weight": 0.797,
+     "weight": 0.796,
      "quote": "That’s why we choose gold.",
      "tweet_id": "2094491066414035262"
     },
@@ -952,31 +952,31 @@
      "handle": "tavicosta",
      "direction": "BUY",
      "date": "2026-09-05",
-     "weight": 0.79,
+     "weight": 0.788,
      "quote": "If companies are not drilling today, there will be no meaningful supply response for years while structural demand for metals continues to accelerate. Game on for metals and mining.",
      "tweet_id": "2096302448365486223"
+    },
+    {
+     "handle": "peterschiff",
+     "direction": "BUY",
+     "date": "2026-08-25",
+     "weight": 0.782,
+     "quote": "gold price needing to rise another 20% to match its record high",
+     "tweet_id": "2092351817304740106"
     },
     {
      "handle": "jsblokland",
      "direction": "BUY",
      "date": "2026-08-28",
-     "weight": 0.784,
+     "weight": 0.781,
      "quote": "You want scarce assets like physical gold.",
      "tweet_id": "2093287665714012331"
     },
     {
      "handle": "peterschiff",
      "direction": "BUY",
-     "date": "2026-08-25",
-     "weight": 0.784,
-     "quote": "gold price needing to rise another 20% to match its record high",
-     "tweet_id": "2092351817304740106"
-    },
-    {
-     "handle": "peterschiff",
-     "direction": "BUY",
      "date": "2026-08-24",
-     "weight": 0.781,
+     "weight": 0.78,
      "quote": "Got gold?",
      "tweet_id": "2091885970530427260"
     },
@@ -984,7 +984,7 @@
      "handle": "jsblokland",
      "direction": "BUY",
      "date": "2026-08-26",
-     "weight": 0.779,
+     "weight": 0.777,
      "quote": "I believe we are only at the start of The Great Rebalancing... swapped for real, scarce assets like gold.",
      "tweet_id": "2092491545333178374"
     },
@@ -992,7 +992,7 @@
      "handle": "peterschiff",
      "direction": "BUY",
      "date": "2026-08-20",
-     "weight": 0.773,
+     "weight": 0.771,
      "quote": "The best way to avoid losing money in Treasuries is to buy gold instead.",
      "tweet_id": "2090456679573778610"
     }
@@ -1002,36 +1002,36 @@
    "asset": "SPX",
    "horizon": "SHORT",
    "label": "NEUTRAL",
-   "net": -0.146,
-   "buy": 3.687,
-   "sell": 5.046,
-   "neutral": 0.593,
-   "n_calls": 60,
+   "net": -0.137,
+   "buy": 3.603,
+   "sell": 4.872,
+   "neutral": 0.796,
+   "n_calls": 59,
    "top_handle": "tuncsatiroglu",
-   "top_share": 0.157,
+   "top_share": 0.154,
    "schools": {
-    "Quant": {
-     "buy": 0.995,
-     "sell": 2.101,
-     "neutral": 0.187,
-     "label": "SELL"
-    },
     "Technical": {
-     "buy": 1.224,
-     "sell": 1.559,
-     "neutral": 0.333,
+     "buy": 1.197,
+     "sell": 1.463,
+     "neutral": 0.542,
      "label": "NEUTRAL"
     },
+    "Quant": {
+     "buy": 0.972,
+     "sell": 2.053,
+     "neutral": 0.183,
+     "label": "SELL"
+    },
     "Macro": {
-     "buy": 1.031,
-     "sell": 0.956,
+     "buy": 1.008,
+     "sell": 0.934,
      "neutral": 0.0,
      "label": "NEUTRAL"
     },
     "Crypto": {
-     "buy": 0.436,
-     "sell": 0.43,
-     "neutral": 0.073,
+     "buy": 0.426,
+     "sell": 0.421,
+     "neutral": 0.071,
      "label": "NEUTRAL"
     }
    },
@@ -1040,7 +1040,7 @@
      "handle": "tuncsatiroglu",
      "direction": "SELL",
      "date": "2026-09-20",
-     "weight": 0.43,
+     "weight": 0.42,
      "quote": "Sonra Ekim düşüşünün gelmesini bekliyorum",
      "tweet_id": "2101600228428378417"
     },
@@ -1048,7 +1048,7 @@
      "handle": "ryandetrick",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.406,
+     "weight": 0.397,
      "quote": "Our call for a choppy to weak first half of September, then a big rally the second half hasn't been a popular call. We still think it is possible.",
      "tweet_id": "2101830788979282426"
     },
@@ -1056,7 +1056,7 @@
      "handle": "zerohedge_",
      "direction": "SELL",
      "date": "2026-09-16",
-     "weight": 0.377,
+     "weight": 0.368,
      "quote": "Stocks are flirting with the 1st stage of a Phase 4 breakdown.",
      "tweet_id": "2100294876147405015"
     },
@@ -1064,7 +1064,7 @@
      "handle": "ryandetrick",
      "direction": "BUY",
      "date": "2026-09-14",
-     "weight": 0.345,
+     "weight": 0.338,
      "quote": "I'd argue this is a reason to be on the lookout for a surprise September rally.",
      "tweet_id": "2099320188340506987"
     },
@@ -1072,7 +1072,7 @@
      "handle": "tuncsatiroglu",
      "direction": "BUY",
      "date": "2026-09-14",
-     "weight": 0.327,
+     "weight": 0.32,
      "quote": "Yeni bir gelişme olmazsa piyasada yarın iyi bir yükseliş görebiliriz.",
      "tweet_id": "2099536620915724376"
     },
@@ -1080,7 +1080,7 @@
      "handle": "globalmktobserv",
      "direction": "SELL",
      "date": "2026-09-21",
-     "weight": 0.32,
+     "weight": 0.312,
      "quote": "the Nasdaq 100 could face a decline of as much as -50% over the next 6 months.",
      "tweet_id": "2102041158650130742"
     },
@@ -1088,31 +1088,31 @@
      "handle": "profkayafinance",
      "direction": "SELL",
      "date": "2026-09-15",
-     "weight": 0.316,
+     "weight": 0.309,
      "quote": "$QQQ |  Nasdaq ETF 635$ (%10) düşerse beni hiç şaşırtmaz.",
      "tweet_id": "2099753220088135703"
-    },
-    {
-     "handle": "zerohedge_",
-     "direction": "SELL",
-     "date": "2026-08-24",
-     "weight": 0.285,
-     "quote": "Still short nasdaq",
-     "tweet_id": "2091911371080274159"
     },
     {
      "handle": "globalmktobserv",
      "direction": "SELL",
      "date": "2026-09-21",
-     "weight": 0.284,
+     "weight": 0.278,
      "quote": "The historical setup points to more weakness in the following weeks.",
      "tweet_id": "2102010959661277547"
+    },
+    {
+     "handle": "zerohedge_",
+     "direction": "SELL",
+     "date": "2026-08-24",
+     "weight": 0.278,
+     "quote": "Still short nasdaq",
+     "tweet_id": "2091911371080274159"
     },
     {
      "handle": "techcharts",
      "direction": "BUY",
      "date": "2026-09-21",
-     "weight": 0.262,
+     "weight": 0.256,
      "quote": "#SPX can resume higher after this re-test.",
      "tweet_id": "2101919604389842982"
     },
@@ -1120,15 +1120,23 @@
      "handle": "techcharts",
      "direction": "BUY",
      "date": "2026-09-17",
-     "weight": 0.238,
+     "weight": 0.233,
      "quote": "Still a candidate for a Type 2 breakout.",
      "tweet_id": "2100469761486258603"
+    },
+    {
+     "handle": "markminervini",
+     "direction": "NEUTRAL",
+     "date": "2026-09-22",
+     "weight": 0.217,
+     "quote": "Until breadth and participation improve, we remain patient and highly selective",
+     "tweet_id": "2102405893451092003"
     },
     {
      "handle": "techcharts",
      "direction": "SELL",
      "date": "2026-09-11",
-     "weight": 0.208,
+     "weight": 0.203,
      "quote": "I inverted the scale to show what a weaker upper boundary should look like for a bearish wedge.",
      "tweet_id": "2098352347290198330"
     },
@@ -1136,7 +1144,7 @@
      "handle": "tuncsatiroglu",
      "direction": "BUY",
      "date": "2026-08-19",
-     "weight": 0.205,
+     "weight": 0.2,
      "quote": "Bu ay için Nasdaq ... pozitif görüşüm devam ediyor",
      "tweet_id": "2089956361912414623"
     },
@@ -1144,17 +1152,9 @@
      "handle": "michaelmottcm",
      "direction": "BUY",
      "date": "2026-09-16",
-     "weight": 0.19,
+     "weight": 0.186,
      "quote": "implied volatility will probably fall at tomorrow’s open, which could help the S&P 500 recoup some of today’s losses.",
      "tweet_id": "2100316501102182535"
-    },
-    {
-     "handle": "globalmktobserv",
-     "direction": "SELL",
-     "date": "2026-09-03",
-     "weight": 0.188,
-     "quote": "a 10%-15% correction is increasingly likely",
-     "tweet_id": "2095487474780790936"
     }
    ]
   },
@@ -1163,40 +1163,40 @@
    "horizon": "MEDIUM",
    "label": "BUY",
    "net": 0.254,
-   "buy": 19.206,
-   "sell": 11.377,
-   "neutral": 0.287,
+   "buy": 19.097,
+   "sell": 11.312,
+   "neutral": 0.286,
    "n_calls": 172,
    "top_handle": "kobeissiletter",
    "top_share": 0.189,
    "schools": {
     "Quant": {
-     "buy": 9.449,
-     "sell": 1.82,
+     "buy": 9.395,
+     "sell": 1.81,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Macro": {
-     "buy": 5.504,
-     "sell": 3.464,
-     "neutral": 0.088,
+     "buy": 5.472,
+     "sell": 3.444,
+     "neutral": 0.087,
      "label": "BUY"
     },
     "Crypto": {
-     "buy": 2.456,
-     "sell": 2.663,
-     "neutral": 0.2,
+     "buy": 2.442,
+     "sell": 2.648,
+     "neutral": 0.198,
      "label": "NEUTRAL"
     },
     "Technical": {
-     "buy": 1.705,
-     "sell": 2.27,
+     "buy": 1.695,
+     "sell": 2.257,
      "neutral": 0.0,
      "label": "NEUTRAL"
     },
     "Goldbug": {
      "buy": 0.091,
-     "sell": 1.16,
+     "sell": 1.154,
      "neutral": 0.0,
      "label": "SELL"
     }
@@ -1206,7 +1206,7 @@
      "handle": "zerohedge_",
      "direction": "BUY",
      "date": "2026-08-12",
-     "weight": 0.558,
+     "weight": 0.554,
      "quote": "Stocks in the S&P are in full bull mode.",
      "tweet_id": "2087549084336889902"
     },
@@ -1214,7 +1214,7 @@
      "handle": "tuncsatiroglu",
      "direction": "SELL",
      "date": "2026-09-18",
-     "weight": 0.556,
+     "weight": 0.552,
      "quote": "Aşırı değerlenmenin artık ortadan kalktığı gösterilebilmeli.",
      "tweet_id": "2100849242906779665"
     },
@@ -1222,7 +1222,7 @@
      "handle": "tuncsatiroglu",
      "direction": "BUY",
      "date": "2026-09-14",
-     "weight": 0.483,
+     "weight": 0.48,
      "quote": "Seçim belirsizliği de kalktıktan sonra piyasanın tekrar yükseliş trendine dönmesini zaten beklerim.",
      "tweet_id": "2099412297961664676"
     },
@@ -1230,7 +1230,7 @@
      "handle": "ryandetrick",
      "direction": "BUY",
      "date": "2026-07-01",
-     "weight": 0.483,
+     "weight": 0.48,
      "quote": "Q3 lower once and Q4 never lower. The rest of the year is up 11.7% on average versus average year up 4.9% the final six months.",
      "tweet_id": "2072145073123287148"
     },
@@ -1238,7 +1238,7 @@
      "handle": "raoulgmi",
      "direction": "SELL",
      "date": "2026-09-18",
-     "weight": 0.48,
+     "weight": 0.477,
      "quote": "My view for a couple of months is that BTC outperforms the NDX going forwards",
      "tweet_id": "2101082909474210214"
     },
@@ -1246,7 +1246,7 @@
      "handle": "caprioleio",
      "direction": "BUY",
      "date": "2026-08-05",
-     "weight": 0.44,
+     "weight": 0.438,
      "quote": "everytime ISM has hit this level in the past, the S&P500 went up another 24% on average, in just over 1 year... with little or no drawdown events. In ALL cases the market was higher 1 year later.",
      "tweet_id": "2084892219039961597"
     },
@@ -1254,7 +1254,7 @@
      "handle": "tuncsatiroglu",
      "direction": "BUY",
      "date": "2026-08-06",
-     "weight": 0.435,
+     "weight": 0.432,
      "quote": "Nasdaq'ta 32.000 Hedefi",
      "tweet_id": "2085382076698874198"
     },
@@ -1262,7 +1262,7 @@
      "handle": "barchart",
      "direction": "SELL",
      "date": "2026-09-15",
-     "weight": 0.432,
+     "weight": 0.43,
      "quote": "S&amp;P 500 will drop 8-10% after the Fed Rate hike, with a 2nd leg possibly coming in December, warns Macro Risk Advisors",
      "tweet_id": "2099668991216128102"
     },
@@ -1270,7 +1270,7 @@
      "handle": "ryandetrick",
      "direction": "BUY",
      "date": "2026-07-02",
-     "weight": 0.432,
+     "weight": 0.429,
      "quote": "🐂 💪",
      "tweet_id": "2072795102154481775"
     },
@@ -1278,7 +1278,7 @@
      "handle": "ryandetrick",
      "direction": "BUY",
      "date": "2026-07-01",
-     "weight": 0.429,
+     "weight": 0.427,
      "quote": "why this bull isn't done",
      "tweet_id": "2072310277215863113"
     },
@@ -1286,7 +1286,7 @@
      "handle": "kobeissiletter",
      "direction": "BUY",
      "date": "2026-09-03",
-     "weight": 0.421,
+     "weight": 0.418,
      "quote": "Without the Iran War, the S&P 500 could be at 9,000+.",
      "tweet_id": "2095555671387414636"
     },
@@ -1294,7 +1294,7 @@
      "handle": "tuncsatiroglu",
      "direction": "BUY",
      "date": "2026-07-29",
-     "weight": 0.416,
+     "weight": 0.413,
      "quote": "We will see new all time highs eventually.",
      "tweet_id": "2082354033038340162"
     },
@@ -1302,7 +1302,7 @@
      "handle": "charliebilello",
      "direction": "BUY",
      "date": "2026-09-08",
-     "weight": 0.403,
+     "weight": 0.401,
      "quote": "S&P 500 earnings are now expected to surge 34% in 2026... We’ve never seen earnings growth this strong outside of post-recession rebounds. This time, there was no recession. Just an unprecedented AI-driven boom.",
      "tweet_id": "2097473235843461509"
     },
@@ -1310,7 +1310,7 @@
      "handle": "kobeissiletter",
      "direction": "BUY",
      "date": "2026-09-15",
-     "weight": 0.4,
+     "weight": 0.398,
      "quote": "Fed rate hikes have historically been great buying opportunities.",
      "tweet_id": "2099919731138703408"
     },
@@ -1318,7 +1318,7 @@
      "handle": "kobeissiletter",
      "direction": "BUY",
      "date": "2026-09-14",
-     "weight": 0.398,
+     "weight": 0.396,
      "quote": "The most interesting part of it all is that the S&P 500 is ~2% away from a record high and up sharply on the year.",
      "tweet_id": "2099315193918497006"
     }
@@ -1329,40 +1329,40 @@
    "horizon": "LONG",
    "label": "NEUTRAL",
    "net": -0.008,
-   "buy": 16.978,
-   "sell": 17.25,
-   "neutral": 0.851,
+   "buy": 16.929,
+   "sell": 17.201,
+   "neutral": 0.849,
    "n_calls": 251,
    "top_handle": "globalmktobserv",
    "top_share": 0.175,
    "schools": {
     "Macro": {
-     "buy": 5.522,
-     "sell": 2.07,
+     "buy": 5.506,
+     "sell": 2.064,
      "neutral": 0.0,
      "label": "BUY"
     },
     "Quant": {
-     "buy": 3.898,
-     "sell": 7.117,
+     "buy": 3.887,
+     "sell": 7.097,
      "neutral": 0.0,
      "label": "SELL"
     },
     "Goldbug": {
-     "buy": 0.709,
-     "sell": 2.093,
+     "buy": 0.707,
+     "sell": 2.087,
      "neutral": 0.0,
      "label": "SELL"
     },
     "Technical": {
-     "buy": 3.487,
-     "sell": 2.374,
-     "neutral": 0.792,
+     "buy": 3.477,
+     "sell": 2.367,
+     "neutral": 0.79,
      "label": "BUY"
     },
     "Crypto": {
-     "buy": 3.362,
-     "sell": 3.596,
+     "buy": 3.352,
+     "sell": 3.585,
      "neutral": 0.059,
      "label": "NEUTRAL"
     }
@@ -1372,7 +1372,7 @@
      "handle": "raoulgmi",
      "direction": "BUY",
      "date": "2026-09-15",
-     "weight": 0.543,
+     "weight": 0.541,
      "quote": "Own Nasdaq, own crypto, go to the beach.",
      "tweet_id": "2099968457454293113"
     },
@@ -1380,7 +1380,7 @@
      "handle": "raoulgmi",
      "direction": "BUY",
      "date": "2026-09-04",
-     "weight": 0.526,
+     "weight": 0.525,
      "quote": "Nasdaq has beaten the debasement rate by roughly 12% a year... a great asset to own, because tomorrow is always more digital than today.",
      "tweet_id": "2095890968876634193"
     },
@@ -1388,7 +1388,7 @@
      "handle": "peterlbrandt",
      "direction": "BUY",
      "date": "2026-08-02",
-     "weight": 0.519,
+     "weight": 0.517,
      "quote": "I am advising you to prepare for a career with a future, work hard and save as much as you can every month. Then I would advise putting 80% of those savings into SPY",
      "tweet_id": "2083734584840294664"
     },
@@ -1396,7 +1396,7 @@
      "handle": "raoulgmi",
      "direction": "BUY",
      "date": "2026-08-11",
-     "weight": 0.491,
+     "weight": 0.49,
      "quote": "Wages have lost half their purchasing power vs the S&P since 2008...",
      "tweet_id": "2087216714765234470"
     },
@@ -1404,7 +1404,7 @@
      "handle": "raoulgmi",
      "direction": "SELL",
      "date": "2026-08-22",
-     "weight": 0.451,
+     "weight": 0.449,
      "quote": "I think over time crypto should outperform the Nasdaq over time",
      "tweet_id": "2090992198959628611"
     },
@@ -1412,7 +1412,7 @@
      "handle": "apompliano",
      "direction": "BUY",
      "date": "2026-05-13",
-     "weight": 0.446,
+     "weight": 0.445,
      "quote": "Generational bull market.",
      "tweet_id": "2054617675347751348"
     },
@@ -1420,7 +1420,7 @@
      "handle": "peterlbrandt",
      "direction": "BUY",
      "date": "2026-07-15",
-     "weight": 0.438,
+     "weight": 0.437,
      "quote": "Hope for a price collapse so that you can cost average lower",
      "tweet_id": "2077524588804866545"
     },
@@ -1428,7 +1428,7 @@
      "handle": "peterlbrandt",
      "direction": "BUY",
      "date": "2026-06-02",
-     "weight": 0.436,
+     "weight": 0.435,
      "quote": "putting as much money as they can into a 50% SPY",
      "tweet_id": "2061776678423294100"
     },
@@ -1436,7 +1436,7 @@
      "handle": "apompliano",
      "direction": "BUY",
      "date": "2026-05-01",
-     "weight": 0.431,
+     "weight": 0.43,
      "quote": "The US stock market continues to go higher because we are living through the modern day Industrial Revolution.",
      "tweet_id": "2050195045836283927"
     },
@@ -1444,7 +1444,7 @@
      "handle": "apompliano",
      "direction": "BUY",
      "date": "2026-04-24",
-     "weight": 0.423,
+     "weight": 0.422,
      "quote": "Never bet against America 🇺🇸",
      "tweet_id": "2047714411331109342"
     },
@@ -1452,7 +1452,7 @@
      "handle": "profkayafinance",
      "direction": "BUY",
      "date": "2026-09-14",
-     "weight": 0.408,
+     "weight": 0.407,
      "quote": "Korkmayın yapay zeka büyümeye devam edecek... asıl mevzu şimdi başlıyor... uzun vadeli yatırımcıların elinde de zaman var. Çok rahattım. Sizlerde rahat olun...",
      "tweet_id": "2099371971288920299"
     },
@@ -1460,7 +1460,7 @@
      "handle": "peterlbrandt",
      "direction": "NEUTRAL",
      "date": "2026-04-29",
-     "weight": 0.396,
+     "weight": 0.395,
      "quote": "S&P Index is entering another major period of chop",
      "tweet_id": "2049553680035364989"
     },
@@ -1468,7 +1468,7 @@
      "handle": "apompliano",
      "direction": "BUY",
      "date": "2026-03-27",
-     "weight": 0.39,
+     "weight": 0.389,
      "quote": "the stock market is engineered to go up over the long run",
      "tweet_id": "2037608089885565279"
     },
@@ -1476,7 +1476,7 @@
      "handle": "schuldensuehner",
      "direction": "BUY",
      "date": "2026-07-31",
-     "weight": 0.357,
+     "weight": 0.356,
      "quote": "shifts the gains from a handful of infrastructure providers to the broader S&P 500 through higher productivity & earnings leverage.",
      "tweet_id": "2083147286654177761"
     },
@@ -1484,7 +1484,7 @@
      "handle": "pentosh1",
      "direction": "SELL",
      "date": "2026-06-03",
-     "weight": 0.355,
+     "weight": 0.354,
      "quote": "At that point the SPX could drop from 20k to 16k and I’ll say. I told you so",
      "tweet_id": "2062196389581382021"
     }
