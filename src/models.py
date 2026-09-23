@@ -12,10 +12,12 @@ import sqlite3
 DEFAULT_MODEL = "qwen3.6-local:35b-a3b-q4_K_M"
 DEFAULT_BASE_URL = "http://localhost:11434/v1"
 
-# Stage 2a gate (src/gate.py). When on, the published dimension is "<text model>+jev": Jev decides is_call, the
-# text model labels only the tweets that pass. FINCLATOR_GATE=0 → plain text-model dimension (the 2026-09 labels).
+# Stage 2a gate (src/gate.py): Jev decides is_call for NEW tweets, the text model labels only those that pass.
+# Labels stay under the text model's own tag (the backlog was labeled ungated; the gate only saves GPU going forward).
+# FINCLATOR_GATE=0 disables it; FINCLATOR_GATE_TAG=1 stores gated labels under "<model>+jev" as a separate dimension.
 GATE_SUFFIX = "+jev"
 GATE_ON = os.environ.get("FINCLATOR_GATE", "1") == "1"
+GATE_TAG = os.environ.get("FINCLATOR_GATE_TAG", "0") == "1"
 
 # Interactive Fable labels from the initial backfill session (kept as a second model dimension).
 BACKFILL_MODEL = "claude-fable-5.1/interactive"
@@ -27,9 +29,9 @@ def text_model() -> str:
 
 
 def classifier_model() -> str:
-    """Tag new classifications are stored under: text model, plus the gate suffix when the Jev gate is on."""
+    """Tag new classifications are stored under: the text model (plus "+jev" only when FINCLATOR_GATE_TAG=1)."""
     m = text_model()
-    return m + GATE_SUFFIX if GATE_ON and not m.endswith(GATE_SUFFIX) else m
+    return m + GATE_SUFFIX if GATE_ON and GATE_TAG and not m.endswith(GATE_SUFFIX) else m
 
 
 def base_model(model: str) -> str:

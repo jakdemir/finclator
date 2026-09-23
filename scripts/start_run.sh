@@ -42,7 +42,6 @@ plist com.finclator.ollama data/ollama.log OLLAMA_NUM_PARALLEL=8 OLLAMA_KEEP_ALI
 for i in $(seq 1 20); do curl -sf http://localhost:11434/api/tags >/dev/null && break; sleep 1; done
 plist com.finclator.classify data/classify_run.out FINCLATOR_MODEL_BASE_URL=http://localhost:11434/v1 FINCLATOR_MODEL=$MODEL \
   FINCLATOR_WORKERS=8 FINCLATOR_TERSE=1 FINCLATOR_BATCH_SIZE=4 PYTHONPATH=. -- "$ROOT/.venv/bin/python" scripts/classify_run.py
-# Admin publishes the same tag classify stores under: "<model>+jev" (models.classifier_model with the gate on).
-plist com.finclator.admin data/admin.out FINCLATOR_MODEL=$MODEL -- "$ROOT/.venv/bin/python" -m src.admin
+plist com.finclator.admin data/admin.out FINCLATOR_ACTIVE_MODEL=$MODEL -- "$ROOT/.venv/bin/python" -m src.admin
 sleep 2
 launchctl list | grep com.finclator

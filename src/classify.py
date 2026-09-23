@@ -3,7 +3,8 @@
 Two modes:
   * API: `classify_pending(conn)` — with the Jev gate (default) every pending tweet is first scored by the TypeSafe
     decision model (src/gate.py); only passing tweets reach the text model, which produces quote / price_target.
-    Labels are stored under "<text model>+jev". FINCLATOR_GATE=0 restores the plain text-model dimension.
+    Labels stay under the text model's tag (FINCLATOR_GATE_TAG=1 → a separate "<model>+jev" dimension;
+    FINCLATOR_GATE=0 → no gate).
   * Interactive: `export_pending()` writes a JSONL for an assistant session to label;
     `import_labels(path)` loads the result. Same schema either way.
 
@@ -356,7 +357,7 @@ def classify_pending(conn: sqlite3.Connection, limit: int | None = None) -> tupl
             store_result(conn, t, {"is_call": False, "calls": []}, model, gate_p[t["id"]])
             tweets_done += 1
         reused = 0
-        if GATE_REUSE and passing:
+        if GATE_REUSE and passing and models.base_model(model) != model:
             old_calls, seen = _reusable(conn, [t["id"] for t in passing], models.base_model(model))
             rest = []
             for t in passing:

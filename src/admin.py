@@ -467,8 +467,8 @@ def page_architecture(conn) -> str:
              "stance. Measured on the frontier-labeled holdout: is_call 0.98, call recall 1.00, F1 0.90 at this threshold; ~0.3 s "
              "per tweet, ~$0.00007 each. Passing tweets go to the text model below; blocked tweets are stored as non-calls. "
              "Results live in <code>gate</code> (one row per tweet and Jev version); the probability is copied to "
-             "<code>calls.gate_p</code> and the Audit tab flags calls with <code>low-gate</code> (p &lt; 0.5). Labels of the hybrid "
-             f"are stored under <code>&lt;text model&gt;+jev</code>{' (active)' if model.endswith('+jev') else ''}.</p>")
+             "<code>calls.gate_p</code> and the Audit tab flags calls with <code>low-gate</code> (p &lt; 0.5). The backlog was labeled "
+             "without the gate; it applies to tweets fetched from now on and stores its labels under the text model's tag.</p>")
     B.append("<h2>Stage 2b — text classifier <small>(src/classify.py) · strict</small></h2>"
              f"<p>Local open-weights model via Ollama (the tag is defined once in <code>src/models.py</code>; active: <code>{e(model)}</code>), "
              f"{BATCH_SIZE} tweets per request, temperature 0, JSON output, thinking off. The Anthropic and OpenAI-compatible paths share the same "
