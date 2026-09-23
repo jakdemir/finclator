@@ -9,6 +9,7 @@ import argparse
 import contextvars
 import html
 import json
+import re
 import subprocess
 import traceback
 from datetime import datetime, timezone
@@ -18,6 +19,7 @@ from pathlib import Path
 from . import audit, db, score
 from .db import LOG_PATH as LOG
 from .db import connect, log
+from .gate import THRESHOLD as GATE_THRESHOLD
 from .models import active_model
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -47,7 +49,7 @@ def _readonly() -> bool:
 
 CSS = """
 body{font:14px system-ui,sans-serif;margin:0;background:#0f1115;color:#e6e6e6}
-nav{display:flex;gap:18px;padding:10px 18px;background:#181b22;border-bottom:1px solid #2a2f3a;position:sticky;top:0}
+nav{display:flex;flex-wrap:wrap;gap:12px 18px;padding:10px 18px;background:#181b22;border-bottom:1px solid #2a2f3a;position:sticky;top:0;z-index:2}
 nav a{color:#9ecbff;text-decoration:none}nav a.on{color:#fff;font-weight:600}
 main{padding:18px;max-width:1500px}
 h2{margin:22px 0 8px;font-size:16px}
@@ -63,6 +65,10 @@ th{background:#1d2129;cursor:pointer}td.num{text-align:right;font-variant-numeri
 pre{background:#0a0c10;padding:10px;border-radius:6px;max-height:340px;overflow:auto;font-size:12px}
 .mono{font-family:ui-monospace,monospace}
 .help{color:#9aa;font-size:12px;margin:2px 0 10px;max-width:1100px;line-height:1.45}
+td.stale{color:#f0b64c}
+.tw{overflow-x:auto;max-width:100%}
+@media (max-width:700px){main{padding:10px}.card{min-width:0;flex:1 1 44%}.grid td{width:auto;min-width:88px;height:auto;padding:6px 4px;font-size:12px}
+.grid td small{font-size:10px}table{font-size:12px}th,td{padding:3px 5px}nav span[style]{display:none}}
 """
 
 JS = """
@@ -128,6 +134,16 @@ def _log_tail(n=200) -> str:
     return "\n".join(out[-n:])
 
 
+_TABLE_OPEN = re.compile(r"<table(?=[ >])")
+
+
+def _wrap_tables(body: str) -> str:
+    """Give every table a horizontal-scroll container (mobile). Idempotent on already-wrapped markup."""
+    if "<div class=tw>" in body:
+        return body
+    return _TABLE_OPEN.sub("<div class=tw><table", body).replace("</table>", "</table></div>")
+
+
 def _page(title: str, body: str, active: str) -> str:
     ch = _chrome()
     tabs = [("/", "Progress"), ("/matrix", "Matrix"), ("/accounts", "Accounts"), ("/audit", "Audit"),
@@ -140,7 +156,7 @@ def _page(title: str, body: str, active: str) -> str:
     return (f"<!doctype html><meta charset=utf-8><title>Finclator admin — {title}</title>"
             f"{refresh}<style>{CSS}</style><script>const LOG_URL={json.dumps(_u('/api/log'))}</script><script>{JS}</script>"
             f"<nav>{nav}<span style='margin-left:auto;color:#9aa'>{datetime.now(timezone.utc):%H:%M:%S} UTC · {mode}</span>{who}</nav>"
-            f"<main>{body}</main>")
+            f"<main>{_wrap_tables(body)}</main>")
 
 
 def status(conn) -> dict:
@@ -160,6 +176,8 @@ def status(conn) -> dict:
     if recent and recent["n"] >= 20:
         span = (datetime.now(timezone.utc) - datetime.fromisoformat(recent["a"]).replace(tzinfo=timezone.utc)).total_seconds()
         rate = recent["n"] / span * 60 if span > 30 else None
+    g = _one(conn, """SELECT count(*) n, coalesce(sum(CASE WHEN p_call >= ? THEN 1 ELSE 0 END),0) p, max(model) m, max(at) at
+                      FROM gate""", GATE_THRESHOLD)
     pending = f["rel"] - f["cls"]
     prices = {r["asset"]: dict(r) for r in _q(conn, "SELECT asset, min(date) a, max(date) b, count(*) n FROM prices GROUP BY asset")}
     matrix_p = ROOT / "data" / "matrix.json"
@@ -177,9 +195,25 @@ def status(conn) -> dict:
         "replies_in_db": f["replies"], "retweets_in_db": f["rts"],
         "calls": f["calls"], "outcomes": f["outs"], "accounts": f["accounts"], "accounts_active": f["active"],
         "accounts_fetched": f["fetched"], "accounts_scored": f["scored"],
+        "gated": g["n"], "gate_passed": g["p"], "gate_model": g["m"], "gate_last_at": g["at"],
         "prices": prices, "matrix_generated_at": matrix.get("generated_at"), "matrix_model": matrix.get("model"),
         "matrix": {k: v.get("label") for k, v in matrix.get("cells", {}).items()},
     }
+
+
+def account_rows(conn, model: str):
+    """Per-account fetch/classify counts in one pass (was 6 correlated subqueries × 98 accounts ≈ 2.5 s on Neon)."""
+    return _q(conn, """
+        SELECT a.handle, a.school, a.sampling, a.rate_per_year, a.active, a.last_fetch_at,
+               count(t.id) n, coalesce(sum(t.relevant),0) rel,
+               count(b.tweet_id) cls, coalesce(sum(cc.n),0) calls,
+               min(t.created_at) f, max(t.created_at) l
+        FROM accounts a
+        LEFT JOIN tweets t ON t.handle=a.handle
+        LEFT JOIN classified_by b ON b.tweet_id=t.id AND b.model=?
+        LEFT JOIN (SELECT tweet_id, count(*) n FROM calls WHERE model=? GROUP BY tweet_id) cc ON cc.tweet_id=t.id
+        GROUP BY a.handle, a.school, a.sampling, a.rate_per_year, a.active, a.last_fetch_at
+        ORDER BY n DESC""", model, model)
 
 
 def page_progress(conn) -> str:
@@ -195,6 +229,8 @@ def page_progress(conn) -> str:
     cards = [
         ("backfill", run_state, "scripts/backfill.py (twitterapi.io fetch)"),
         ("classifier", cls_state, f"{e(s['model'])}<br>{eta}"),
+        ("Jev gate", f"{s['gated']:,}", f"{s['gate_passed']:,} passed ({pct(s['gate_passed'], s['gated']):.0f}%) · {e(s['gate_model'] or '—')}"
+                                       f"<br>last {(s['gate_last_at'] or '—')[:16]}"),
         ("accounts fetched", f"{s['accounts_fetched']} / {s['accounts']}", f"{s['accounts_active']} active"),
         ("tweets", f"{s['tweets']:,}", f"replies {s['replies_in_db']} · RTs {s['retweets_in_db']} — originals-only invariant"),
         ("asset-mentioning", f"{s['relevant']:,}", f"{pct(s['relevant'], s['tweets']):.0f}% of tweets (regex stage)"),
@@ -239,20 +275,16 @@ def page_progress(conn) -> str:
     B.append("<h2>Per-account fetch <small>· classified / calls are for the active model</small></h2><table class=sortable><thead><tr><th>account</th><th>school</th><th>sampling</th>"
              "<th title='measured originals per year at backfill (rate estimate)'>orig/yr</th><th title='original tweets stored'>tweets</th>"
              "<th title='passed the asset-mention prefilter'>relevant</th><th title='labeled by the active model'>classified</th><th title='calls by the active model'>calls</th><th>first</th><th>last</th><th title='fetch watermark: the next run searches from here (minus a 6 h overlap)'>fetched</th></tr></thead><tbody>")
-    for r in _q(conn, """SELECT a.handle, a.school, a.sampling, a.rate_per_year, a.active, a.last_fetch_at,
-                (SELECT count(*) FROM tweets t WHERE t.handle=a.handle) n,
-                (SELECT coalesce(sum(relevant),0) FROM tweets t WHERE t.handle=a.handle) rel,
-                (SELECT count(*) FROM classified_by b JOIN tweets t ON t.id=b.tweet_id WHERE t.handle=a.handle AND b.model=?) cls,
-                (SELECT count(*) FROM calls c WHERE c.handle=a.handle AND c.model=?) calls,
-                (SELECT min(created_at) FROM tweets t WHERE t.handle=a.handle) f,
-                (SELECT max(created_at) FROM tweets t WHERE t.handle=a.handle) l
-                FROM accounts a ORDER BY n DESC""", s["model"], s["model"]):
+    for r in account_rows(conn, s["model"]):
         cls = "" if r["n"] else " class=warn"
+        last_age = (today - datetime.fromisoformat(r["l"]).date()).days if r["l"] else None
+        stale = " class=stale" if r["active"] and last_age is not None and last_age > 30 else ""
         B.append(f"<tr><td{cls}>@{e(r['handle'])}{'' if r['active'] else ' <small>(inactive)</small>'}</td><td>{e(r['school'] or '')}</td>"
                  f"<td>{e(r['sampling'] or 'full')}</td><td class=num>{r['rate_per_year'] or ''}</td>"
                  f"<td class=num>{r['n']}</td><td class=num>{r['rel']}</td><td class=num>{r['cls']}</td><td class=num>{r['calls']}</td>"
-                 f"<td>{(r['f'] or '')[:10]}</td><td>{(r['l'] or '')[:10]}</td><td>{(r['last_fetch_at'] or '')[:16].replace('T', ' ')}</td></tr>")
-    B.append("</tbody></table>")
+                 f"<td>{(r['f'] or '')[:10]}</td><td{stale} title='days since newest stored tweet: {last_age}'>{(r['l'] or '')[:10]}</td>"
+                 f"<td>{(r['last_fetch_at'] or '')[:16].replace('T', ' ')}</td></tr>")
+    B.append("</tbody></table><p class=help>amber <i>last</i> = active account with no stored tweet in 30 d — check the fetch.</p>")
 
     if not _readonly():
         B.append("<h2>pipeline.log <small>(live, last 200 lines, UTC) · <label><input type=checkbox id=follow checked> follow</label></small></h2>"
@@ -266,7 +298,7 @@ def page_matrix(conn) -> str:
     matrix_p = ROOT / "data" / "matrix.json"
     m = json.loads(matrix_p.read_text()) if matrix_p.exists() else {"generated_at": "", "cells": {}}
     B.append(f"<h2>Current matrix <small>generated {e(m.get('generated_at') or '—')}</small>"
-             + ("" if _readonly() else " <a href='/matrix?rebuild=1' style='color:#9ecbff'>rebuild now</a>") + "</h2>")
+             + ("" if _readonly() else f" <a href='{_u('/matrix')}?rebuild=1' style='color:#9ecbff'>rebuild now</a>") + "</h2>")
     B.append("<table class=grid><tr><th></th><th>SHORT<br><small>0–3 mo</small></th><th>MEDIUM<br><small>3–12 mo</small></th><th>LONG<br><small>1–5 y</small></th></tr>")
     for a in ASSETS:
         tds = ""
@@ -277,7 +309,8 @@ def page_matrix(conn) -> str:
             ts = c.get("top_share", 0) or 0
             top = (f"<br><small class='{'warn' if ts >= 0.5 else ''}'>top @{e(c.get('top_handle') or '–')} {ts:.0%}</small>"
                    if c.get("top_handle") else "")
-            tds += f"<td class={cls}>{c['label']}<br><small>n={c['n_calls']} net={c['net']:+.2f} w={w:.2f}</small>{top}</td>"
+            tds += (f"<td class={cls}><a href='{_u('/audit')}?asset={a}&hz={h}' style='color:inherit;text-decoration:none'>{c['label']}</a>"
+                    f"<br><small>n={c['n_calls']} net={c['net']:+.2f} w={w:.2f}</small>{top}</td>")
         B.append(f"<tr><th>{a}</th>{tds}</tr>")
     B.append("</table>")
     B.append("<p class=help>Each cell is the trust-weighted lean of the roster's calls inside that horizon window. "
@@ -390,18 +423,24 @@ def page_accounts(conn) -> str:
          ".tg details{margin-top:6px}.tg details table{font-size:11px}.tg details td{text-align:left;width:auto;height:auto}</style>"]
 
     B.append("<h3>Ranking <small>(overall = all cells pooled; sortable)</small></h3><table class=sortable><thead><tr><th>account</th><th>school</th>"
-             "<th title='calls by this model, matured or not'>calls</th><th title='matured calls'>n</th><th title='Σ points over matured calls: CORRECT 1, PARTIAL 0.5, WRONG 0, ±0.25 target hit/miss'>hits</th><th title='(hits + 5) / (n + 10) — all cells pooled'>overall</th>"
+             "<th title='calls by this model, matured or not'>calls</th><th title='matured calls'>n</th><th title='Σ points over matured calls: CORRECT 1, PARTIAL 0.5, WRONG 0, ±0.25 target hit/miss'>points</th><th title='(points + 5) / (n + 10) — all cells pooled'>overall</th>"
              "<th title='cells with ≥1 matured outcome, of 9'>cells</th></tr></thead><tbody>")
-    for a, ov in scored:
+    have = [x for x in scored if x[1]]
+    prior = [x for x in scored if not x[1]]
+    for a, ov in have:
         h = a["handle"]
         cells = sum(1 for x in ASSETS for hz in HZ if (h, x, hz) in trust)
-        B.append(f"<tr><td><a href='#acc-{e(h)}' style='color:#9ecbff'>@{e(h)}</a></td><td>{e(a['school'] or '')}</td><td class=num>{n_calls.get(h, 0)}</td>")
-        if ov:
-            B.append(f"<td class=num>{ov['n']}</td><td class=num>{ov['correct']:.1f}</td><td class=num data-v={ov['score']}><b>{ov['score']:.3f}</b></td>")
-        else:
-            B.append("<td class=num>0</td><td class=num>0</td><td class=num data-v=0.5><small>0.500 prior</small></td>")
-        B.append(f"<td class=num>{cells}/9</td></tr>")
+        B.append(f"<tr><td><a href='#acc-{e(h)}' style='color:#9ecbff'>@{e(h)}</a></td><td>{e(a['school'] or '')}</td><td class=num>{n_calls.get(h, 0)}</td>"
+                 f"<td class=num>{ov['n']}</td><td class=num>{ov['correct']:.1f}</td><td class=num data-v={ov['score']}><b>{ov['score']:.3f}</b></td>"
+                 f"<td class=num>{cells}/9</td></tr>")
     B.append("</tbody></table>")
+    if prior:
+        B.append(f"<details><summary>{len(prior)} accounts with no matured outcome (prior 0.5)</summary><table class=sortable><thead><tr>"
+                 "<th>account</th><th>school</th><th title='calls by this model, matured or not'>calls</th></tr></thead><tbody>")
+        for a, _ in prior:
+            h = a["handle"]
+            B.append(f"<tr><td><a href='#acc-{e(h)}' style='color:#9ecbff'>@{e(h)}</a></td><td>{e(a['school'] or '')}</td><td class=num>{n_calls.get(h, 0)}</td></tr>")
+        B.append("</tbody></table></details>")
 
     B.append("<h3>Grids <small>(accounts with matured outcomes first)</small></h3><div>")
     for a, ov in scored:
@@ -421,7 +460,6 @@ def page_accounts(conn) -> str:
 def page_architecture(conn) -> str:
     from .classify import BATCH_SIZE
     from .evaluate import MATURITY_DAYS
-    from .gate import THRESHOLD as GATE_THRESHOLD
     from .prefilter import _ASSET_PATTERNS
     e = html.escape
     model = active_model()
@@ -497,7 +535,9 @@ def page_architecture(conn) -> str:
              "<li>Stage 1 can't catch calls that name no asset (“this is the top” under a chart image).</li>"
              "<li>Horizon inference on terse Turkish tweets is the least reliable field.</li>"
              "<li>Labels are one model's reading. Production config vs a 120-tweet frontier-labeled holdout: is-call 97 %, direction 88 %, "
-             "horizon 88 % — on only 15 gold calls, so treat those as rough. Per-config numbers: <code>data/tune_variants.txt</code>.</li>"
+             "horizon 88 % — on only 15 gold calls, so treat those as rough. Per-config numbers: <code>data/tune_variants.txt</code>. "
+             "Since 2026-09-23 the Jev gate decides is_call for new tweets (holdout is_call 98 %, recall 100 %); the text model "
+             "only labels direction/horizon/quote on what passes.</li>"
              "<li>Sampled accounts (&gt;1,000 orig/yr) see ~10% of their tweets — evenly spread, but sparse.</li></ul>")
 
     B.append("<h2>Files</h2><table><tr><th>file</th><th>role</th></tr>"
@@ -505,6 +545,7 @@ def page_architecture(conn) -> str:
              "<tr><td class=mono>src/db.py</td><td>schema in SQLite dialect, runs on SQLite locally and Postgres (Neon) hosted; log()</td></tr>"
              "<tr><td class=mono>src/fetch.py</td><td>twitterapi.io: advanced_search with exact since_time windows per account (last_fetch_at watermark), asset keywords in the query for heavy posters, credit floor</td></tr>"
              "<tr><td class=mono>src/prefilter.py</td><td>stage 1</td></tr><tr><td class=mono>src/classify.py</td><td>stage 2</td></tr>"
+             "<tr><td class=mono>src/gate.py</td><td>stage 2a — Jev is_call gate (TypeSafe direct API), table <code>gate</code></td></tr>"
              "<tr><td class=mono>src/prices.py · evaluate.py · score.py · matrix.py</td><td>outcomes → trust → 3×3</td></tr>"
              "<tr><td class=mono>src/audit.py · admin.py · pine.py</td><td>verification page, this site, TradingView script</td></tr>"
              "<tr><td class=mono>src/run.py</td><td>the pipeline: fetch → classify → prices → evaluate → score → matrix → audit → pine → site</td></tr>"
@@ -582,7 +623,7 @@ def page_tables(conn, qs: str) -> str:
     if name in tables:
         total = _one(conn, f"SELECT count(*) FROM {name}")[0]
         order = {"tweets": "created_at DESC", "calls": "called_at DESC", "outcomes": "exit_date DESC", "prices": "date DESC",
-                 "trust": "score DESC", "accounts": "handle", "classified_by": "at DESC"}.get(name, "1")
+                 "trust": "score DESC", "accounts": "handle", "classified_by": "at DESC", "gate": "at DESC"}.get(name, "1")
         cur = conn.execute(f"SELECT * FROM {name} ORDER BY {order} LIMIT ? OFFSET ?", (limit, offset))
         prev_ = f"<a href='{T}?t={name}&o={max(0, offset - limit)}&n={limit}' style='color:#9ecbff'>← prev</a>" if offset else ""
         next_ = f"<a href='{T}?t={name}&o={offset + limit}&n={limit}' style='color:#9ecbff'>next →</a>" if offset + limit < total else ""
@@ -627,7 +668,7 @@ class Handler(BaseHTTPRequestHandler):
                     recompute(conn)
                     build_matrix(conn)
                     self.send_response(302)
-                    self.send_header("Location", "/matrix")
+                    self.send_header("Location", _u("/matrix"))
                     self.end_headers()
                     return
                 self._send(page_matrix(conn))

@@ -34,6 +34,7 @@ select,input{font:inherit;padding:3px 6px;background:#181b22;color:#e6e6e6;borde
 .x{cursor:pointer;color:#9ecbff;font-size:11px}tr.raw>td{background:#0a0c10;padding:6px 10px}
 tr.raw pre{margin:0;max-height:none}small{color:#9aa}a{color:#9ecbff}.hidden{display:none!important}
 th.sa:after{content:" ▲"}th.sd:after{content:" ▼"}.help{color:#9aa;font-size:12px;margin:0 0 8px}
+.tweet.clamp{max-height:11em;overflow:hidden;position:relative;cursor:pointer}.tweet.clamp:after{content:"… show all";position:absolute;right:0;bottom:0;background:#181b22;color:#9ecbff;padding:0 6px;font-size:11px}
 """
 
 JS = """
@@ -46,6 +47,7 @@ function filt(){const a=v('f-acc'),s=v('f-asset'),h=v('f-hz'),r=v('f-res'),d=v('
  const p=new URLSearchParams();for(const [k,id] of [['acc','f-acc'],['asset','f-asset'],['hz','f-hz'],['res','f-res'],['dir','f-dir'],['flag','f-flag'],['q','f-q']]){if(v(id))p.set(k,v(id))}
  history.replaceState(null,'',location.pathname+(p.toString()?'?'+p:''))}
 function toggleRaw(id){$('#raw-'+id).classList.toggle('hidden')}
+function unclamp(td){td.classList.remove('clamp')}
 function copyRow(id){navigator.clipboard.writeText($('#raw-'+id+' pre').textContent)}
 function setFlag(f){$('#f-flag').value=f;filt();$('#calls').scrollIntoView()}
 document.addEventListener('DOMContentLoaded',()=>{
@@ -157,9 +159,10 @@ def body(conn, model: str | None = None, limit: int | None = None, account: str 
 <input id=f-q placeholder="search text… ( / )" size=26> <span id=f-n class=pill></span></div>
 <p class=help><b>Verify a row:</b> <i>tweet ↗</i> → read the highlighted quote → judge asset / direction / horizon / target.
 <i>entry</i> / <i>exit</i> open Yahoo history (±5 d) to check closes; <i>TV</i> opens the chart. <i>raw</i> shows the stored record as JSON.
-<i>market did</i> = realised direction vs the flat band. Flags are automatic review hints, not errors. Filters are kept in the URL — share it.</p>
+<i>market did</i> = realised direction vs the flat band. <i>gate</i> = Jev is_call probability; <code>low-gate</code> flags &lt; 0.5.
+Flags are automatic review hints, not errors. Filters are kept in the URL — share it.</p>
 <table id=calls class=sortable><thead><tr><th>#</th><th>account · date</th><th>tweet (quote highlighted)</th><th>asset</th>
-<th>call</th><th>horizon</th><th>conf</th><th>target</th><th>entry</th><th>exit</th><th>return</th><th>market did</th><th>result</th><th>verify</th></tr></thead><tbody>""")
+<th>call</th><th>horizon</th><th>conf</th><th title='Jev gate p_call (is_call probability, blank for calls labeled before the gate)'>gate</th><th>target</th><th>entry</th><th>exit</th><th>return</th><th>market did</th><th>result</th><th>verify</th></tr></thead><tbody>""")
     for r in rows:
         d = r["called_at"][:10]
         res = r["result"] or "PENDING"
@@ -187,16 +190,18 @@ def body(conn, model: str | None = None, limit: int | None = None, account: str 
         else:
             tgt = "<small>–</small>"
         raw = {k: r[k] for k in r.keys() if k != "text"}
+        clamp = " clamp" if len(r["text"]) > 600 else ""
+        gate = f"{r['gate_p']:.2f}" if r["gate_p"] is not None else "<small>–</small>"
         B.append(f"""<tr class="row {r['result'] or ''}" data-id={r['id']} data-acc="{e(r['handle'])}" data-asset="{r['asset']}" data-hz="{r['horizon']}"
  data-res="{res}" data-dir="{r['direction']}" data-flags="{' '.join(fl)}">
 <td data-v={r['id']}>{r['id']}<br><span class=x onclick="toggleRaw({r['id']})">raw</span></td>
 <td>@{e(r['handle'])}<br><small>{d}</small><br><a href='https://x.com/{r['handle']}/status/{r['tweet_id']}'>tweet ↗</a></td>
-<td class=tweet>{_hl(r['text'], r['quote'])}{'<br>' if fl else ''}{''.join(f'<span class=flag>{x}</span>' for x in fl)}</td>
+<td class='tweet{clamp}' onclick="unclamp(this)">{_hl(r['text'], r['quote'])}{'<br>' if fl else ''}{''.join(f'<span class=flag>{x}</span>' for x in fl)}</td>
 <td>{r['asset']}<br><small>{e(r['assets_hint'] or '')}</small></td>
 <td class='dir {r['direction']}'>{r['direction']}</td><td>{r['horizon']}<br><small>{HZ.get(r['horizon'], '?')}</small></td><td class=num>{r['confidence']:.2f}</td>
-<td class=num>{tgt}</td><td class=num>{entry}</td><td class=num>{exit_}</td><td class=num data-v='{r['return_pct'] or 0}'>{ret}</td>
+<td class=num>{gate}</td><td class=num>{tgt}</td><td class=num>{entry}</td><td class=num>{exit_}</td><td class=num data-v='{r['return_pct'] or 0}'>{ret}</td>
 <td>{actual}</td><td>{result}</td><td>{verify}</td></tr>
-<tr id=raw-{r['id']} class="raw hidden"><td colspan=14><span class=x onclick="copyRow({r['id']})">copy JSON</span>
+<tr id=raw-{r['id']} class="raw hidden"><td colspan=15><span class=x onclick="copyRow({r['id']})">copy JSON</span>
 <pre>{e(json.dumps(raw, ensure_ascii=False, indent=1))}</pre></td></tr>""")
     B.append("</tbody></table>")
 

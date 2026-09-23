@@ -44,3 +44,10 @@ def test_chrome_is_reset_when_connect_fails(monkeypatch):
     assert admin.CHROME.get() is None
     html = admin._page("t", "", "/")
     assert "sign out" not in html
+
+
+def test_chrome_has_responsive_css():
+    html = admin._page("t", "<table><tr><td>x</td></tr></table>", "/")
+    assert "@media (max-width:700px)" in admin.CSS
+    assert "nav{display:flex;flex-wrap:wrap" in admin.CSS
+    assert "<div class=tw>" in html            # every table is wrapped in a horizontal-scroll container
