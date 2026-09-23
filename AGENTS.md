@@ -9,12 +9,14 @@ Surfaces: **finclator.com** (public landing + method page, gated admin panel), `
 `social-sentiment-trading-signals` skill; site/panel/Vercel ops in its `references/website-ops.md`.
 
 ## State of play (2026-09-23)
-- **Published dimension is the hybrid `qwen3.6-local:35b-a3b-q4_K_M+jev`**: TypeSafe Jev decision model
-  (`src/gate.py`, direct API, `TYPESAFE_API_KEY`, ~3k tw/min, ~$3 per full pass) gates `is_call` at `p_call ≥ 0.3`;
-  only passing tweets (~17 %) reach Qwen for quote/target. `models.classifier_model()` adds `+jev` when
-  `FINCLATOR_GATE=1` (default); the plain `qwen3.6-local:35b-a3b-q4_K_M` labels (51.6k tweets → 11.5k calls) stay as
-  their own dimension and are reused by the hybrid via `FINCLATOR_GATE_REUSE`. The 30B labels and the frontier labels
-  (`claude-fable-5.1/interactive`) coexist too. **Never purge `calls`/`classified_by`/`trust`/`gate` rows of a non-active model.**
+- **Backlog fully classified by `qwen3.6-local:35b-a3b-q4_K_M`** (51.6k relevant tweets → 11.5k calls → 7.7k matured
+  outcomes, 73 accounts scored). The 30B labels and the frontier labels (`claude-fable-5.1/interactive`) coexist as
+  other model dimensions. **Never purge `calls`/`classified_by`/`trust`/`gate` rows of a non-active model.**
+- **Jev gate is live for new tweets only** (`src/gate.py`, TypeSafe direct API, `TYPESAFE_API_KEY`, ~3k tw/min,
+  32 workers, `p_call ≥ 0.3`): `classify_pending` gates every pending tweet, blocked ones are stored as non-calls,
+  passing ones (~17 %) go to Qwen. Labels stay under the Qwen tag (user decision: no relabel of the backlog;
+  `FINCLATOR_GATE_TAG=1` would fork a `+jev` dimension, `FINCLATOR_GATE=0` disables the gate). `calls.gate_p`
+  carries the probability; Audit flags `low-gate`.
 - **Roster underperforms always-BUY at every horizon** (measured on the plain Qwen labels: SHORT 55 % vs 62 %,
   MEDIUM 71 % vs 81 %, LONG 76 % vs 83 %) — `score.hit_rates()`; shown on Matrix tab, `/method`, `site.json`. Say so
   when discussing "skill".
