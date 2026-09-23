@@ -1,10 +1,10 @@
 {
- "generated_at": "2026-09-23T10:10+00:00",
+ "generated_at": "2026-09-23T13:15+00:00",
  "accounts": 98,
- "tweets": 156224,
+ "tweets": 156241,
  "from": "2017",
  "to": "2026-09-23",
- "calls": 11535,
+ "calls": 11536,
  "outcomes": 7731,
  "results": {
   "CORRECT": 3734,
@@ -68,9 +68,9 @@
   },
   "BTC:LONG": {
    "label": "BUY",
-   "net": 0.65,
-   "n": 1403,
-   "top_share": 0.174
+   "net": 0.651,
+   "n": 1404,
+   "top_share": 0.173
   },
   "GOLD:SHORT": {
    "label": "BUY",
