@@ -88,6 +88,8 @@ def _flags(r) -> list[str]:
         f.append("quote-mismatch")
     if r["confidence"] < 0.5:
         f.append("low-conf")
+    if r.keys() and "gate_p" in r.keys() and r["gate_p"] is not None and r["gate_p"] < 0.5:
+        f.append("low-gate")
     if r["direction"] == "NEUTRAL":
         f.append("neutral")
     if r["price_target"] and r["entry_close"]:
@@ -110,7 +112,7 @@ def body(conn, model: str | None = None, limit: int | None = None, account: str 
     e = html.escape
     rows = conn.execute("""
         SELECT c.id, c.handle, c.asset, c.direction, c.horizon, c.confidence, c.price_target, c.quote, c.called_at,
-               c.tweet_id, c.model, t.text, t.assets_hint, o.entry_date, o.exit_date, o.entry_close, o.exit_close,
+               c.tweet_id, c.model, c.gate_p, t.text, t.assets_hint, o.entry_date, o.exit_date, o.entry_close, o.exit_close,
                o.return_pct, o.threshold_pct, o.actual, o.result, o.target_hit, o.extreme
         FROM calls c JOIN tweets t ON t.id = c.tweet_id LEFT JOIN outcomes o ON o.call_id = c.id
         WHERE c.model = ? ORDER BY c.called_at DESC""", (model,)).fetchall()

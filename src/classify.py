@@ -1,7 +1,9 @@
 """Tweet → explicit directional calls.
 
 Two modes:
-  * API: `classify_pending(conn)` uses ANTHROPIC_API_KEY (weekly cron).
+  * API: `classify_pending(conn)` — with the Jev gate (default) every pending tweet is first scored by the TypeSafe
+    decision model (src/gate.py); only passing tweets reach the text model, which produces quote / price_target.
+    Labels are stored under "<text model>+jev". FINCLATOR_GATE=0 restores the plain text-model dimension.
   * Interactive: `export_pending()` writes a JSONL for an assistant session to label;
     `import_labels(path)` loads the result. Same schema either way.
 
@@ -18,7 +20,10 @@ from . import models
 from .db import connect, log
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL = models.classifier_model()
+MODEL = models.classifier_model()      # storage tag for new labels (text model, "+jev" when the gate is on)
+TEXT_MODEL = models.text_model()       # what the inference request names (Ollama tag / Anthropic model)
+GATE_ON = models.GATE_ON
+GATE_REUSE = os.environ.get("FINCLATOR_GATE_REUSE", "1") == "1"  # hybrid: reuse the text model's existing label
 DIRECTIONS = ("BUY", "SELL", "NEUTRAL")
 HORIZONS = ("SHORT", "MEDIUM", "LONG")  # same three keys as evaluate.MATURITY_DAYS
 
@@ -132,7 +137,8 @@ def pending(conn: sqlite3.Connection, limit: int | None = None, model: str | Non
     return conn.execute(q, (model,)).fetchall()
 
 
-def store_result(conn: sqlite3.Connection, tweet: sqlite3.Row | dict, result: dict, model: str) -> int:
+def store_result(conn: sqlite3.Connection, tweet: sqlite3.Row | dict, result: dict, model: str,
+                 gate_p: float | None = None) -> int:
     n = 0
     tid, handle, created = tweet["id"], tweet["handle"], tweet["created_at"]
     if result.get("is_call"):
@@ -151,9 +157,9 @@ def store_result(conn: sqlite3.Connection, tweet: sqlite3.Row | dict, result: di
                 pt = None
             conn.execute(
                 """INSERT OR REPLACE INTO calls(tweet_id, handle, asset, direction, horizon, confidence, price_target,
-                   quote, called_at, model) VALUES(?,?,?,?,?,?,?,?,?,?)""",  # unique per (tweet, asset, model)
+                   quote, called_at, model, gate_p) VALUES(?,?,?,?,?,?,?,?,?,?,?)""",  # unique per (tweet, asset, model)
                 (tid, handle, c["asset"], c["direction"], c["horizon"], float(c.get("confidence", 0.5)), pt,
-                 c.get("quote"), created, model),
+                 c.get("quote"), created, model, gate_p),
             )
             n += 1
     conn.execute("INSERT OR REPLACE INTO classified_by(tweet_id, model, at) VALUES(?,?,datetime('now'))", (tid, model))
@@ -199,7 +205,7 @@ def _ollama_chat(user: str, num_predict: int, num_ctx: int | None = None, json_m
 
     url = BASE_URL.split("/v1")[0].rstrip("/") + "/api/chat"
     body = {
-        "model": MODEL, "stream": False, "keep_alive": "1h", "think": THINK,  # Qwen3.5+/3.6 ignore the /no_think tag
+        "model": TEXT_MODEL, "stream": False, "keep_alive": "1h", "think": THINK,  # Qwen3.5+/3.6 ignore the /no_think tag
         "options": {"temperature": 0, "num_ctx": num_ctx or NUM_CTX,
                     "num_predict": max(num_predict, THINK_PREDICT) if THINK else num_predict},
         "messages": [{"role": "system", "content": SYSTEM + (TERSE_SUFFIX if TERSE else "") + ("" if THINK else "\n/no_think")},
@@ -282,7 +288,7 @@ def make_classifier():
 
         def run(t):
             r = client.chat.completions.create(
-                model=MODEL, temperature=0, max_tokens=600,
+                model=TEXT_MODEL, temperature=0, max_tokens=600,
                 messages=[{"role": "system", "content": SYSTEM + "\n/no_think"},
                           {"role": "user", "content": _user_msg(t)}],
                 response_format={"type": "json_object"},
@@ -296,32 +302,89 @@ def make_classifier():
 
     def run(t):
         msg = client.messages.create(
-            model=MODEL, max_tokens=600, system=SYSTEM, temperature=0,
+            model=TEXT_MODEL, max_tokens=600, system=SYSTEM, temperature=0,
             messages=[{"role": "user", "content": _user_msg(t)}],
         )
         return _parse("".join(getattr(b, "text", "") for b in msg.content))
     return run, MODEL
 
 
+def _reusable(conn, tweet_ids: list[str], base: str) -> tuple[dict[str, list[dict]], set[str]]:
+    """Existing labels of the plain text-model dimension: {tweet_id: [call dicts]} for its calls, and the set of
+    tweet ids it has already classified (with or without a call). Lets the hybrid dimension skip the GPU for tweets
+    the same text model already labeled — temperature 0, same prompt, so the label is the one it would emit again."""
+    calls: dict[str, list[dict]] = {}
+    seen: set[str] = set()
+    for i in range(0, len(tweet_ids), 500):
+        chunk = tweet_ids[i:i + 500]
+        ph = ",".join("?" * len(chunk))
+        for r in conn.execute(f"SELECT tweet_id FROM classified_by WHERE model=? AND tweet_id IN ({ph})", [base, *chunk]):
+            seen.add(r["tweet_id"])
+        for r in conn.execute(f"""SELECT tweet_id, asset, direction, horizon, confidence, price_target, quote
+                                  FROM calls WHERE model=? AND tweet_id IN ({ph})""", [base, *chunk]):
+            calls.setdefault(r["tweet_id"], []).append(
+                {"asset": r["asset"], "direction": r["direction"], "horizon": r["horizon"],
+                 "confidence": r["confidence"], "price_target": r["price_target"], "quote": r["quote"]})
+    return calls, seen
+
+
 def classify_pending(conn: sqlite3.Connection, limit: int | None = None) -> tuple[int, int]:
-    """Classify pending tweets. On the local Ollama path with BATCH_SIZE > 1, BATCH_SIZE tweets go in one request
-    (variant C in data/tune_variants.txt; make_batch_classifier falls back per tweet on a malformed answer);
+    """Classify pending tweets. With the Jev gate on (models.GATE_ON), every pending tweet is gated first
+    (src/gate.py, stored once per Jev version): failing tweets are stored as non-calls without touching the text
+    model; passing tweets take the text model's existing label when it already classified them (GATE_REUSE) and
+    otherwise go through the text model. On the local Ollama path with BATCH_SIZE > 1, BATCH_SIZE tweets go in one
+    request (variant C in data/tune_variants.txt; make_batch_classifier falls back per tweet on a malformed answer);
     otherwise one request per tweet. WORKERS requests in flight; a failed request is logged and its tweets stay
     pending, never aborting the run. Only the main thread touches the connection."""
     from concurrent.futures import ThreadPoolExecutor
 
     batched = BATCH_SIZE > 1 and bool(BASE_URL) and ":11434" in BASE_URL
+    model = MODEL
+    rows = pending(conn, limit, model)
+    tweets_done = calls_made = failed = 0
+    gate_p: dict[str, float] = {}
+    if GATE_ON and rows:
+        from . import gate
+
+        g = gate.ensure(conn, rows)
+        gated = [t for t in rows if t["id"] in g]           # ungated (Jev failed) stay pending
+        gate_p = {tid: x["p_call"] for tid, x in g.items()}
+        passing, blocked = [], []
+        for t in gated:
+            (passing if gate.passes(g[t["id"]]["p_call"], g[t["id"]]["stances"]) else blocked).append(t)
+        for t in blocked:
+            store_result(conn, t, {"is_call": False, "calls": []}, model, gate_p[t["id"]])
+            tweets_done += 1
+        reused = 0
+        if GATE_REUSE and passing:
+            old_calls, seen = _reusable(conn, [t["id"] for t in passing], models.base_model(model))
+            rest = []
+            for t in passing:
+                if t["id"] in seen:
+                    cs = old_calls.get(t["id"], [])
+                    calls_made += store_result(conn, t, {"is_call": bool(cs), "calls": cs}, model, gate_p[t["id"]])
+                    tweets_done += 1
+                    reused += 1
+                else:
+                    rest.append(t)
+            passing = rest
+        conn.commit()
+        log(f"classify [{model}]: gate blocked {len(blocked):,}, reused {reused:,} text-model labels, "
+            f"{len(passing):,} → text model, {len(rows) - len(gated)} ungated")
+        rows = passing
+    if not rows:
+        conn.commit()
+        return tweets_done, calls_made
+
     if batched:
-        run_batch, model = make_batch_classifier()
+        run_batch, _ = make_batch_classifier()
     else:
-        run_single, model = make_classifier()
+        run_single, _ = make_classifier()
 
         def run_batch(chunk):
             return [run_single(t) for t in chunk]
-    rows = pending(conn, limit, model)
     size = BATCH_SIZE if batched else 1
     chunks = [rows[i:i + size] for i in range(0, len(rows), size)]
-    tweets_done = calls_made = failed = 0
 
     def safe(chunk):
         try:
@@ -336,7 +399,7 @@ def classify_pending(conn: sqlite3.Connection, limit: int | None = None) -> tupl
                 log(f"classify: {','.join(t['id'] for t in chunk)} failed: {type(err).__name__}: {str(err)[:120]}")
                 continue
             for t, result in zip(chunk, results, strict=True):
-                calls_made += store_result(conn, t, result, model)
+                calls_made += store_result(conn, t, result, model, gate_p.get(t["id"]))
                 tweets_done += 1
                 if tweets_done % 50 == 0:
                     conn.commit()

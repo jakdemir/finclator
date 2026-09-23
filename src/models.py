@@ -8,24 +8,40 @@ from __future__ import annotations
 import os
 import sqlite3
 
-# The one default classifier: local Qwen3.6 registered in Ollama from ~/.hermes/models (see AGENTS.md).
+# The one default text classifier: local Qwen3.6 registered in Ollama from ~/.hermes/models (see AGENTS.md).
 DEFAULT_MODEL = "qwen3.6-local:35b-a3b-q4_K_M"
 DEFAULT_BASE_URL = "http://localhost:11434/v1"
+
+# Stage 2a gate (src/gate.py). When on, the published dimension is "<text model>+jev": Jev decides is_call, the
+# text model labels only the tweets that pass. FINCLATOR_GATE=0 → plain text-model dimension (the 2026-09 labels).
+GATE_SUFFIX = "+jev"
+GATE_ON = os.environ.get("FINCLATOR_GATE", "1") == "1"
 
 # Interactive Fable labels from the initial backfill session (kept as a second model dimension).
 BACKFILL_MODEL = "claude-fable-5.1/interactive"
 
 
-def classifier_model() -> str:
-    """Model used for new classifications (FINCLATOR_MODEL overrides)."""
+def text_model() -> str:
+    """The text model that produces quote / price_target / labels (FINCLATOR_MODEL overrides)."""
     return os.environ.get("FINCLATOR_MODEL") or DEFAULT_MODEL
+
+
+def classifier_model() -> str:
+    """Tag new classifications are stored under: text model, plus the gate suffix when the Jev gate is on."""
+    m = text_model()
+    return m + GATE_SUFFIX if GATE_ON and not m.endswith(GATE_SUFFIX) else m
+
+
+def base_model(model: str) -> str:
+    """Strip the gate suffix: the text-model dimension a hybrid tag was derived from."""
+    return model[:-len(GATE_SUFFIX)] if model.endswith(GATE_SUFFIX) else model
 
 
 def classifier_base_url() -> str | None:
     """OpenAI/Ollama endpoint for the classifier; None → Anthropic API (claude-* models only)."""
     if "FINCLATOR_MODEL_BASE_URL" in os.environ:
         return os.environ["FINCLATOR_MODEL_BASE_URL"] or None
-    return None if classifier_model().startswith("claude-") else DEFAULT_BASE_URL
+    return None if text_model().startswith("claude-") else DEFAULT_BASE_URL
 
 
 def active_model() -> str:

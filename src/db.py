@@ -65,6 +65,17 @@ CREATE TABLE IF NOT EXISTS classified_by (
 CREATE INDEX IF NOT EXISTS ix_tweets_handle_created ON tweets(handle, created_at);
 CREATE INDEX IF NOT EXISTS ix_tweets_pending ON tweets(relevant, classified);
 
+-- Stage 2a: Jev decision-model gate, one row per (tweet, Jev version). p_call = calibrated is_call probability,
+-- stances = JSON {asset: none|up|down|neutral}. The hybrid classifier sends only passing tweets to the text model.
+CREATE TABLE IF NOT EXISTS gate (
+    tweet_id TEXT NOT NULL REFERENCES tweets(id),
+    model    TEXT NOT NULL,
+    p_call   REAL NOT NULL,
+    stances  TEXT,
+    at       TEXT,
+    PRIMARY KEY (tweet_id, model)
+);
+
 -- One row per (tweet, asset) explicit directional call. Non-calls are not stored here.
 CREATE TABLE IF NOT EXISTS calls (
     id          INTEGER PRIMARY KEY,
@@ -119,15 +130,16 @@ CREATE TABLE IF NOT EXISTS trust (
 """
 
 # Tables in FK order (migration + schema listing) and their conflict keys (for INSERT OR REPLACE → ON CONFLICT).
-TABLES = ["accounts", "tweets", "classified_by", "calls", "prices", "outcomes", "trust"]
+TABLES = ["accounts", "tweets", "classified_by", "gate", "calls", "prices", "outcomes", "trust"]
 CONFLICT_KEYS = {
-    "accounts": ("handle",), "tweets": ("id",), "classified_by": ("tweet_id", "model"),
+    "accounts": ("handle",), "tweets": ("id",), "classified_by": ("tweet_id", "model"), "gate": ("tweet_id", "model"),
     "calls": ("tweet_id", "asset", "model"), "prices": ("asset", "date"), "outcomes": ("call_id",),
     "trust": ("model", "handle", "asset", "horizon"),
 }
 MIGRATIONS = (("accounts", "rate_per_year", "INTEGER"), ("accounts", "sampling", "TEXT"), ("accounts", "tier", "TEXT"),
               ("accounts", "last_fetch_at", "TEXT"),
-              ("calls", "price_target", "REAL"), ("outcomes", "target_hit", "INTEGER"), ("outcomes", "extreme", "REAL"))
+              ("calls", "price_target", "REAL"), ("calls", "gate_p", "REAL"),
+              ("outcomes", "target_hit", "INTEGER"), ("outcomes", "extreme", "REAL"))
 
 
 def database_url() -> str | None:

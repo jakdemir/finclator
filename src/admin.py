@@ -421,6 +421,7 @@ def page_accounts(conn) -> str:
 def page_architecture(conn) -> str:
     from .classify import BATCH_SIZE
     from .evaluate import MATURITY_DAYS
+    from .gate import THRESHOLD as GATE_THRESHOLD
     from .prefilter import _ASSET_PATTERNS
     e = html.escape
     model = active_model()
@@ -459,7 +460,16 @@ def page_architecture(conn) -> str:
              "Result is stored as <code>tweets.relevant</code> + <code>assets_hint</code>. "
              f"Check it on <a href='{_u('/audit')}' style='color:#9ecbff'>Audit → “prefilter dropped”</a> sample.</p>")
 
-    B.append("<h2>Stage 2 — classifier <small>(src/classify.py) · strict</small></h2>"
+    B.append("<h2>Stage 2a — Jev gate <small>(src/gate.py) · decision model</small></h2>"
+             "<p>Every asset-mentioning tweet is first scored by TypeSafe's Jev decision model (direct API, no text output): "
+             "the classifier rules are decomposed into typed questions — <code>is_call</code> (probability) and a per-asset stance "
+             f"choice (none/up/down/neutral). A tweet passes when <code>p_call ≥ {GATE_THRESHOLD}</code> and at least one asset has a "
+             "stance. Measured on the frontier-labeled holdout: is_call 0.98, call recall 1.00, F1 0.90 at this threshold; ~0.3 s "
+             "per tweet, ~$0.00007 each. Passing tweets go to the text model below; blocked tweets are stored as non-calls. "
+             "Results live in <code>gate</code> (one row per tweet and Jev version); the probability is copied to "
+             "<code>calls.gate_p</code> and the Audit tab flags calls with <code>low-gate</code> (p &lt; 0.5). Labels of the hybrid "
+             f"are stored under <code>&lt;text model&gt;+jev</code>{' (active)' if model.endswith('+jev') else ''}.</p>")
+    B.append("<h2>Stage 2b — text classifier <small>(src/classify.py) · strict</small></h2>"
              f"<p>Local open-weights model via Ollama (the tag is defined once in <code>src/models.py</code>; active: <code>{e(model)}</code>), "
              f"{BATCH_SIZE} tweets per request, temperature 0, JSON output, thinking off. The Anthropic and OpenAI-compatible paths share the same "
              "prompt and parser. Must answer “is this an explicit, falsifiable call?” — past-move reports, news, charts "
