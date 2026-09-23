@@ -90,7 +90,7 @@ def _flags(r) -> list[str]:
         f.append("quote-mismatch")
     if r["confidence"] < 0.5:
         f.append("low-conf")
-    if r.keys() and "gate_p" in r.keys() and r["gate_p"] is not None and r["gate_p"] < 0.5:
+    if "gate_p" in r.keys() and r["gate_p"] is not None and r["gate_p"] < 0.5:
         f.append("low-gate")
     if r["direction"] == "NEUTRAL":
         f.append("neutral")
@@ -108,33 +108,44 @@ def _flags(r) -> list[str]:
 
 
 def body(conn, model: str | None = None, limit: int | None = None, account: str | None = None) -> str:
-    """HTML fragment for the audit tab (no chrome). `limit`/`account` cap the rendered rows (hosted panel) — counts and
-    filter options are still computed over every call of the model."""
+    """HTML fragment for the audit tab (no chrome). `limit`/`account` cap the rendered rows (hosted panel) — result
+    counts and the account list still cover every call of the model; flag pills count the rendered rows only."""
     model = model or active_model()
     e = html.escape
-    rows = conn.execute("""
-        SELECT c.id, c.handle, c.asset, c.direction, c.horizon, c.confidence, c.price_target, c.quote, c.called_at,
-               c.tweet_id, c.model, c.gate_p, t.text, t.assets_hint, o.entry_date, o.exit_date, o.entry_close, o.exit_close,
-               o.return_pct, o.threshold_pct, o.actual, o.result, o.target_hit, o.extreme
-        FROM calls c JOIN tweets t ON t.id = c.tweet_id LEFT JOIN outcomes o ON o.call_id = c.id
+    # Pass 1 — every call of the model, no tweet text: result counts, account list, and which ids to render.
+    idx = conn.execute("""
+        SELECT c.id, c.handle, o.result FROM calls c LEFT JOIN outcomes o ON o.call_id = c.id
         WHERE c.model = ? ORDER BY c.called_at DESC""", (model,)).fetchall()
     res_counts = {k: 0 for k in ("CORRECT", "PARTIAL", "WRONG", "PENDING")}
-    flag_counts: dict[str, int] = {}
+    for r in idx:
+        res_counts[r["result"] or "PENDING"] += 1
+    others = [m for m in list_models(conn) if m != model]
+    handles = sorted({r["handle"] for r in idx})
+    total = len(idx)
+    if account:
+        idx = [r for r in idx if r["handle"] == account]
+    if limit and len(idx) > limit:
+        idx = idx[:limit]
+    capped = len(idx) < total
+    # Pass 2 — full rows (with tweet text) only for what is rendered; the whole backlog's text is ~25 MB over the wire.
+    rows = []
+    ids = [r["id"] for r in idx]
+    for i in range(0, len(ids), 500):
+        chunk = ids[i:i + 500]
+        rows += conn.execute(f"""
+            SELECT c.id, c.handle, c.asset, c.direction, c.horizon, c.confidence, c.price_target, c.quote, c.called_at,
+                   c.tweet_id, c.model, c.gate_p, t.text, t.assets_hint, o.entry_date, o.exit_date, o.entry_close,
+                   o.exit_close, o.return_pct, o.threshold_pct, o.actual, o.result, o.target_hit, o.extreme
+            FROM calls c JOIN tweets t ON t.id = c.tweet_id LEFT JOIN outcomes o ON o.call_id = c.id
+            WHERE c.id IN ({','.join('?' * len(chunk))})""", chunk).fetchall()
+    rows.sort(key=lambda r: r["called_at"], reverse=True)
+    flag_counts: dict[str, int] = {}   # over the rendered rows — the pills filter the rendered table
     row_flags: dict[int, list[str]] = {}
     for r in rows:
-        res_counts[r["result"] or "PENDING"] += 1
         fl = _flags(r)
         row_flags[r["id"]] = fl
         for x in fl:
             flag_counts[x] = flag_counts.get(x, 0) + 1
-    others = [m for m in list_models(conn) if m != model]
-    handles = sorted({r["handle"] for r in rows})
-    total = len(rows)
-    if account:
-        rows = [r for r in rows if r["handle"] == account]
-    if limit and len(rows) > limit:
-        rows = rows[:limit]
-    capped = len(rows) < total
 
     B = [f"<style>{CSS}</style><script>{JS}</script>"]
     B.append(f"<h2>Calls <small>{total} · model <b>{e(model)}</b>{' · also in DB: ' + ', '.join(e(m) for m in others) if others else ''}</small></h2>")
