@@ -1,31 +1,31 @@
 {
- "generated_at": "2026-09-24T12:04+00:00",
+ "generated_at": "2026-09-26T10:30+00:00",
  "accounts": 98,
- "tweets": 156315,
+ "tweets": 156449,
  "from": "2017",
- "to": "2026-09-24",
- "calls": 11539,
- "outcomes": 7746,
+ "to": "2026-09-26",
+ "calls": 11540,
+ "outcomes": 7767,
  "results": {
-  "CORRECT": 3739,
-  "PARTIAL": 2263,
-  "WRONG": 1744
+  "CORRECT": 3747,
+  "PARTIAL": 2271,
+  "WRONG": 1749
  },
  "hit_by_horizon": {
   "MEDIUM": {
-   "rate": 0.711,
-   "baseline": 0.813,
-   "n": 2131
+   "rate": 0.71,
+   "baseline": 0.811,
+   "n": 2135
   },
   "LONG": {
-   "rate": 0.757,
-   "baseline": 0.827,
-   "n": 1321
+   "rate": 0.756,
+   "baseline": 0.826,
+   "n": 1330
   },
   "SHORT": {
    "rate": 0.549,
-   "baseline": 0.618,
-   "n": 4294
+   "baseline": 0.619,
+   "n": 4302
   }
  },
  "scored_accounts": 40,
@@ -56,27 +56,27 @@
  "matrix": {
   "BTC:SHORT": {
    "label": "NEUTRAL",
-   "net": 0.104,
-   "n": 178,
-   "top_share": 0.339
+   "net": 0.105,
+   "n": 173,
+   "top_share": 0.336
   },
   "BTC:MEDIUM": {
    "label": "BUY",
-   "net": 0.204,
-   "n": 490,
+   "net": 0.201,
+   "n": 486,
    "top_share": 0.147
   },
   "BTC:LONG": {
    "label": "BUY",
-   "net": 0.65,
-   "n": 1402,
-   "top_share": 0.174
+   "net": 0.649,
+   "n": 1395,
+   "top_share": 0.173
   },
   "GOLD:SHORT": {
    "label": "BUY",
-   "net": 0.327,
-   "n": 57,
-   "top_share": 0.152
+   "net": 0.347,
+   "n": 54,
+   "top_share": 0.154
   },
   "GOLD:MEDIUM": {
    "label": "BUY",
@@ -87,14 +87,14 @@
   "GOLD:LONG": {
    "label": "BUY",
    "net": 0.925,
-   "n": 900,
+   "n": 896,
    "top_share": 0.359
   },
   "SPX:SHORT": {
    "label": "NEUTRAL",
-   "net": -0.134,
-   "n": 60,
-   "top_share": 0.151
+   "net": -0.138,
+   "n": 59,
+   "top_share": 0.15
   },
   "SPX:MEDIUM": {
    "label": "BUY",
@@ -104,12 +104,12 @@
   },
   "SPX:LONG": {
    "label": "NEUTRAL",
-   "net": -0.008,
-   "n": 251,
-   "top_share": 0.175
+   "net": -0.004,
+   "n": 250,
+   "top_share": 0.176
   }
  },
- "matrix_generated_at": "2026-09-24",
+ "matrix_generated_at": "2026-09-26",
  "example": {
   "handle": "tedpillows",
   "asset": "BTC",
